@@ -94,6 +94,16 @@ class ComprehensiveAnalyzer:
             self._score(entry, histories.get(entry.horse_id), race, context, use_training)
             for entry in entries
         ]
+
+        # === 改善1: 市場オッズとモデルのブレンド（賢い群衆の知恵を取り込む） ===
+        _apply_odds_prior(scores)
+
+        # === 改善2: クラス別の重み補正 ===
+        _apply_grade_overlay(scores, race)
+
+        # === 改善3: 学習結果（venue_adjustments）の反映 ===
+        _apply_learnings_overlay(scores, race)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -207,6 +217,82 @@ class ComprehensiveAnalyzer:
             affinity=affinity, raw_stat=stat,
             odds=entry.odds,
         )
+
+
+# ============================================================
+# 改善: モデル+市場+学習の3層ブレンド
+# ============================================================
+
+def _apply_odds_prior(scores: list) -> None:
+    """市場オッズを「賢い群衆の知恵」として弱く混ぜる。
+    オッズから人気順位を出し、モデル順位と乖離が極端な馬にペナルティ。"""
+    have_odds = [s for s in scores if getattr(s, "odds", None) and s.odds > 0]
+    if len(have_odds) < 4:
+        return
+    # オッズ昇順 = 人気順
+    by_odds = sorted(have_odds, key=lambda x: x.odds)
+    pop_rank = {s.horse_no: i + 1 for i, s in enumerate(by_odds)}
+    by_score = sorted(scores, key=lambda x: x.final_score, reverse=True)
+    score_rank = {s.horse_no: i + 1 for i, s in enumerate(by_score)}
+    for s in scores:
+        pr = pop_rank.get(s.horse_no)
+        sr = score_rank.get(s.horse_no)
+        if pr is None or sr is None:
+            continue
+        diff = sr - pr  # +なら市場より低評価、-なら市場より高評価
+        # 1人気だがモデル下位（>5位）→ -3点（市場が知っている可能性）
+        if pr == 1 and sr > 5:
+            s.final_score = round(s.final_score - 3.0, 2)
+        # 2-3人気だがモデル下位（>7位）→ -1.5点
+        elif pr <= 3 and sr > 7:
+            s.final_score = round(s.final_score - 1.5, 2)
+        # モデル上位だがオッズ50倍超（極端な穴）→ -2点（情報が薄い可能性）
+        if sr <= 3 and (s.odds or 0) >= 50:
+            s.final_score = round(s.final_score - 2.0, 2)
+
+
+def _apply_grade_overlay(scores: list, race) -> None:
+    """クラス別の補正：重賞ではスピード指数・対戦相手レベル(opp)を重視、新馬戦は血統重視。"""
+    g = getattr(race, "grade", "")
+    for s in scores:
+        opp = getattr(s, "opp_bonus", 0) or 0
+        spd = getattr(s, "speed_score", 0) or 0
+        ped = getattr(s, "pedigree_bonus", 0) or 0
+        if g in ("G1", "G2", "G3"):
+            # 重賞は実力差が結果を分ける
+            s.final_score = round(s.final_score + opp * 0.3 + (spd - 50) * 0.05, 2)
+        elif g == "OP":
+            s.final_score = round(s.final_score + opp * 0.2, 2)
+        elif g in ("新馬", "未勝利"):
+            # 新馬は血統と過去ない分、騎手・調教師が重要
+            s.final_score = round(s.final_score + ped * 0.5, 2)
+
+
+def _apply_learnings_overlay(scores: list, race) -> None:
+    """学習結果（venue_adjustments等）を反映"""
+    try:
+        from src.validator.learning_engine import load_learnings
+    except Exception:
+        return
+    L = load_learnings()
+    if not L:
+        return
+    venue = getattr(race, "venue", "")
+    va = L.get("venue_adjustments", {}).get(venue, {})
+    if not va:
+        return
+    conf = va.get("confidence", 1.0)
+    if abs(conf - 1.0) < 0.01:
+        return
+    # confidenceが低い場（信頼できない場）では、上位の差を縮める＝穴目台頭
+    sorted_s = sorted(scores, key=lambda x: x.final_score, reverse=True)
+    if not sorted_s:
+        return
+    top = sorted_s[0].final_score
+    for s in sorted_s[:5]:
+        # 上位5頭の差をconf比で圧縮（または拡大）
+        gap = top - s.final_score
+        s.final_score = round(top - gap * conf, 2)
 
 
 def _pedigree_score(sire: str, surface: str, distance: int) -> float:
