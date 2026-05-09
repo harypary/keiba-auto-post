@@ -22,14 +22,14 @@ from datetime import date, timedelta
 from collections import defaultdict, Counter
 
 
-def get_past_race_dates(weeks: int = 26) -> list[date]:
-    """過去N週の土日を列挙（直近の完了した週から遡る）"""
+def get_past_race_dates(weeks: int = 26, skip_weeks: int = 0) -> list[date]:
+    """過去N週の土日を列挙。skip_weeks=K で「K週前から」開始（過去深掘り用）"""
     dates = []
     today = date.today()
     days_to_sat = (today.weekday() - 5) % 7
     # 先週土曜から遡る（今週はまだ未完了の可能性があるため除外）
     last_sat = today - timedelta(days=days_to_sat + 7)
-    for w in range(weeks):
+    for w in range(skip_weeks, skip_weeks + weeks):
         sat = last_sat - timedelta(weeks=w)
         sun = sat + timedelta(days=1)
         dates.append(sat)
@@ -320,12 +320,17 @@ if __name__ == "__main__":
     fetcher  = ResultsFetcher()
 
     # 過去 N週分。コマンドライン引数 --weeks=N で上書き可（デフォ52週=1年）
+    # --skip-weeks=N で過去深掘り（例: --skip-weeks=52 で1年前〜2年前を処理）
     weeks = 52
+    skip_weeks = 0
     for arg in sys.argv:
         if arg.startswith("--weeks="):
             try: weeks = int(arg.split("=")[1])
             except: pass
-    dates = get_past_race_dates(weeks=weeks)
+        if arg.startswith("--skip-weeks="):
+            try: skip_weeks = int(arg.split("=")[1])
+            except: pass
+    dates = get_past_race_dates(weeks=weeks, skip_weeks=skip_weeks)
     print(f"対象期間: {dates[0]} 〜 {dates[-1]}（{len(dates)}日間）\n")
 
     # ============================================================
