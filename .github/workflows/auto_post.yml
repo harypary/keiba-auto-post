@@ -93,6 +93,7 @@ jobs:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
@@ -101,6 +102,7 @@ jobs:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
         run: python main.py --run-now sunday
 
       - name: Weekly review & weight optimization
@@ -109,6 +111,7 @@ jobs:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
         run: python weekly_review.py
 
       - name: Save updated weights & cache

@@ -27,31 +27,55 @@ class NotePublisher:
         self._user_key = None
 
     def login(self) -> bool:
-        """note.comにログイン"""
-        # CSRFトークン取得
+        """note.comにログイン
+        優先順:
+          1. NOTE_SESSION_COOKIE 環境変数があればそれを使用（_note_session_v5 の値）
+          2. なければAPIログイン（現在は不安定）
+        """
+        # === 優先1: 事前取得済みセッションCookieでログイン ===
+        cookie = os.environ.get("NOTE_SESSION_COOKIE", "").strip()
+        if cookie:
+            self.session.cookies.set("_note_session_v5", cookie, domain=".note.com", path="/")
+            # 認証確認
+            r = self.session.get(f"{NOTE_API}/users/me")
+            if r.status_code == 200:
+                try:
+                    data = r.json()
+                    self._user_key = (data.get("data", {}).get("urlname", "") or
+                                       data.get("data", {}).get("userKey", ""))
+                except Exception:
+                    pass
+                self._logged_in = True
+                print(f"[note] ログイン成功（Cookie）: {self._user_key or NOTE_USER_ID}")
+                return True
+            else:
+                print(f"[note] Cookie認証失敗: {r.status_code}（Cookieが期限切れの可能性）")
+
+        # === 優先2: API ログイン（フォールバック） ===
         resp = self.session.get("https://note.com/login")
         csrf = self._extract_csrf(resp.text)
         if csrf:
             self.session.headers["X-CSRF-Token"] = csrf
 
-        # ログインリクエスト
-        payload = {
-            "login": NOTE_EMAIL,
-            "password": NOTE_PASSWORD,
-        }
-        resp = self.session.post(
+        payload = {"login": NOTE_EMAIL, "password": NOTE_PASSWORD}
+        for endpoint in [
+            f"{NOTE_API}/sessions/sign_in",
             f"{NOTE_API}/sessions",
-            json=payload,
-        )
-        if resp.status_code in (200, 201):
-            data = resp.json()
-            self._user_key = data.get("data", {}).get("userKey", "")
-            self._logged_in = True
-            print(f"[note] ログイン成功: {NOTE_EMAIL}")
-            return True
-        else:
-            print(f"[note] ログイン失敗: {resp.status_code} {resp.text[:200]}")
-            return False
+        ]:
+            resp = self.session.post(endpoint, json=payload)
+            if resp.status_code in (200, 201):
+                try:
+                    data = resp.json()
+                    self._user_key = data.get("data", {}).get("userKey", "")
+                except Exception:
+                    pass
+                self._logged_in = True
+                print(f"[note] ログイン成功: {NOTE_EMAIL}")
+                return True
+
+        print(f"[note] ログイン失敗: API認証エラー。NOTE_SESSION_COOKIE を Secret に設定してください。")
+        print(f"      → ブラウザで note.com にログイン後、DevTools の Application > Cookies > _note_session_v5 の値をコピー")
+        return False
 
     def create_paid_article(
         self,
