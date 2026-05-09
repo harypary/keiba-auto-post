@@ -68,6 +68,18 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
     PROGRESS_PATH = "data/backtest/_progress.json"
     os.makedirs("data/backtest", exist_ok=True)
 
+    # === レジューム機能：以前の進捗を読み込んでスキップ ===
+    processed_ids = set()
+    if os.path.exists(PROGRESS_PATH):
+        try:
+            with open(PROGRESS_PATH, encoding="utf-8") as f:
+                prev = json.load(f)
+            all_records.extend(prev)
+            processed_ids = {r.get("race_id") for r in prev if r.get("race_id")}
+            print(f"  [resume] 既処理 {len(processed_ids)} レースをスキップ")
+        except Exception:
+            processed_ids = set()
+
     def _save_progress():
         try:
             with open(PROGRESS_PATH, "w", encoding="utf-8") as f:
@@ -92,6 +104,8 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
 
         for raw in race_ids:
             race_id = raw["race_id"]
+            if race_id in processed_ids:
+                continue
             try:
                 result = fetcher.get_race_result(race_id)
                 if not result or not result.get("order"):
@@ -296,7 +310,13 @@ if __name__ == "__main__":
     analyzer = ComprehensiveAnalyzer()
     fetcher  = ResultsFetcher()
 
-    dates = get_past_race_dates(weeks=12)
+    # 過去 N週分。コマンドライン引数 --weeks=N で上書き可（デフォ52週=1年）
+    weeks = 52
+    for arg in sys.argv:
+        if arg.startswith("--weeks="):
+            try: weeks = int(arg.split("=")[1])
+            except: pass
+    dates = get_past_race_dates(weeks=weeks)
     print(f"対象期間: {dates[0]} 〜 {dates[-1]}（{len(dates)}日間）\n")
 
     # ============================================================
@@ -306,7 +326,13 @@ if __name__ == "__main__":
     print("フェーズ1: 全過去データ収集")
     print("=" * 60)
 
-    all_records = run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=8)
+    # max_per_day を引数で調整可（デフォ12=全レース）
+    max_per_day = 12
+    for arg in sys.argv:
+        if arg.startswith("--max="):
+            try: max_per_day = int(arg.split("=")[1])
+            except: pass
+    all_records = run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=max_per_day)
 
     n = len(all_records)
     if n < 10:
