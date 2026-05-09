@@ -193,6 +193,56 @@ def run_weekly_review():
         adjusted = apply_factor_adjustments(get_weights(), learnings)
         save_weights(adjusted)
         print(f"  [重み再調整] 学習補正適用後の重みを保存")
+
+        # === ML メタモデル再訓練（蓄積データが増えるたびに学習更新）===
+        try:
+            from src.ml.meta_model import train_and_save
+            print("\n[ML再訓練]")
+            ml_result = train_and_save()
+            if ml_result:
+                print(f"  サンプル数: {ml_result.get('n_samples', 0)} / 訓練精度: {ml_result.get('accuracy', 0)*100:.1f}%")
+        except Exception as ex:
+            print(f"  [ML] 再訓練失敗: {ex}")
+
+        # === ペイアウト較正：先週レースの実払戻から係数更新 ===
+        try:
+            from src.ml.payout_calibrator import update_calibration
+            observations = []
+            # 先週土日の予想を再取得して実払戻と照合
+            for pred_file in os.listdir(PRED_DIR):
+                if not pred_file.endswith(".json"): continue
+                race_id = pred_file.replace(".json", "")
+                race_date_str = race_id[:8]
+                try:
+                    race_date = date(int(race_date_str[:4]), int(race_date_str[4:6]), int(race_date_str[6:8]))
+                except Exception:
+                    continue
+                if race_date not in target_dates: continue
+                res = fetcher.get_race_result(race_id)
+                if not res or not res.get("payouts"): continue
+                payouts = res["payouts"]
+                # 当時の予想を読み込み、オッズ積を計算
+                pred = json.load(open(os.path.join(PRED_DIR, pred_file), encoding="utf-8"))
+                horses = pred.get("scores", []) or pred.get("horses", [])
+                odds_map = {h.get("horse_no"): h.get("odds", 0) for h in horses if h.get("odds")}
+                actual = [r["horse_no"] for r in res["order"][:3]]
+                if len(actual) >= 2 and "馬連" in payouts:
+                    a, b = actual[0], actual[1]
+                    op = odds_map.get(a, 0) * odds_map.get(b, 0)
+                    if op > 0:
+                        observations.append({"kind": "uren", "odds_product": op, "actual_payout": payouts["馬連"] / 100.0})
+                if len(actual) >= 3 and "3連複" in payouts:
+                    a, b, c = actual[0], actual[1], actual[2]
+                    op = odds_map.get(a, 0) * odds_map.get(b, 0) * odds_map.get(c, 0)
+                    if op > 0:
+                        observations.append({"kind": "fuku3", "odds_product": op, "actual_payout": payouts["3連複"] / 100.0})
+            if observations:
+                calib = update_calibration(observations)
+                print(f"\n[ペイアウト較正] {len(observations)}件で係数更新")
+                for k, v in calib["coefs"].items():
+                    print(f"  {k:6s}: {v:.4f} (n={calib['n_samples'].get(k, 0)})")
+        except Exception as ex:
+            print(f"  [ペイアウト較正] 失敗: {ex}")
     else:
         print("  バックテストデータ不足（5レース未満）→ 重み調整スキップ")
 

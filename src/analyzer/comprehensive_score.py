@@ -104,6 +104,9 @@ class ComprehensiveAnalyzer:
         # === 改善3: 学習結果（venue_adjustments）の反映 ===
         _apply_learnings_overlay(scores, race)
 
+        # === 改善4: 学習済みMLメタモデルでの補正 ===
+        _apply_ml_overlay(scores)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -266,6 +269,42 @@ def _apply_grade_overlay(scores: list, race) -> None:
         elif g in ("新馬", "未勝利"):
             # 新馬は血統と過去ない分、騎手・調教師が重要
             s.final_score = round(s.final_score + ped * 0.5, 2)
+
+
+def _apply_ml_overlay(scores: list) -> None:
+    """学習済みMLメタモデルでスコアを補正（既存スコアとブレンド）"""
+    try:
+        from src.ml.meta_model import predict_win_prob, load_model, FEATURES
+    except Exception:
+        return
+    model = load_model()
+    if not model:
+        return
+
+    for s in scores:
+        rs = getattr(s, "raw_stat", None)
+        if not rs:
+            continue
+        factors = {
+            "recent_form":  getattr(rs, "form_score", 50),
+            "surface":      getattr(rs, "surface_score", 50),
+            "distance":     getattr(rs, "distance_score", 50),
+            "speed_index":  getattr(s,  "speed_score", 50),
+            "class_change": getattr(rs, "grade_score", 50),
+            "venue":        getattr(rs, "venue_score", 50),
+            "condition":    getattr(rs, "condition_score", 50),
+            "rest":         getattr(rs, "rest_score", 50),
+            "pace":         getattr(rs, "pace_score", 50),
+            "weight_stab":  getattr(rs, "weight_score", 50),
+        }
+        p = predict_win_prob(factors, model)
+        if p is None:
+            continue
+        # ML勝率を 0〜1 → -10〜+10 のスコア補正に変換
+        # p=0.5 で補正0、p=0.8 で +6、p=0.2 で -6
+        ml_adjust = (p - 0.5) * 20.0
+        # 既存スコアに 30% blend（ルールベースを尊重しつつMLを反映）
+        s.final_score = round(s.final_score + ml_adjust * 0.3, 2)
 
 
 def _apply_learnings_overlay(scores: list, race) -> None:

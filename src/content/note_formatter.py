@@ -236,6 +236,13 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
     p_win = _win_probabilities(scores)
     odds_of = {s.horse_no: (getattr(s, "odds", 0) or 0) for s in scores}
 
+    # === 較正済みペイアウト係数を取得 ===
+    try:
+        from src.ml.payout_calibrator import get_coefs
+        CALIB = get_coefs()
+    except Exception:
+        CALIB = {"uren": 0.4, "wide": 0.15, "fuku3": 0.5, "fuku": 0.28}
+
     candidates = []  # (label, ev, p_hit, est_payout, kind)
 
     # 単勝候補（◎○▲）
@@ -251,7 +258,7 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
     for no in (plan.honmei + plan.taikou + plan.tanana)[:3]:
         if not no: continue
         p = min(0.9, p_win.get(no, 0) * 2.5)
-        o = odds_of.get(no, 0) * 0.28
+        o = odds_of.get(no, 0) * CALIB["fuku"]
         if p > 0 and o > 0:
             ev = p * o
             candidates.append((f"複勝 {no}番", ev, p, o, "fuku"))
@@ -263,7 +270,7 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
         denom = max(0.05, 1 - min(pa, pb))
         p_hit = min(0.5, 2 * pa * pb / denom)
         oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
-        est = oa * ob * 0.4  # 馬連配当の概算
+        est = oa * ob * CALIB["uren"]
         if p_hit > 0 and est > 0:
             ev = p_hit * est
             candidates.append((f"馬連 {a}-{b}", ev, p_hit, est, "uren"))
@@ -274,7 +281,7 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
         denom = max(0.05, 1 - min(pa, pb))
         p_hit = min(0.7, 4 * pa * pb / denom)  # 3着内に2頭入る確率（緩め）
         oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
-        est = max(1.5, oa * ob * 0.15)
+        est = max(1.5, oa * ob * CALIB["wide"])
         if p_hit > 0:
             ev = p_hit * est
             candidates.append((f"ワイド {a}-{b}", ev, p_hit, est, "wide"))
@@ -286,7 +293,7 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
         pa, pb, pc = p_win.get(a, 0), p_win.get(b, 0), p_win.get(c, 0)
         p_hit = min(0.4, 6 * pa * pb * pc / max(0.05, (1 - pa) * (1 - pb)))
         oa, ob, oc = odds_of.get(a, 0), odds_of.get(b, 0), odds_of.get(c, 0)
-        est = oa * ob * oc * 0.5  # 3連複の概算
+        est = oa * ob * oc * CALIB["fuku3"]
         if p_hit > 0 and est > 0:
             ev = p_hit * est
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))

@@ -163,6 +163,47 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
                   f"1着={winner_no}番(予想{winner_rank}位) {mark}"
                   + (f" 敗因:{defeat_reason}" if defeat_reason else ""))
 
+            # === 全頭因子をダンプ（ML training用、XGBoost移行可能に）===
+            try:
+                all_horses = []
+                actual_order_map = {r["horse_no"]: r["order"] for r in result["order"]}
+                for s in scores:
+                    rs = getattr(s, "raw_stat", None)
+                    feats = {
+                        "recent_form":  getattr(rs, 'form_score', 50) if rs else 50,
+                        "surface":      getattr(rs, 'surface_score', 50) if rs else 50,
+                        "distance":     getattr(rs, 'distance_score', 50) if rs else 50,
+                        "speed_index":  getattr(s, 'speed_score', 50),
+                        "class_change": getattr(rs, 'grade_score', 50) if rs else 50,
+                        "venue":        getattr(rs, 'venue_score', 50) if rs else 50,
+                        "condition":    getattr(rs, 'condition_score', 50) if rs else 50,
+                        "rest":         getattr(rs, 'rest_score', 50) if rs else 50,
+                        "pace":         getattr(rs, 'pace_score', 50) if rs else 50,
+                        "weight_stab":  getattr(rs, 'weight_score', 50) if rs else 50,
+                    }
+                    finish = actual_order_map.get(s.horse_no, 99)
+                    all_horses.append({
+                        "horse_no": s.horse_no, "horse_name": s.horse_name,
+                        "odds": getattr(s, 'odds', 0) or 0,
+                        "final_score": getattr(s, 'final_score', 0),
+                        "factors": feats,
+                        "finish_order": finish,
+                        "won": (finish == 1),
+                        "placed": (finish <= 3),
+                    })
+                # 1ファイルにまとめて追記
+                ah_path = os.path.join("data", "backtest", "all_horses_training.jsonl")
+                with open(ah_path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({
+                        "race_id": race_id, "date": str(target_date),
+                        "venue": race.venue, "grade": race.grade,
+                        "surface": race.surface, "distance": race.distance,
+                        "num_horses": race.num_horses,
+                        "horses": all_horses,
+                    }, ensure_ascii=False) + "\n")
+            except Exception:
+                pass
+
             # 進捗保存（10件ごと）
             if len(all_records) % 10 == 0:
                 _save_progress()
