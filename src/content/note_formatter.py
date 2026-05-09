@@ -31,8 +31,9 @@ def _get_lessons_block() -> str:
             d = trend
             arrow = "📈" if d.get("improving") else "📉"
             out.append(
-                f"- {arrow} **直近の複勝率: {d.get('current_place_rate',0):.1f}%** "
-                f"（前週比 {d.get('delta_place',0):+.1f}%）／"
+                f"- {arrow} **直近の複合ROI: {d.get('current_roi',0):+.1f}%** "
+                f"（前週比 {d.get('delta_roi',0):+.1f}%）\n"
+                f"  └ 複勝率 {d.get('current_place_rate',0):.1f}%／"
                 f"◎勝率 {d.get('current_win_rate',0):.1f}%／"
                 f"馬連 {d.get('current_exacta',0):.1f}%／3連複 {d.get('current_trio',0):.1f}%\n"
             )
@@ -231,7 +232,7 @@ def _win_probabilities(scores) -> dict:
 
 
 def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
-    """馬の期待値を計算し、EV>1の買い目に配分"""
+    """馬の期待値を計算し、Kelly基準（0.4 Kelly）で資金配分（ROI最大化）"""
     p_win = _win_probabilities(scores)
     odds_of = {s.horse_no: (getattr(s, "odds", 0) or 0) for s in scores}
 
@@ -290,24 +291,44 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
             ev = p_hit * est
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
 
-    # EV>1の買い目だけに配分。EVに比例して資金配分
-    positive = [c for c in candidates if c[1] > 1.0]
+    # === Kelly基準による配分（ROI最大化）===
+    # f* = (bp - q) / b  where b = decimal_odds - 1, p = prob, q = 1-p
+    # 安全のため 0.4 Kelly（理論最適の40%）を使用
+    KELLY_FRACTION = 0.4
+    positive = [c for c in candidates if c[1] >= 1.0]  # 正のEVのみ採用
     if not positive:
-        # 全部マイナスEVなら、最もマシな上位3点に均等配分
-        positive = sorted(candidates, key=lambda x: -x[1])[:3]
+        # 全部マイナスEVなら見送り推奨
+        out = ["### 📈 期待値最大化・推奨投資配分\n\n"]
+        out.append("> ⚠️ **このレースは正の期待値となる買い目が見つかりませんでした。**\n")
+        out.append("> 機械的なROI最大化の観点からは**見送り**を推奨します。\n\n")
+        out.append("（参考：上位候補のEVがいずれも1.0未満。オッズと評点のミスマッチが解消されるレース選択を優先します）\n\n")
+        return "".join(out)
 
-    total_ev = sum(c[1] for c in positive) or 1.0
     rows = []
-    for label, ev, p, est, _ in sorted(positive, key=lambda x: -x[1]):
-        share = ev / total_ev
-        stake = int(round(total_budget * share / 100) * 100)  # 100円単位
-        if stake < 100: continue
-        exp_return = int(stake * ev)
-        rows.append((label, ev, p, est, share, stake, exp_return))
+    total_kelly = 0.0
+    kelly_fractions = []
+    for label, ev, p, est, kind in positive:
+        b = max(0.01, est - 1)  # decimal odds - 1
+        q = 1 - p
+        f_star = (b * p - q) / b if b > 0 else 0
+        f = max(0.0, f_star * KELLY_FRACTION)
+        kelly_fractions.append((label, ev, p, est, f, kind))
+        total_kelly += f
 
-    out = ["### 📈 期待値最大化・推奨投資配分\n\n"]
-    out.append(f"想定予算 **{total_budget:,}円**　各買い目の期待値（EV = 的中確率 × 想定払戻倍率）に比例配分。\n\n")
-    out.append("> EV > 1.0 が「賭ける価値あり」のライン。期待値マイナス（EV < 1）の買い目は除外しています。\n\n")
+    # Kelly比に応じて配分（合計が予算を超えないようスケール）
+    scale = min(1.0, total_budget / max(1, total_kelly * total_budget))
+    for label, ev, p, est, f, kind in sorted(kelly_fractions, key=lambda x: -x[4]):
+        share_pct = (f / max(0.001, total_kelly))
+        stake = int(round(total_budget * share_pct / 100) * 100)
+        if stake < 100:
+            continue
+        exp_return = int(stake * ev)
+        rows.append((label, ev, p, est, share_pct, stake, exp_return))
+
+    out = ["### 📈 期待値最大化・Kelly基準配分（ROI最大化）\n\n"]
+    out.append(f"想定予算 **{total_budget:,}円**　**0.4 Kelly基準**で各買い目に配分（長期ROI最大化の理論最適解）。\n\n")
+    out.append("> EV ≥ 1.0 のみ採用（プラス期待値の買い目のみ）。マイナス期待値は完全除外。\n")
+    out.append("> Kelly基準: f* = (bp − q) / b に0.4を乗じた保守的配分。破産リスクを抑えつつ長期最大成長を目指す。\n\n")
     out.append("| 買い目 | 的中率 | 想定配当 | EV | 配分比 | 投資額 | 期待回収 |\n")
     out.append("|---|---|---|---|---|---|---|\n")
     sum_stake = 0

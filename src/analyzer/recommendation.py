@@ -180,7 +180,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         oa, ob, oc = odds_map.get(a, 0), odds_map.get(b, 0), odds_map.get(c, 0)
         return p * oa * ob * oc * 0.5 if (oa and ob and oc) else 1.0
 
-    EV_THRESHOLD = 0.95   # ほぼプラス期待値の買い目に厳選
+    EV_THRESHOLD = 1.00   # プラス期待値（EV>=1.0）の買い目のみ採用
     exacta_bets = [b for b in exacta_bets if ev_uren(*b) >= EV_THRESHOLD]
     quinella_bets = [b for b in quinella_bets if ev_wide(*b) >= EV_THRESHOLD]
     trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b) >= EV_THRESHOLD]

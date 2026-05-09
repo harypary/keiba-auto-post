@@ -198,33 +198,47 @@ def get_trend_summary() -> dict:
 
     last = history[-1]["metrics"]
     prev = history[-2]["metrics"]
+    # ROI（回収率）を含めた総合トレンド
+    last_roi = last.get("composite_roi", last.get("tan_roi", 0))
+    prev_roi = prev.get("composite_roi", prev.get("tan_roi", 0))
     return {
         "weeks": len(history),
         "current_win_rate": last.get("honmei_win_rate", 0),
         "current_place_rate": last.get("honmei_place_rate", 0),
         "current_exacta": last.get("exacta_hit_rate", 0),
         "current_trio": last.get("trifecta_hit_rate", 0),
+        "current_roi": last_roi,
         "delta_win": last.get("honmei_win_rate", 0) - prev.get("honmei_win_rate", 0),
         "delta_place": last.get("honmei_place_rate", 0) - prev.get("honmei_place_rate", 0),
-        "improving": last.get("honmei_place_rate", 0) > prev.get("honmei_place_rate", 0),
+        "delta_roi": last_roi - prev_roi,
+        "improving": last_roi > prev_roi,  # 改善判定もROI基準に
     }
 
 
 def auto_tune_lr(trend: dict) -> float:
     """
-    トレンド改善状況に応じて次回の学習率（重み調整の積極性）を決定。
-    悪化していたら積極的に調整、改善していたら現状維持寄りに。
+    ROI推移を主指標にして次回の学習率を決定（ROI最大化を最優先）。
+    ROI悪化時は積極調整、ROI改善時は現状維持。
     """
     if not trend or trend.get("weeks", 0) < 2:
-        return 0.020  # デフォルト
-    delta = trend.get("delta_place", 0)
-    if delta < -3:    # 複勝率3%以上低下 → 緊急調整
-        return 0.040
-    if delta < 0:     # 微減
+        return 0.020
+    # ROIを最優先（複勝率はsecondary）
+    roi_delta = trend.get("delta_roi", 0)
+    place_delta = trend.get("delta_place", 0)
+
+    # ROI主導の調整
+    if roi_delta < -10:    # 回収率10%以上低下 → 緊急
+        return 0.045
+    if roi_delta < -5:
+        return 0.030
+    if roi_delta > 10:     # 大幅改善 → 安定運用
+        return 0.008
+    if roi_delta > 0:      # 改善傾向
+        return 0.012
+    # ROI±5%以内の停滞時は複勝率で判断
+    if place_delta < 0:
         return 0.025
-    if delta > 3:     # 大幅改善 → 維持
-        return 0.010
-    return 0.015      # 標準
+    return 0.018           # 標準
 
 
 def apply_factor_adjustments(weights: dict, learnings: dict) -> dict:

@@ -1,12 +1,22 @@
 """
-全過去データ（最大26週）でバックテスト → 多段階重み最適化 → 初回投稿から最高精度を実現
+全過去データ（12週分）でバックテスト → 多段階重み最適化 → 初回投稿から最高精度を実現
 """
 import sys, io, os, json, time
 sys.path.insert(0, os.path.dirname(__file__))
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace', line_buffering=True)
 except Exception:
     pass
+
+# 全print文を即座にflush
+import builtins
+_orig_print = builtins.print
+def _flush_print(*args, **kwargs):
+    kwargs.setdefault("flush", True)
+    _orig_print(*args, **kwargs)
+builtins.print = _flush_print
+
+print(f"[起動] {time.strftime('%H:%M:%S')} バックテストスクリプト開始")
 
 from datetime import date, timedelta
 from collections import defaultdict, Counter
@@ -55,10 +65,23 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
 
     all_records = []
     skipped = 0
+    PROGRESS_PATH = "data/backtest/_progress.json"
+    os.makedirs("data/backtest", exist_ok=True)
+
+    def _save_progress():
+        try:
+            with open(PROGRESS_PATH, "w", encoding="utf-8") as f:
+                json.dump(all_records, f, ensure_ascii=False)
+        except Exception as ex:
+            print(f"    [warn] 進捗保存失敗: {ex}")
 
     for target_date in dates:
-        print(f"\n--- {target_date} ---")
-        race_ids = jra.get_race_list_for_date(target_date)
+        try:
+            print(f"\n--- {target_date} ---")
+            race_ids = jra.get_race_list_for_date(target_date)
+        except Exception as e:
+            print(f"  [SKIP] レース一覧取得失敗: {e}")
+            continue
         if not race_ids:
             print(f"  開催なし")
             skipped += 1
@@ -69,28 +92,30 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
 
         for raw in race_ids:
             race_id = raw["race_id"]
-
-            result = fetcher.get_race_result(race_id)
-            if not result or not result.get("order"):
-                continue
-
-            actual_top3 = [r["horse_no"] for r in result["order"][:3]]
-            winner_no   = actual_top3[0] if actual_top3 else None
-            if not winner_no:
-                continue
-
-            race = jra.get_shutuba_table(race_id)
-            if not race or not race.horses:
-                continue
-
-            histories = {}
-            for entry in race.horses:
-                if entry.horse_id:
-                    h = _cached_history(hist_sc, entry.horse_id, entry.horse_name)
-                    if h and h.records:
-                        histories[entry.horse_id] = h
-
             try:
+                result = fetcher.get_race_result(race_id)
+                if not result or not result.get("order"):
+                    continue
+
+                actual_top3 = [r["horse_no"] for r in result["order"][:3]]
+                winner_no   = actual_top3[0] if actual_top3 else None
+                if not winner_no:
+                    continue
+
+                race = jra.get_shutuba_table(race_id)
+                if not race or not race.horses:
+                    continue
+
+                histories = {}
+                for entry in race.horses:
+                    if entry.horse_id:
+                        try:
+                            h = _cached_history(hist_sc, entry.horse_id, entry.horse_name)
+                            if h and h.records:
+                                histories[entry.horse_id] = h
+                        except Exception as he:
+                            print(f"    [warn] {entry.horse_name} 履歴取得失敗: {he}")
+
                 ctx    = analyze_race_context(race.horses, histories, race.distance, race.surface)
                 scores = analyzer.analyze_all(
                     entries=race.horses, histories=histories,
@@ -100,7 +125,9 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
                     race_id, race.race_name, scores, race.num_horses
                 )
             except Exception as e:
-                print(f"    スコアリング失敗: {e}")
+                import traceback
+                print(f"    [SKIP] {race_id} 処理失敗: {type(e).__name__}: {e}")
+                traceback.print_exc()
                 continue
 
             honmei_no    = plan.honmei[0] if plan.honmei else None
@@ -136,6 +163,9 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
                   f"1着={winner_no}番(予想{winner_rank}位) {mark}"
                   + (f" 敗因:{defeat_reason}" if defeat_reason else ""))
 
+            # 進捗保存（10件ごと）
+            if len(all_records) % 10 == 0:
+                _save_progress()
             all_records.append({
                 "race_id": race_id, "race_name": race.race_name,
                 "date": str(target_date), "venue": race.venue,
@@ -225,7 +255,7 @@ if __name__ == "__main__":
     analyzer = ComprehensiveAnalyzer()
     fetcher  = ResultsFetcher()
 
-    dates = get_past_race_dates(weeks=26)
+    dates = get_past_race_dates(weeks=12)
     print(f"対象期間: {dates[0]} 〜 {dates[-1]}（{len(dates)}日間）\n")
 
     # ============================================================
@@ -235,7 +265,7 @@ if __name__ == "__main__":
     print("フェーズ1: 全過去データ収集")
     print("=" * 60)
 
-    all_records = run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
+    all_records = run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=8)
 
     n = len(all_records)
     if n < 10:

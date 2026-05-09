@@ -140,13 +140,19 @@ def run_weekly_review():
 
         # 週次メトリクスを時系列に記録（毎週の改善トラッキング）
         week_label = date.today().strftime("%Y-W%V")
+        # ROIを主指標に（ROI最大化が運用ゴール）
+        tan_roi    = report.get("avg_tan_roi", 0)
+        exacta_roi = report.get("avg_exacta_roi", 0)
+        # 複合ROI = 単勝・馬連・ワイド・3連複の加重平均（ワイド/3連複も統計があれば加味）
+        composite_roi = (tan_roi * 0.2 + exacta_roi * 0.8) if exacta_roi else tan_roi
         weekly_metrics = {
             "honmei_win_rate":   report.get("honmei_win_rate", 0),
             "honmei_place_rate": report.get("honmei_place_rate", 0),
             "exacta_hit_rate":   report.get("exacta_hit_rate", 0),
             "trifecta_hit_rate": report.get("trifecta_hit_rate", 0),
-            "tan_roi":           report.get("avg_tan_roi", 0),
-            "exacta_roi":        report.get("avg_exacta_roi", 0),
+            "tan_roi":           tan_roi,
+            "exacta_roi":        exacta_roi,
+            "composite_roi":     round(composite_roi, 1),
             "races":             report.get("races_analyzed", 0),
         }
         record_weekly_metrics(week_label, weekly_metrics)
@@ -154,13 +160,14 @@ def run_weekly_review():
         # トレンドベースで次回学習率を自動チューニング
         trend = get_trend_summary()
         next_lr = auto_tune_lr(trend)
-        print(f"\n[トレンド分析]")
+        print(f"\n[ROI主導トレンド分析]")
         if trend.get("weeks", 0) >= 2:
             arrow = "↑" if trend["improving"] else "↓"
-            print(f"  複勝率推移: {trend.get('current_place_rate',0):.1f}% (前週比 {trend.get('delta_place',0):+.1f}%) {arrow}")
-            print(f"  → 次週の学習率を {next_lr:.3f} に自動調整")
+            print(f"  複合ROI推移:  {trend.get('current_roi',0):+.1f}%  (前週比 {trend.get('delta_roi',0):+.1f}%) {arrow}")
+            print(f"  複勝率推移:   {trend.get('current_place_rate',0):.1f}% (前週比 {trend.get('delta_place',0):+.1f}%)")
+            print(f"  → 次週の学習率: {next_lr:.3f}（ROI推移ベースで自動調整）")
         else:
-            print(f"  データ蓄積中（次週から精度推移を表示）")
+            print(f"  データ蓄積中（次週から ROI/精度推移を表示）")
         # 券種別ROI（あれば report から）
         roi_by_kind = {}
         if report.get("avg_tan_roi") is not None:
