@@ -1,0 +1,1124 @@
+{
+  "completed": 36,
+  "honmei_win_rate": 19.444444444444446,
+  "honmei_place_rate": 41.66666666666667,
+  "top3_hit": 11,
+  "details": [
+    {
+      "venue": "東京",
+      "no": 1,
+      "name": "3歳未勝利",
+      "honmei": [
+        16,
+        "フェイスリフト"
+      ],
+      "taikou": [
+        5,
+        "エリンフレーム"
+      ],
+      "tanana": [
+        10,
+        "アイアムアッパレ"
+      ],
+      "actual": [
+        14,
+        16,
+        8
+      ],
+      "actual_names": [
+        "14",
+        "フェイスリフト",
+        "8"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 2,
+      "name": "3歳未勝利",
+      "honmei": [
+        10,
+        "ミーサーク"
+      ],
+      "taikou": [
+        8,
+        "ボクサークラブ"
+      ],
+      "tanana": [
+        3,
+        "サクセスゴールド"
+      ],
+      "actual": [
+        6,
+        5,
+        11
+      ],
+      "actual_names": [
+        "ソニックキャット",
+        "ユイノサダハル",
+        "11"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 3,
+      "name": "3歳未勝利",
+      "honmei": [
+        13,
+        "アンシュウマト"
+      ],
+      "taikou": [
+        6,
+        "ロイヤルアデレード"
+      ],
+      "tanana": [
+        9,
+        "トルネードアイル"
+      ],
+      "actual": [
+        13,
+        6,
+        9
+      ],
+      "actual_names": [
+        "アンシュウマト",
+        "ロイヤルアデレード",
+        "トルネードアイル"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 3,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 4,
+      "name": "3歳未勝利",
+      "honmei": [
+        4,
+        "ニシノヒノトリ"
+      ],
+      "taikou": [
+        6,
+        "ガードオブオナー"
+      ],
+      "tanana": [
+        8,
+        "クイーンアン"
+      ],
+      "actual": [
+        4,
+        3,
+        6
+      ],
+      "actual_names": [
+        "ニシノヒノトリ",
+        "3",
+        "ガードオブオナー"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 5,
+      "name": "3歳未勝利",
+      "honmei": [
+        9,
+        "グランマエストロ"
+      ],
+      "taikou": [
+        11,
+        "ワディアルリヤハ"
+      ],
+      "tanana": [
+        14,
+        "シャインアルプス"
+      ],
+      "actual": [
+        13,
+        14,
+        11
+      ],
+      "actual_names": [
+        "カズノダイジョウ",
+        "シャインアルプス",
+        "ワディアルリヤハ"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 6,
+      "name": "3歳1勝クラス",
+      "honmei": [
+        1,
+        "セイウンラピス"
+      ],
+      "taikou": [
+        7,
+        "テイエムスティール"
+      ],
+      "tanana": [
+        2,
+        "エリプティクカーブ"
+      ],
+      "actual": [
+        11,
+        6,
+        12
+      ],
+      "actual_names": [
+        "リッツパーティー",
+        "6",
+        "12"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 7,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        9,
+        "ロードインフェルノ"
+      ],
+      "taikou": [
+        12,
+        "カサビセンス"
+      ],
+      "tanana": [
+        1,
+        "ブレイクザアイス"
+      ],
+      "actual": [
+        10,
+        14,
+        11
+      ],
+      "actual_names": [
+        "10",
+        "ローズマイスター",
+        "11"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 8,
+      "name": "4歳以上2勝クラス",
+      "honmei": [
+        6,
+        "カリーニョ"
+      ],
+      "taikou": [
+        8,
+        "ショウナンマクベス"
+      ],
+      "tanana": [
+        2,
+        "ウィッシュツリー"
+      ],
+      "actual": [
+        8,
+        2,
+        6
+      ],
+      "actual_names": [
+        "ショウナンマクベス",
+        "ウィッシュツリー",
+        "カリーニョ"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 3,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 9,
+      "name": "分倍河原S",
+      "honmei": [
+        3,
+        "マテンロウブラボー"
+      ],
+      "taikou": [
+        8,
+        "アウフヘーベン"
+      ],
+      "tanana": [
+        7,
+        "アンパドゥ"
+      ],
+      "actual": [
+        7,
+        8,
+        3
+      ],
+      "actual_names": [
+        "アンパドゥ",
+        "アウフヘーベン",
+        "マテンロウブラボー"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 3,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 10,
+      "name": "青竜S",
+      "honmei": [
+        13,
+        "アルデトップガン"
+      ],
+      "taikou": [
+        2,
+        "マクリール"
+      ],
+      "tanana": [
+        7,
+        "テイエムキハク"
+      ],
+      "actual": [
+        10,
+        2,
+        4
+      ],
+      "actual_names": [
+        "ドンエレクトス",
+        "マクリール",
+        "4"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 11,
+      "name": "エプソムC",
+      "honmei": [
+        4,
+        "カラマティアノス"
+      ],
+      "taikou": [
+        2,
+        "サブマリーナ"
+      ],
+      "tanana": [
+        11,
+        "トロヴァトーレ"
+      ],
+      "actual": [
+        11,
+        16,
+        17
+      ],
+      "actual_names": [
+        "トロヴァトーレ",
+        "16",
+        "レガーロデルシエロ"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "東京",
+      "no": 12,
+      "name": "4歳以上2勝クラス",
+      "honmei": [
+        8,
+        "ホウショウマリス"
+      ],
+      "taikou": [
+        3,
+        "モーニングマジック"
+      ],
+      "tanana": [
+        6,
+        "クインズポラリス"
+      ],
+      "actual": [
+        3,
+        11,
+        12
+      ],
+      "actual_names": [
+        "モーニングマジック",
+        "11",
+        "12"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 1,
+      "name": "3歳未勝利",
+      "honmei": [
+        15,
+        "オウケンブラッド"
+      ],
+      "taikou": [
+        10,
+        "アーガイルショア"
+      ],
+      "tanana": [
+        4,
+        "ビービーシナジー"
+      ],
+      "actual": [
+        15,
+        7,
+        14
+      ],
+      "actual_names": [
+        "オウケンブラッド",
+        "7",
+        "14"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 2,
+      "name": "3歳未勝利",
+      "honmei": [
+        5,
+        "ココロヅヨサ"
+      ],
+      "taikou": [
+        1,
+        "メイショウゴッホ"
+      ],
+      "tanana": [
+        13,
+        "アングランパ"
+      ],
+      "actual": [
+        5,
+        9,
+        6
+      ],
+      "actual_names": [
+        "ココロヅヨサ",
+        "9",
+        "ピエナブラック"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 3,
+      "name": "3歳未勝利",
+      "honmei": [
+        6,
+        "チュウワメロディー"
+      ],
+      "taikou": [
+        1,
+        "レフティサーリ"
+      ],
+      "tanana": [
+        3,
+        "モンシーク"
+      ],
+      "actual": [
+        10,
+        6,
+        3
+      ],
+      "actual_names": [
+        "キングケープ",
+        "チュウワメロディー",
+        "モンシーク"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 4,
+      "name": "3歳未勝利",
+      "honmei": [
+        6,
+        "ティタノマキア"
+      ],
+      "taikou": [
+        1,
+        "テクノピーチ"
+      ],
+      "tanana": [
+        13,
+        "プレスバーン"
+      ],
+      "actual": [
+        8,
+        6,
+        13
+      ],
+      "actual_names": [
+        "8",
+        "ティタノマキア",
+        "プレスバーン"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 5,
+      "name": "3歳1勝クラス",
+      "honmei": [
+        7,
+        "コルテオソレイユ"
+      ],
+      "taikou": [
+        8,
+        "ナムラヒナギク"
+      ],
+      "tanana": [
+        6,
+        "ラヴリーティアラ"
+      ],
+      "actual": [
+        7,
+        3,
+        1
+      ],
+      "actual_names": [
+        "コルテオソレイユ",
+        "ダークマルス",
+        "1"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 6,
+      "name": "3歳1勝クラス",
+      "honmei": [
+        6,
+        "ハードシングス"
+      ],
+      "taikou": [
+        5,
+        "ブルーマッキンジー"
+      ],
+      "tanana": [
+        12,
+        "ベラジオリン"
+      ],
+      "actual": [
+        1,
+        7,
+        5
+      ],
+      "actual_names": [
+        "1",
+        "7",
+        "ブルーマッキンジー"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 7,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        11,
+        "メイショウコナン"
+      ],
+      "taikou": [
+        6,
+        "ガーデンカメリア"
+      ],
+      "tanana": [
+        5,
+        "ステイクオール"
+      ],
+      "actual": [
+        8,
+        6,
+        11
+      ],
+      "actual_names": [
+        "テンエースワン",
+        "ガーデンカメリア",
+        "メイショウコナン"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 8,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        15,
+        "ルクスコスモス"
+      ],
+      "taikou": [
+        1,
+        "ララバッカナール"
+      ],
+      "tanana": [
+        6,
+        "ショウナンラウール"
+      ],
+      "actual": [
+        5,
+        1,
+        14
+      ],
+      "actual_names": [
+        "5",
+        "ララバッカナール",
+        "14"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 9,
+      "name": "久御山特別",
+      "honmei": [
+        7,
+        "ウォータークラーク"
+      ],
+      "taikou": [
+        9,
+        "リリーブライト"
+      ],
+      "tanana": [
+        11,
+        "マルカオペラ"
+      ],
+      "actual": [
+        7,
+        8,
+        10
+      ],
+      "actual_names": [
+        "ウォータークラーク",
+        "ダガーリング",
+        "10"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 10,
+      "name": "鴨川特別",
+      "honmei": [
+        2,
+        "メディテラニアン"
+      ],
+      "taikou": [
+        5,
+        "アオイタケル"
+      ],
+      "tanana": [
+        3,
+        "ヴィスマール"
+      ],
+      "actual": [
+        3,
+        2,
+        5
+      ],
+      "actual_names": [
+        "ヴィスマール",
+        "メディテラニアン",
+        "アオイタケル"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 3,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 11,
+      "name": "京都新聞杯",
+      "honmei": [
+        15,
+        "ベレシート"
+      ],
+      "taikou": [
+        10,
+        "サヴォアフェール"
+      ],
+      "tanana": [
+        1,
+        "アーレムアレス"
+      ],
+      "actual": [
+        5,
+        15,
+        6
+      ],
+      "actual_names": [
+        "5",
+        "ベレシート",
+        "6"
+      ],
+      "is_win": false,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "京都",
+      "no": 12,
+      "name": "4歳以上2勝クラス",
+      "honmei": [
+        6,
+        "トゥルブレンシア"
+      ],
+      "taikou": [
+        9,
+        "メイショウオオコ"
+      ],
+      "tanana": [
+        4,
+        "キングオブフジ"
+      ],
+      "actual": [
+        8,
+        10,
+        13
+      ],
+      "actual_names": [
+        "ロードヴォイジャー",
+        "10",
+        "13"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 1,
+      "name": "4歳以上障害未勝利",
+      "honmei": [
+        11,
+        "メイショウブレゲ"
+      ],
+      "taikou": [
+        12,
+        "ナチュラルリバー"
+      ],
+      "tanana": [
+        6,
+        "グロッシェン"
+      ],
+      "actual": [
+        2,
+        7,
+        13
+      ],
+      "actual_names": [
+        "ブラックバラード",
+        "コスモアミマネラ",
+        "13"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 2,
+      "name": "3歳未勝利",
+      "honmei": [
+        3,
+        "ベストブラザーズ"
+      ],
+      "taikou": [
+        5,
+        "メイショウセンドウ"
+      ],
+      "tanana": [
+        9,
+        "カズシ"
+      ],
+      "actual": [
+        3,
+        2,
+        8
+      ],
+      "actual_names": [
+        "ベストブラザーズ",
+        "セブンワンダーズ",
+        "ロードステラート"
+      ],
+      "is_win": true,
+      "is_place": true,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 3,
+      "name": "3歳未勝利",
+      "honmei": [
+        3,
+        "ラストシャイニー"
+      ],
+      "taikou": [
+        12,
+        "グラマラス"
+      ],
+      "tanana": [
+        13,
+        "プラチナムディスク"
+      ],
+      "actual": [
+        15,
+        14,
+        13
+      ],
+      "actual_names": [
+        "フレンズプラス",
+        "14",
+        "プラチナムディスク"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 4,
+      "name": "4歳以上障害OP",
+      "honmei": [
+        10,
+        "バルサムノート"
+      ],
+      "taikou": [
+        2,
+        "スコラーリ"
+      ],
+      "tanana": [
+        7,
+        "コレクテイニア"
+      ],
+      "actual": [
+        11,
+        7,
+        2
+      ],
+      "actual_names": [
+        "ルドヴィクス",
+        "コレクテイニア",
+        "スコラーリ"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 2,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 5,
+      "name": "3歳未勝利",
+      "honmei": [
+        8,
+        "ニシノタチアナ"
+      ],
+      "taikou": [
+        4,
+        "スカイプレリュード"
+      ],
+      "tanana": [
+        13,
+        "フクノアンタレス"
+      ],
+      "actual": [
+        10,
+        7,
+        16
+      ],
+      "actual_names": [
+        "ソードスレイプニル",
+        "7",
+        "16"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 6,
+      "name": "3歳未勝利",
+      "honmei": [
+        14,
+        "マコトアディントン"
+      ],
+      "taikou": [
+        4,
+        "ビップジョワ"
+      ],
+      "tanana": [
+        13,
+        "ダンツウルス"
+      ],
+      "actual": [
+        15,
+        9,
+        5
+      ],
+      "actual_names": [
+        "タイキアロハ",
+        "ウインマニフィーク",
+        "5"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 7,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        8,
+        "ソードマスター"
+      ],
+      "taikou": [
+        4,
+        "アースミューズ"
+      ],
+      "tanana": [
+        15,
+        "ナンヨークリスタル"
+      ],
+      "actual": [
+        12,
+        3,
+        7
+      ],
+      "actual_names": [
+        "12",
+        "3",
+        "7"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 8,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        5,
+        "ラグナトーレ"
+      ],
+      "taikou": [
+        1,
+        "メリーサウンド"
+      ],
+      "tanana": [
+        10,
+        "ベルフィーヌ"
+      ],
+      "actual": [
+        3,
+        4,
+        2
+      ],
+      "actual_names": [
+        "3",
+        "4",
+        "ブーケドグレイス"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 0,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 9,
+      "name": "ゆきつばき賞",
+      "honmei": [
+        9,
+        "フィオラーノ"
+      ],
+      "taikou": [
+        4,
+        "ツルノマイハシ"
+      ],
+      "tanana": [
+        12,
+        "デンプシー"
+      ],
+      "actual": [
+        11,
+        12,
+        8
+      ],
+      "actual_names": [
+        "11",
+        "デンプシー",
+        "マナボニート"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 10,
+      "name": "粟島特別",
+      "honmei": [
+        5,
+        "トゥルーサクセサー"
+      ],
+      "taikou": [
+        3,
+        "スピンザブラッド"
+      ],
+      "tanana": [
+        1,
+        "ジャグアール"
+      ],
+      "actual": [
+        3,
+        8,
+        7
+      ],
+      "actual_names": [
+        "スピンザブラッド",
+        "ゴーゴータカシ",
+        "7"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 11,
+      "name": "駿風S",
+      "honmei": [
+        14,
+        "ベイビーキッス"
+      ],
+      "taikou": [
+        16,
+        "シュラフ"
+      ],
+      "tanana": [
+        5,
+        "カウンターセブン"
+      ],
+      "actual": [
+        16,
+        12,
+        15
+      ],
+      "actual_names": [
+        "シュラフ",
+        "ロードトレイル",
+        "カウスリップ"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 1,
+      "status": "確定"
+    },
+    {
+      "venue": "新潟",
+      "no": 12,
+      "name": "4歳以上1勝クラス",
+      "honmei": [
+        1,
+        "チュウワダイオウ"
+      ],
+      "taikou": [
+        8,
+        "カレンラップスター"
+      ],
+      "tanana": [
+        3,
+        "タルタロス"
+      ],
+      "actual": [
+        11,
+        8,
+        3
+      ],
+      "actual_names": [
+        "ハイクオリティ",
+        "カレンラップスター",
+        "タルタロス"
+      ],
+      "is_win": false,
+      "is_place": false,
+      "top3_overlap": 2,
+      "status": "確定"
+    }
+  ]
+}
