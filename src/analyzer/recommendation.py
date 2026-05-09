@@ -150,6 +150,54 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     trio_heads = [n for n in top_nos[:5] if n != honmei_no][:4] if honmei_no else []
     trio_bets = [(honmei_no, a, b) for a in trio_heads for b in trio_heads if a != b][:8] if honmei_no else []
 
+    # === EV閾値フィルタ：期待値<0.7の買い目をリストから除外（マイナス期待値を排除）===
+    odds_map = {s.horse_no: getattr(s, "odds", 0) or 0 for s in scores}
+    score_map = {s.horse_no: s.total_score for s in scores}
+    import math
+    base = max(score_map.values()) if score_map else 0
+    exps = {n: math.exp((v - base) / 6.0) for n, v in score_map.items()}
+    z = sum(exps.values()) or 1.0
+    p_win = {n: e / z for n, e in exps.items()}
+
+    def ev_uren(a, b):
+        pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+        denom = max(0.05, 1 - min(pa, pb))
+        p = min(0.5, 2 * pa * pb / denom)
+        oa, ob = odds_map.get(a, 0), odds_map.get(b, 0)
+        return p * oa * ob * 0.4 if oa and ob else 1.0  # オッズ未取得は通す
+
+    def ev_wide(a, b):
+        pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+        denom = max(0.05, 1 - min(pa, pb))
+        p = min(0.7, 4 * pa * pb / denom)
+        oa, ob = odds_map.get(a, 0), odds_map.get(b, 0)
+        return p * max(1.5, oa * ob * 0.15) if oa and ob else 1.0
+
+    def ev_fuku3(combo):
+        a, b, c = combo
+        pa, pb, pc = p_win.get(a, 0), p_win.get(b, 0), p_win.get(c, 0)
+        p = min(0.4, 6 * pa * pb * pc / max(0.05, (1 - pa) * (1 - pb)))
+        oa, ob, oc = odds_map.get(a, 0), odds_map.get(b, 0), odds_map.get(c, 0)
+        return p * oa * ob * oc * 0.5 if (oa and ob and oc) else 1.0
+
+    EV_THRESHOLD = 0.70
+    exacta_bets = [b for b in exacta_bets if ev_uren(*b) >= EV_THRESHOLD]
+    quinella_bets = [b for b in quinella_bets if ev_wide(*b) >= EV_THRESHOLD]
+    trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b) >= EV_THRESHOLD]
+    # 最低保証：少なすぎる場合は元のtop3だけは残す
+    if len(exacta_bets) < 3 and honmei_no:
+        for o in top_nos[1:5]:
+            pair = tuple(sorted([honmei_no, o]))
+            if pair not in exacta_bets:
+                exacta_bets.append(pair)
+                if len(exacta_bets) >= 4: break
+    if len(trifecta_bets) < 3 and honmei_no and taikou_no:
+        for r in top_nos[2:6]:
+            triplet = tuple(sorted([honmei_no, taikou_no, r]))
+            if triplet not in trifecta_bets and r not in (honmei_no, taikou_no):
+                trifecta_bets.append(triplet)
+                if len(trifecta_bets) >= 4: break
+
     total_combinations = (
         len(win_bets) + len(place_bets) +
         len(exacta_bets) + len(quinella_bets) +
