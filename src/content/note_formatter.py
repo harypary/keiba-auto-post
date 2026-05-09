@@ -211,12 +211,110 @@ def _section_pace(context, race) -> str:
     pace = getattr(context, "pace_prediction", "ミドルペース")
     level = getattr(context, "field_level_label", "条件戦メンバー")
     pace_emoji = {"ハイペース": "🔥", "ミドルペース": "⚡", "スローペース": "🐌"}.get(pace, "⚡")
-    pace_desc = _pace_description(pace, front, race.num_horses, race.distance, race.surface)
+
+    parts = [f"## {pace_emoji} 展開予測: **{pace}**\n\n"]
+    parts.append(f"先行想定：**{front}頭** ／ メンバーレベル：**{level}** ／ {race.num_horses}頭立て\n\n")
+
+    parts.append("### 🏁 想定ラップ・隊列\n\n")
+    parts.append(_pace_lap_image(pace, race.distance, race.surface))
+    parts.append("\n")
+
+    parts.append("### 🐎 隊列の組み立て\n\n")
+    parts.append(_pace_formation(pace, front, race.num_horses) + "\n\n")
+
+    parts.append("### 📈 各脚質への影響\n\n")
+    parts.append(_pace_style_impact(pace) + "\n\n")
+
+    parts.append("### 🎯 展開からの本命選定理由\n\n")
+    parts.append(_pace_description(pace, front, race.num_horses, race.distance, race.surface) + "\n\n")
+
+    parts.append(_track_bias_note(race) + "\n\n")
+    return "".join(parts)
+
+
+def _pace_lap_image(pace: str, distance: int, surface: str) -> str:
+    if pace == "ハイペース":
+        front_lap = "前半3F: 33秒台〜34秒前半" if surface == "芝" else "前半3F: 34秒台前半"
+        return (
+            f"- {front_lap}（速い流れ）\n"
+            f"- 中盤も緩まず、3〜4角からロングスパート戦\n"
+            f"- ラスト1Fで12秒台後半まで失速、底力勝負\n"
+        )
+    if pace == "スローペース":
+        front_lap = "前半3F: 35秒台後半〜36秒台" if surface == "芝" else "前半3F: 36秒台"
+        return (
+            f"- {front_lap}（緩い流れ）\n"
+            f"- 中盤で息が入り、4角まで馬群がコンパクトなまま\n"
+            f"- 直線で一気に加速、上がり3F勝負（33秒台想定）\n"
+        )
     return (
-        f"## {pace_emoji} 展開予測: **{pace}**\n\n"
-        f"先行想定：{front}頭 ／ メンバーレベル：**{level}**\n\n"
-        f"{pace_desc}\n\n"
+        f"- 前半3F: 標準的なペース（芝34秒台後半 / ダート35秒前後）\n"
+        f"- 中盤で大きな緩急なく、平均的に流れる\n"
+        f"- 最後の直線でジリジリ脚を使う消耗戦寄り\n"
     )
+
+
+def _pace_formation(pace: str, front: int, total: int) -> str:
+    if front >= 5:
+        head = f"逃げ・先行馬が{front}頭と多く、ハナ争いは必至。前半から先頭の入れ替わりが激しくなる見込み。"
+    elif front <= 2:
+        head = f"先行馬は{front}頭と少なく、楽にハナを取れる馬は限定的。隊列はすぐ落ち着く。"
+    else:
+        head = f"先行馬は{front}頭と標準的。スムーズに隊列が決まりやすい。"
+
+    body = ""
+    if pace == "ハイペース":
+        body = "前半から飛ばす馬が複数いることで、後続も自然と引き上げられる形。中団より後ろは差し有利の流れに乗りやすい。"
+    elif pace == "スローペース":
+        body = "前が引っ張らないため、好位〜中団が密集。直線で前にスペースを取れる馬と、進路を確保できる差し馬が抜け出す。"
+    else:
+        body = "中団以降の各馬がポジションを取りに行く意欲次第で流れが決まる、ジョッキーの腕も問われる展開。"
+
+    return head + " " + body
+
+
+def _pace_style_impact(pace: str) -> str:
+    if pace == "ハイペース":
+        return (
+            "| 脚質 | 展開影響 | 評価 |\n|---|---|---|\n"
+            "| 逃げ | 序盤からプレッシャー、ラストで失速リスク大 | ▼ 不利 |\n"
+            "| 先行 | 番手で脚を温存できれば残せるが厳しい | △ やや不利 |\n"
+            "| 差し | 流れに乗って末脚を伸ばせる | ◎ 有利 |\n"
+            "| 追込 | 前崩れで一気に台頭可能 | ◎ 有利 |\n"
+        )
+    if pace == "スローペース":
+        return (
+            "| 脚質 | 展開影響 | 評価 |\n|---|---|---|\n"
+            "| 逃げ | スローで脚を残せる、粘り込み濃厚 | ◎ 有利 |\n"
+            "| 先行 | 楽な隊列で末脚を温存できる | ◎ 有利 |\n"
+            "| 差し | 上がり勝負、瞬発力タイプは台頭可能 | △ 並 |\n"
+            "| 追込 | 仕掛けが遅れるとほぼ届かない | ▼ 不利 |\n"
+        )
+    return (
+        "| 脚質 | 展開影響 | 評価 |\n|---|---|---|\n"
+        "| 逃げ | 平均的な流れで脚を残せれば勝負可能 | △ 並 |\n"
+        "| 先行 | ポジションを取れれば力を出しやすい | ○ やや有利 |\n"
+        "| 差し | 末脚比べでチャンスあり | ○ やや有利 |\n"
+        "| 追込 | よほどの末脚がないと届きづらい | △ 並 |\n"
+    )
+
+
+def _track_bias_note(race) -> str:
+    surf = race.surface
+    cond = race.condition
+    venue = race.venue
+    base = f"### 🌤 馬場・コース傾向\n\n"
+    if surf == "芝":
+        if cond in ("良",):
+            return base + f"- {venue}の芝良馬場は標準。インを立ち回れる馬と上がりを使える馬の両立がカギ。"
+        if cond in ("稍重", "重", "不良"):
+            return base + f"- {cond}馬場でパワー型・先行有利に振れやすい。瞬発力よりも持続力タイプが台頭する可能性。"
+    if surf == "ダート":
+        if cond == "良":
+            return base + f"- {venue}のダート良は前残り傾向。砂を被らないポジションが理想。"
+        if cond in ("稍重", "重", "不良"):
+            return base + f"- 水分を含んだダートは時計が速く、スピード型有利。逃げ・先行の押し切りに警戒。"
+    return base + "- 馬場・コース傾向はニュートラル。各馬の本来の力勝負。"
 
 
 def _section_full_ranking(scores, race) -> str:
