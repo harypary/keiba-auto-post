@@ -1,0 +1,145 @@
+"""
+週次パフォーマンスレビュー（毎週月曜朝に自動実行）
+1. 日曜・土曜レースの実際の結果を取得
+2. 予想と照合して的中率を計算
+3. 改善ポイントをコンソールに出力
+4. data/performance/ にレポートを保存
+"""
+import os
+import sys
+import json
+import io
+from datetime import date, timedelta
+
+sys.path.insert(0, os.path.dirname(__file__))
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+
+from src.validator.results_fetcher import ResultsFetcher
+from src.validator.performance_tracker import record_result, generate_weekly_report
+from src.validator.weight_optimizer import analyze_misses, adjust_weights, print_weight_history
+from src.validator.backtest import run_backtest
+from src.pipeline import invalidate_cache
+
+PRED_DIR = os.path.join(os.path.dirname(__file__), "data", "predictions")
+PERF_DIR = os.path.join(os.path.dirname(__file__), "data", "performance")
+
+
+def run_weekly_review():
+    print("\n" + "="*60)
+    print("[WEEKLY REVIEW] 先週の予想結果を照合中...")
+    print("="*60 + "\n")
+
+    fetcher = ResultsFetcher()
+
+    # 先週土曜・日曜分の予想ファイルを対象に
+    today = date.today()
+    # 先週の土日を計算
+    last_sunday  = today - timedelta(days=today.weekday() + 1)
+    last_saturday = last_sunday - timedelta(days=1)
+    target_dates = [last_saturday, last_sunday]
+
+    processed = 0
+    for pred_file in os.listdir(PRED_DIR):
+        if not pred_file.endswith(".json"):
+            continue
+        race_id = pred_file.replace(".json", "")
+        race_date_str = race_id[:8]
+
+        # 先週土日のレースのみ対象
+        try:
+            race_date = date(int(race_date_str[:4]), int(race_date_str[4:6]), int(race_date_str[6:8]))
+        except Exception:
+            continue
+
+        if race_date not in target_dates:
+            continue
+
+        # すでに照合済みならスキップ
+        result_path = os.path.join(PERF_DIR, f"{race_id}_result.json")
+        if os.path.exists(result_path):
+            continue
+
+        print(f"  照合中: {race_id}...")
+        result = fetcher.get_race_result(race_id)
+        if result and result.get("order"):
+            record = record_result(race_id, result["order"])
+            top3 = [r["horse_no"] for r in result["order"][:3]]
+            honmei = record.get("honmei_no", "?")
+            win = "◎" if record.get("honmei_win") else ("△" if record.get("honmei_place") else "×")
+            print(f"    1着:{top3[0] if top3 else '?'}番 / ◎本命:{honmei}番 → {win}")
+            processed += 1
+        import time
+        time.sleep(2)
+
+    print(f"\n[照合完了] {processed}レース処理\n")
+
+    # 週次レポート
+    report = generate_weekly_report(weeks_back=1)
+    print("="*60)
+    print("[週次パフォーマンスレポート（回収率重視）]")
+    print("="*60)
+    if report.get("races_analyzed", 0) == 0:
+        print("  データ蓄積中（来週以降に結果が出ます）")
+    else:
+        n = report["races_analyzed"]
+        roi_tan  = report.get("avg_tan_roi", 0)
+        roi_sign = "+" if roi_tan >= 0 else ""
+        print(f"  対象レース数: {n}レース")
+        print(f"  ◎本命 勝率:   {report['honmei_win_rate']}%  （目標 20%以上）")
+        print(f"  ◎本命 複勝率: {report['honmei_place_rate']}%  （目標 40%以上）")
+        print(f"  馬連 的中率:  {report['exacta_hit_rate']}%  （目標 15%以上）")
+        print(f"  3連複 的中率: {report['trifecta_hit_rate']}%")
+        print(f"  単勝 回収率:  {roi_sign}{roi_tan}%  （目標 -10%以内）")
+        print(f"  馬連 回収率:  {roi_sign}{report.get('avg_exacta_roi',0)}%")
+        print(f"  勝ち馬の平均予想順位: {report['avg_winner_predicted_rank']}位")
+        print()
+        print("[先週ハイライト（高配当的中）]")
+        for h in report.get("highlights", []):
+            print(f"  ★ {h.get('race_name','')}：◎{h.get('honmei_no','')}番 {h.get('honmei_odds',0)}倍的中")
+        print()
+        print("[改善提案]")
+        for s in report["improvement_suggestions"]:
+            print(f"  → {s}")
+
+    # レポートJSON保存
+    os.makedirs(PERF_DIR, exist_ok=True)
+    report_path = os.path.join(PERF_DIR, f"weekly_{date.today().strftime('%Y%m%d')}.json")
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+    print(f"\n  レポート保存: {report_path}")
+
+    # ---- バックテスト＆重み自動調整 ----
+    print("\n" + "="*60)
+    print("[バックテスト＆スコア重み自動調整]")
+    print("="*60)
+    print("先週のレースでモデルを検証中...")
+    bt_report = run_backtest(target_dates, max_races=20)  # 最大20レースで高速検証
+
+    if bt_report.get("total_races", 0) >= 5:
+        print("\n[敗因分析]")
+        bt_records = bt_report.get("records", [])
+        misses = [r for r in bt_records if not r.get("honmei_win")]
+        if misses:
+            # 外れの主要因を集計
+            from collections import Counter
+            reasons = [r.get("defeat_reason", "") for r in misses if r.get("defeat_reason")]
+            if reasons:
+                print("外れの主因トップ3:")
+                for reason, cnt in Counter(reasons).most_common(3):
+                    print(f"  → {reason} ({cnt}件)")
+
+        # 重み自動調整
+        analysis = analyze_misses(bt_records)
+        new_weights = adjust_weights(analysis)
+        print_weight_history()
+    else:
+        print("  バックテストデータ不足（5レース未満）→ 重み調整スキップ")
+
+    # キャッシュクリア（翌週の新データ取得のため）
+    print("\n[キャッシュクリア] 古い馬データを削除中...")
+    invalidate_cache()
+    print("[完了]\n")
+
+
+if __name__ == "__main__":
+    run_weekly_review()

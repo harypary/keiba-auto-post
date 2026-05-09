@@ -1,0 +1,110 @@
+name: 競馬予想 note自動投稿
+
+on:
+  schedule:
+    # 毎週金曜 21:00 JST = 12:00 UTC → 土曜レース予想
+    - cron: '0 12 * * 5'
+    # 毎週土曜 21:00 JST = 12:00 UTC → 日曜レース予想
+    - cron: '0 12 * * 6'
+    # 毎週月曜 07:00 JST = 日曜 22:00 UTC → 結果照合・モデル改善
+    - cron: '0 22 * * 0'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '実行モード (saturday / sunday / review)'
+        required: true
+        default: 'saturday'
+        type: choice
+        options:
+          - saturday
+          - sunday
+          - review
+
+jobs:
+  predict-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cache
+            data/model_weights.json
+          key: keiba-cache-${{ github.run_id }}
+          restore-keys: |
+            keiba-cache-
+
+      - name: Determine mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+          else
+            DOW=$(date -u +%u)   # 1=Mon ... 7=Sun
+            HOUR=$(date -u +%H)
+            if [ "$DOW" = "5" ]; then echo "mode=saturday" >> "$GITHUB_OUTPUT"
+            elif [ "$DOW" = "6" ]; then echo "mode=sunday" >> "$GITHUB_OUTPUT"
+            else echo "mode=review" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Run prediction (saturday)
+        if: steps.mode.outputs.mode == 'saturday'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: python main.py --run-now saturday
+
+      - name: Run prediction (sunday)
+        if: steps.mode.outputs.mode == 'sunday'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: python main.py --run-now sunday
+
+      - name: Weekly review & weight optimization
+        if: steps.mode.outputs.mode == 'review'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: python weekly_review.py
+
+      - name: Save updated weights & cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/cache
+            data/model_weights.json
+          key: keiba-cache-${{ github.run_id }}
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keiba-output-${{ github.run_id }}
+          path: |
+            data/predictions/
+            data/performance/
+            data/backtest/
+            data/output/
+          retention-days: 30
+          if-no-files-found: ignore

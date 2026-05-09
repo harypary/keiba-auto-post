@@ -1,0 +1,35 @@
+# 機密情報
+.env
+*.env
+config/secrets.py
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv
+
+# データキャッシュ（大きいので除外）
+data/cache/
+data/output/
+data/predictions/
+data/performance/*.json
+data/backtest/historical_raw_*.json
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Claude / その他
+.claude/
