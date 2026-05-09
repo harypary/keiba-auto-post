@@ -98,7 +98,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
             if pair not in exacta_bets:
                 exacta_bets.append(pair)
     # 重複排除＆最大10点
-    exacta_bets = list(dict.fromkeys(exacta_bets))[:10]
+    exacta_bets = list(dict.fromkeys(exacta_bets))[:8]
 
     # ワイド: 本命×top5 + 上位3頭ボックス（穴馬を絡める）
     quinella_bets = []
@@ -116,7 +116,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         vp = tuple(sorted([honmei_no, value_horse]))
         if vp not in quinella_bets:
             quinella_bets.append(vp)
-    quinella_bets = list(dict.fromkeys(quinella_bets))[:10]
+    quinella_bets = list(dict.fromkeys(quinella_bets))[:7]
 
     # 3連複: 本命軸1頭流し（本命×top6から2頭選ぶ全組合せ）+ 軸2頭流し（本命+対抗×top5）
     trifecta_bets = []
@@ -144,7 +144,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         triplet = tuple(sorted([honmei_no, taikou_no, value_horse]))
         if triplet not in trifecta_bets:
             trifecta_bets.append(triplet)
-    trifecta_bets = trifecta_bets[:15]  # 最大15点（高的中率優先）
+    trifecta_bets = trifecta_bets[:10]  # 最大10点（的中率と投資効率のバランス）
 
     # 3連単: 本命1着固定 × top4 → 6点
     trio_heads = [n for n in top_nos[:5] if n != honmei_no][:4] if honmei_no else []
@@ -180,7 +180,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         oa, ob, oc = odds_map.get(a, 0), odds_map.get(b, 0), odds_map.get(c, 0)
         return p * oa * ob * oc * 0.5 if (oa and ob and oc) else 1.0
 
-    EV_THRESHOLD = 0.70
+    EV_THRESHOLD = 0.95   # ほぼプラス期待値の買い目に厳選
     exacta_bets = [b for b in exacta_bets if ev_uren(*b) >= EV_THRESHOLD]
     quinella_bets = [b for b in quinella_bets if ev_wide(*b) >= EV_THRESHOLD]
     trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b) >= EV_THRESHOLD]
