@@ -182,13 +182,117 @@ def _section_grade_payout_outlook(scores, plan) -> str:
             parts.append(f"データ評点はトップ級だが人気は中位以下。3着圏内に来れば馬券回収率を一気に押し上げる存在。\n")
             parts.append(f"3連複・ワイドのヒモとして組み込み、ヒットした際の配当インパクトを狙いたい。\n\n")
 
-    parts.append("### 📈 推奨投資配分（参考）\n\n")
-    parts.append("- 馬連：50%（軸2頭流し）\n")
-    parts.append("- 3連複：30%（フォーメーション）\n")
-    parts.append("- ワイド：15%（穴馬絡め）\n")
-    parts.append("- 単勝：5%（◎の信頼度に応じて）\n\n")
+    parts.append(_ev_allocation_block(scores, plan))
     parts.append("---\n\n")
     return "".join(parts)
+
+
+def _win_probabilities(scores) -> dict:
+    """final_scoreから勝率分布をsoftmaxで推定。馬番→勝率dict"""
+    import math
+    if not scores:
+        return {}
+    vals = [(s.horse_no, getattr(s, "final_score", 0) or 0) for s in scores]
+    base = max(v for _, v in vals) if vals else 0
+    exps = [(no, math.exp((v - base) / 6.0)) for no, v in vals]  # 温度6でなだらかに
+    z = sum(e for _, e in exps) or 1.0
+    return {no: e / z for no, e in exps}
+
+
+def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
+    """馬の期待値を計算し、EV>1の買い目に配分"""
+    p_win = _win_probabilities(scores)
+    odds_of = {s.horse_no: (getattr(s, "odds", 0) or 0) for s in scores}
+
+    candidates = []  # (label, ev, p_hit, est_payout, kind)
+
+    # 単勝候補（◎○▲）
+    for no in (plan.honmei + plan.taikou + plan.tanana)[:3]:
+        if not no: continue
+        p = p_win.get(no, 0)
+        o = odds_of.get(no, 0)
+        if p > 0 and o > 0:
+            ev = p * o
+            candidates.append((f"単勝 {no}番", ev, p, o, "tan"))
+
+    # 複勝候補（◎○▲）：複勝確率 ≒ p_win × 2.5（経験則）、複勝オッズ ≒ 単勝×0.28
+    for no in (plan.honmei + plan.taikou + plan.tanana)[:3]:
+        if not no: continue
+        p = min(0.9, p_win.get(no, 0) * 2.5)
+        o = odds_of.get(no, 0) * 0.28
+        if p > 0 and o > 0:
+            ev = p * o
+            candidates.append((f"複勝 {no}番", ev, p, o, "fuku"))
+
+    # 馬連
+    for a, b in plan.exacta_bets[:5]:
+        pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+        # 2頭が1-2着に入る確率（順序不問）≈ pa*pb_given_a + pb*pa_given_b ≈ 2*pa*pb / (1-min(pa,pb))
+        denom = max(0.05, 1 - min(pa, pb))
+        p_hit = min(0.5, 2 * pa * pb / denom)
+        oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
+        est = oa * ob * 0.4  # 馬連配当の概算
+        if p_hit > 0 and est > 0:
+            ev = p_hit * est
+            candidates.append((f"馬連 {a}-{b}", ev, p_hit, est, "uren"))
+
+    # ワイド
+    for a, b in plan.quinella_bets[:5]:
+        pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+        denom = max(0.05, 1 - min(pa, pb))
+        p_hit = min(0.7, 4 * pa * pb / denom)  # 3着内に2頭入る確率（緩め）
+        oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
+        est = max(1.5, oa * ob * 0.15)
+        if p_hit > 0:
+            ev = p_hit * est
+            candidates.append((f"ワイド {a}-{b}", ev, p_hit, est, "wide"))
+
+    # 3連複
+    for combo in plan.trifecta_bets[:5]:
+        if len(combo) < 3: continue
+        a, b, c = combo[0], combo[1], combo[2]
+        pa, pb, pc = p_win.get(a, 0), p_win.get(b, 0), p_win.get(c, 0)
+        p_hit = min(0.4, 6 * pa * pb * pc / max(0.05, (1 - pa) * (1 - pb)))
+        oa, ob, oc = odds_of.get(a, 0), odds_of.get(b, 0), odds_of.get(c, 0)
+        est = oa * ob * oc * 0.5  # 3連複の概算
+        if p_hit > 0 and est > 0:
+            ev = p_hit * est
+            candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
+
+    # EV>1の買い目だけに配分。EVに比例して資金配分
+    positive = [c for c in candidates if c[1] > 1.0]
+    if not positive:
+        # 全部マイナスEVなら、最もマシな上位3点に均等配分
+        positive = sorted(candidates, key=lambda x: -x[1])[:3]
+
+    total_ev = sum(c[1] for c in positive) or 1.0
+    rows = []
+    for label, ev, p, est, _ in sorted(positive, key=lambda x: -x[1]):
+        share = ev / total_ev
+        stake = int(round(total_budget * share / 100) * 100)  # 100円単位
+        if stake < 100: continue
+        exp_return = int(stake * ev)
+        rows.append((label, ev, p, est, share, stake, exp_return))
+
+    out = ["### 📈 期待値最大化・推奨投資配分\n\n"]
+    out.append(f"想定予算 **{total_budget:,}円**　各買い目の期待値（EV = 的中確率 × 想定払戻倍率）に比例配分。\n\n")
+    out.append("> EV > 1.0 が「賭ける価値あり」のライン。期待値マイナス（EV < 1）の買い目は除外しています。\n\n")
+    out.append("| 買い目 | 的中率 | 想定配当 | EV | 配分比 | 投資額 | 期待回収 |\n")
+    out.append("|---|---|---|---|---|---|---|\n")
+    sum_stake = 0
+    sum_return = 0
+    for label, ev, p, est, share, stake, exp_return in rows:
+        out.append(f"| {label} | {p*100:.1f}% | {est:.1f}倍 | **{ev:.2f}** | {share*100:.0f}% | {stake:,}円 | {exp_return:,}円 |\n")
+        sum_stake += stake
+        sum_return += exp_return
+    out.append(f"\n**合計投資 {sum_stake:,}円　期待回収 {sum_return:,}円　期待回収率 {(sum_return/max(1,sum_stake)*100):.0f}%**\n\n")
+
+    out.append("**💡 配分ロジック**\n\n")
+    out.append("- 各馬の評点をsoftmaxで勝率分布に変換\n")
+    out.append("- 馬連・ワイド・3連複は同時生起確率を補正（独立仮定の調整）\n")
+    out.append("- 想定配当 × 的中確率 = EV、EV > 1.0 の買い目に EV比例で資金配分\n")
+    out.append("- 100円単位で丸め、最終的に期待回収率がプラスとなる組み合わせを選定\n\n")
+    return "".join(out)
 
 
 def _section_header(race, target_date: date) -> str:
@@ -597,6 +701,7 @@ def _section_betting(scores, plan) -> str:
             parts.append(f"- {a}番→{b}番→{c}番\n")
         parts.append("\n")
     parts.append(f"**概算購入費**: {plan.estimated_cost}円（各100円時）\n\n")
+    parts.append(_ev_allocation_block(scores, plan))
     return "".join(parts)
 
 
