@@ -20,12 +20,22 @@ def _get_track_record() -> str:
 def _get_lessons_block() -> str:
     """先週の学びを「進化中」アピールとして表示（売り文句にもなる）"""
     try:
-        from src.validator.learning_engine import load_learnings
+        from src.validator.learning_engine import load_learnings, get_trend_summary
         L = load_learnings()
         lessons = L.get("top_lessons", [])
-        if not lessons:
+        trend = get_trend_summary()
+        if not lessons and not trend:
             return ""
         out = ["\n### 🧠 先週から進化したポイント\n\n"]
+        if trend and trend.get("weeks", 0) >= 2:
+            d = trend
+            arrow = "📈" if d.get("improving") else "📉"
+            out.append(
+                f"- {arrow} **直近の複勝率: {d.get('current_place_rate',0):.1f}%** "
+                f"（前週比 {d.get('delta_place',0):+.1f}%）／"
+                f"◎勝率 {d.get('current_win_rate',0):.1f}%／"
+                f"馬連 {d.get('current_exacta',0):.1f}%／3連複 {d.get('current_trio',0):.1f}%\n"
+            )
         for l in lessons[:3]:
             out.append(f"- {l}\n")
         out.append("\n*毎週レース結果を自動で振り返り、モデルを改善し続けています。*\n\n")

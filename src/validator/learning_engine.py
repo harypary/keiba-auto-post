@@ -162,6 +162,71 @@ def load_learnings() -> dict:
         return {}
 
 
+# === 週次トレンドトラッカー（精度推移を記録） ===
+TREND_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "..", "data", "weekly_trend.json"
+)
+
+
+def record_weekly_metrics(week_label: str, metrics: dict):
+    """毎週の的中率/回収率/学習結果を時系列で蓄積"""
+    history = []
+    if os.path.exists(TREND_PATH):
+        try:
+            with open(TREND_PATH, encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception:
+            history = []
+    history.append({"week": week_label, "metrics": metrics})
+    history = history[-52:]  # 直近1年分のみ保持
+    os.makedirs(os.path.dirname(TREND_PATH), exist_ok=True)
+    with open(TREND_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+
+
+def get_trend_summary() -> dict:
+    """直近の精度推移を返す（投稿のアピール文用）"""
+    if not os.path.exists(TREND_PATH):
+        return {}
+    try:
+        with open(TREND_PATH, encoding="utf-8") as f:
+            history = json.load(f)
+    except Exception:
+        return {}
+    if len(history) < 2:
+        return {"weeks": len(history), "history": history}
+
+    last = history[-1]["metrics"]
+    prev = history[-2]["metrics"]
+    return {
+        "weeks": len(history),
+        "current_win_rate": last.get("honmei_win_rate", 0),
+        "current_place_rate": last.get("honmei_place_rate", 0),
+        "current_exacta": last.get("exacta_hit_rate", 0),
+        "current_trio": last.get("trifecta_hit_rate", 0),
+        "delta_win": last.get("honmei_win_rate", 0) - prev.get("honmei_win_rate", 0),
+        "delta_place": last.get("honmei_place_rate", 0) - prev.get("honmei_place_rate", 0),
+        "improving": last.get("honmei_place_rate", 0) > prev.get("honmei_place_rate", 0),
+    }
+
+
+def auto_tune_lr(trend: dict) -> float:
+    """
+    トレンド改善状況に応じて次回の学習率（重み調整の積極性）を決定。
+    悪化していたら積極的に調整、改善していたら現状維持寄りに。
+    """
+    if not trend or trend.get("weeks", 0) < 2:
+        return 0.020  # デフォルト
+    delta = trend.get("delta_place", 0)
+    if delta < -3:    # 複勝率3%以上低下 → 緊急調整
+        return 0.040
+    if delta < 0:     # 微減
+        return 0.025
+    if delta > 3:     # 大幅改善 → 維持
+        return 0.010
+    return 0.015      # 標準
+
+
 def apply_factor_adjustments(weights: dict, learnings: dict) -> dict:
     """学習結果のfactor_adjustmentsを既存重みに掛ける（保存はしない、戻り値で渡す）"""
     adj = learnings.get("factor_adjustments", {})

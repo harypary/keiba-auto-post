@@ -1,0 +1,31 @@
+name: keepalive
+
+# 私的リポジトリでは60日以上活動がないとscheduled workflowが自動停止される。
+# 毎週水曜に空のpingコミットを行いリポジトリのアクティビティを維持する。
+# これにより、土日朝の自動投稿スケジュールが永続的に動作する。
+
+on:
+  schedule:
+    - cron: '11 3 * * 3'  # 毎週水曜 12:11 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Touch keepalive file
+        run: |
+          mkdir -p .github
+          date -u +%FT%TZ > .github/last_ping.txt
+          git config user.email "actions@github.com"
+          git config user.name  "github-actions[bot]"
+          git add .github/last_ping.txt
+          git diff --staged --quiet || git commit -m "chore(keepalive): bump ping"
+          git push

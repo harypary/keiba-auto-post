@@ -133,7 +133,34 @@ def run_weekly_review():
         print_weight_history()
 
         # === 学びを保存（次回投稿に反映される） ===
-        from src.validator.learning_engine import build_learnings, save_learnings, apply_factor_adjustments
+        from src.validator.learning_engine import (
+            build_learnings, save_learnings, apply_factor_adjustments,
+            record_weekly_metrics, get_trend_summary, auto_tune_lr,
+        )
+
+        # 週次メトリクスを時系列に記録（毎週の改善トラッキング）
+        week_label = date.today().strftime("%Y-W%V")
+        weekly_metrics = {
+            "honmei_win_rate":   report.get("honmei_win_rate", 0),
+            "honmei_place_rate": report.get("honmei_place_rate", 0),
+            "exacta_hit_rate":   report.get("exacta_hit_rate", 0),
+            "trifecta_hit_rate": report.get("trifecta_hit_rate", 0),
+            "tan_roi":           report.get("avg_tan_roi", 0),
+            "exacta_roi":        report.get("avg_exacta_roi", 0),
+            "races":             report.get("races_analyzed", 0),
+        }
+        record_weekly_metrics(week_label, weekly_metrics)
+
+        # トレンドベースで次回学習率を自動チューニング
+        trend = get_trend_summary()
+        next_lr = auto_tune_lr(trend)
+        print(f"\n[トレンド分析]")
+        if trend.get("weeks", 0) >= 2:
+            arrow = "↑" if trend["improving"] else "↓"
+            print(f"  複勝率推移: {trend.get('current_place_rate',0):.1f}% (前週比 {trend.get('delta_place',0):+.1f}%) {arrow}")
+            print(f"  → 次週の学習率を {next_lr:.3f} に自動調整")
+        else:
+            print(f"  データ蓄積中（次週から精度推移を表示）")
         # 券種別ROI（あれば report から）
         roi_by_kind = {}
         if report.get("avg_tan_roi") is not None:
