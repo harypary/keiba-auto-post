@@ -17,6 +17,33 @@ def _get_track_record() -> str:
         return ""
 
 
+def _get_extra_signals_block(race, target_date) -> str:
+    """天気・馬場バイアス等の補助情報をnote本文に表示"""
+    try:
+        from src.scraper.multi_source_scraper import collect_extra_signals
+        sig = collect_extra_signals(race.race_id if hasattr(race, "race_id") else "", race.venue, target_date)
+    except Exception:
+        return ""
+    out = []
+    wx = sig.get("weather", {})
+    if wx:
+        cond = wx.get("expected_condition", "")
+        rain = wx.get("precipitation_mm", 0)
+        tmax = wx.get("temp_max")
+        out.append("\n### ☀️ レース当日の予測コンディション\n\n")
+        out.append(f"- 予測馬場状態：**{cond}**")
+        if rain > 0:
+            out.append(f"（予想降雨{rain:.1f}mm）")
+        out.append("\n")
+        if tmax is not None:
+            out.append(f"- 予想最高気温：{tmax}℃\n")
+        out.append("\n")
+    bias = sig.get("venue_bias", {})
+    if bias:
+        out.append(f"- {race.venue}コース直近傾向：**{bias.get('tendency','-')}**（差し率 {int(bias.get('back_ratio',0)*100)}%／{bias.get('n_races',0)}R集計）\n\n")
+    return "".join(out)
+
+
 def _get_lessons_block() -> str:
     """先週の学びを「進化中」アピールとして表示（売り文句にもなる）"""
     try:
@@ -124,6 +151,9 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
     lessons = _get_lessons_block()
     if lessons:
         parts.append(lessons)
+    extra = _get_extra_signals_block(race, target_date)
+    if extra:
+        parts.append(extra)
     parts.append(_section_free_hook(race, scores, plan))  # 煽りティーザー
 
     # ---- 有料ゾーン ----

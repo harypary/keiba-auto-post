@@ -1,0 +1,14 @@
+{
+  "東京": {
+    "back_ratio": 0.375,
+    "front_ratio": 0.625,
+    "tendency": "前残り傾向",
+    "n_races": 64
+  },
+  "中山": {
+    "back_ratio": 0.469,
+    "front_ratio": 0.531,
+    "tendency": "中立",
+    "n_races": 128
+  }
+}

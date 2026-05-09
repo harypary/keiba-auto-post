@@ -107,6 +107,9 @@ class ComprehensiveAnalyzer:
         # === 改善4: 学習済みMLメタモデルでの補正 ===
         _apply_ml_overlay(scores)
 
+        # === 改善5: 競馬場バイアス（差し有利/前残り）反映 ===
+        _apply_venue_bias(scores, race)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -269,6 +272,26 @@ def _apply_grade_overlay(scores: list, race) -> None:
         elif g in ("新馬", "未勝利"):
             # 新馬は血統と過去ない分、騎手・調教師が重要
             s.final_score = round(s.final_score + ped * 0.5, 2)
+
+
+def _apply_venue_bias(scores: list, race) -> None:
+    """競馬場の直近バイアス（前残り/差し有利）に応じて脚質補正"""
+    try:
+        from src.scraper.multi_source_scraper import get_venue_bias
+    except Exception:
+        return
+    bias = get_venue_bias(getattr(race, "venue", ""))
+    if not bias:
+        return
+    back_ratio = bias.get("back_ratio", 0.5)
+    # back_ratio = 1.0 なら極端な差し有利。+0.1超えるごとに差し馬+1点、逃げ馬-1点
+    diff = (back_ratio - 0.5) * 10
+    for s in scores:
+        style = getattr(s, "running_style", "")
+        if style in ("差し", "追込"):
+            s.final_score = round(s.final_score + diff, 2)
+        elif style in ("逃げ", "先行"):
+            s.final_score = round(s.final_score - diff, 2)
 
 
 def _apply_ml_overlay(scores: list) -> None:

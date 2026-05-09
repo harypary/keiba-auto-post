@@ -194,6 +194,22 @@ def run_weekly_review():
         save_weights(adjusted)
         print(f"  [重み再調整] 学習補正適用後の重みを保存")
 
+        # === 競馬場バイアス更新（前残り/差し優勢の傾向検出）===
+        try:
+            from src.scraper.multi_source_scraper import update_venue_bias_from_records
+            import glob
+            raws = glob.glob("data/backtest/historical_raw_*.json")
+            if raws:
+                with open(raws[-1], encoding="utf-8") as f:
+                    raw_records = json.load(f)
+                vb = update_venue_bias_from_records(raw_records)
+                if vb:
+                    print(f"\n[競馬場バイアス] {len(vb)}場のバイアス更新")
+                    for v, d in vb.items():
+                        print(f"  {v}: {d.get('tendency','-')} (差し率 {int(d.get('back_ratio',0)*100)}%, n={d.get('n_races',0)})")
+        except Exception as ex:
+            print(f"  [バイアス] 失敗: {ex}")
+
         # === ML メタモデル再訓練（蓄積データが増えるたびに学習更新）===
         try:
             from src.ml.meta_model import train_and_save
