@@ -218,9 +218,18 @@ def run_backtest_collect(dates, jra, hist_sc, analyzer, fetcher, max_per_day=12)
             except Exception:
                 pass
 
-            # 進捗保存（10件ごと）
+            # 進捗保存（10件ごと）+ 50件ごとにML自動再訓練
             if len(all_records) % 10 == 0:
                 _save_progress()
+            if len(all_records) % 50 == 0 and len(all_records) > 0:
+                try:
+                    from src.ml.meta_model import train_and_save
+                    print(f"\n  [ML自動再訓練 @ {len(all_records)}件]")
+                    r = train_and_save()
+                    if r:
+                        print(f"  → 訓練精度 {r.get('accuracy',0)*100:.1f}% (n={r.get('n_samples',0)})\n")
+                except Exception:
+                    pass
             all_records.append({
                 "race_id": race_id, "race_name": race.race_name,
                 "date": str(target_date), "venue": race.venue,
