@@ -120,7 +120,6 @@ def run_weekly_review():
         bt_records = bt_report.get("records", [])
         misses = [r for r in bt_records if not r.get("honmei_win")]
         if misses:
-            # 外れの主要因を集計
             from collections import Counter
             reasons = [r.get("defeat_reason", "") for r in misses if r.get("defeat_reason")]
             if reasons:
@@ -132,6 +131,34 @@ def run_weekly_review():
         analysis = analyze_misses(bt_records)
         new_weights = adjust_weights(analysis)
         print_weight_history()
+
+        # === 学びを保存（次回投稿に反映される） ===
+        from src.validator.learning_engine import build_learnings, save_learnings, apply_factor_adjustments
+        # 券種別ROI（あれば report から）
+        roi_by_kind = {}
+        if report.get("avg_tan_roi") is not None:
+            roi_by_kind["単勝"] = {
+                "stake": report.get("tan_stake", 0),
+                "return": report.get("tan_return", 0),
+                "roi": report.get("avg_tan_roi", 0),
+            }
+        if report.get("avg_exacta_roi") is not None:
+            roi_by_kind["馬連"] = {
+                "stake": report.get("exacta_stake", 0),
+                "return": report.get("exacta_return", 0),
+                "roi": report.get("avg_exacta_roi", 0),
+            }
+        learnings = build_learnings(bt_records, roi_by_kind)
+        save_learnings(learnings)
+        print(f"\n[学び保存] {len(learnings.get('top_lessons', []))}件のレッスンを次回投稿に反映")
+        for lesson in learnings.get("top_lessons", []):
+            print(f"  💡 {lesson}")
+
+        # 重みに学習補正をかけて再保存（既存最適化結果 × 学習補正）
+        from src.validator.weight_optimizer import get_weights, save_weights
+        adjusted = apply_factor_adjustments(get_weights(), learnings)
+        save_weights(adjusted)
+        print(f"  [重み再調整] 学習補正適用後の重みを保存")
     else:
         print("  バックテストデータ不足（5レース未満）→ 重み調整スキップ")
 

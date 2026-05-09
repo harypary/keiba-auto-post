@@ -16,6 +16,23 @@ def _get_track_record() -> str:
     except Exception:
         return ""
 
+
+def _get_lessons_block() -> str:
+    """先週の学びを「進化中」アピールとして表示（売り文句にもなる）"""
+    try:
+        from src.validator.learning_engine import load_learnings
+        L = load_learnings()
+        lessons = L.get("top_lessons", [])
+        if not lessons:
+            return ""
+        out = ["\n### 🧠 先週から進化したポイント\n\n"]
+        for l in lessons[:3]:
+            out.append(f"- {l}\n")
+        out.append("\n*毎週レース結果を自動で振り返り、モデルを改善し続けています。*\n\n")
+        return "".join(out)
+    except Exception:
+        return ""
+
 GRADE_EMOJI = {
     "G1": "🏆", "G2": "🥇", "G3": "🥈", "OP": "⭐",
     "3勝": "📌", "2勝": "📌", "1勝": "📌", "新馬": "🐎", "未勝利": "🐎"
@@ -63,6 +80,7 @@ def format_day_summary_note(race_list: list[dict], target_date: date, venue_day:
     body_parts = [
         f"# {date_str}({venue_day}) {venue_label} 全{n}レース予想パック\n\n",
         f"{track_line}\n\n" if track_line else "",
+        _get_lessons_block(),
         _day_summary_hook(race_list, venue_day, venue_label),
         "---\n\n",
         f"## {PAID_MARKER}\n\n",
@@ -92,6 +110,9 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
         parts.append(f"> {track_record}\n\n")
 
     parts.append(_section_header(race, target_date))
+    lessons = _get_lessons_block()
+    if lessons:
+        parts.append(lessons)
     parts.append(_section_free_hook(race, scores, plan))  # 煽りティーザー
 
     # ---- 有料ゾーン ----

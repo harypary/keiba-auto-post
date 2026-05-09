@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-05-09T21:51:41",
+  "total_races": 228,
+  "factor_adjustments": {
+    "venue": 1.1,
+    "condition": 1.05,
+    "rest": 1.05,
+    "pace": 1.1
+  },
+  "venue_adjustments": {
+    "東京": {
+      "confidence": 1.1,
+      "expand_picks": false,
+      "win_rate": 40.8,
+      "place_rate": 78.9
+    },
+    "京都": {
+      "confidence": 1.1,
+      "expand_picks": false,
+      "win_rate": 33.3,
+      "place_rate": 75.0
+    },
+    "新潟": {
+      "confidence": 0.85,
+      "expand_picks": true,
+      "win_rate": 8.3,
+      "place_rate": 8.3
+    },
+    "中山": {
+      "confidence": 1.1,
+      "expand_picks": false,
+      "win_rate": 39.8,
+      "place_rate": 72.7
+    }
+  },
+  "weak_grades": [
+    "新馬",
+    "OP"
+  ],
+  "bet_type_roi": {},
+  "top_lessons": [
+    "先週の最大の外れ要因は『上がり適性』（30件）。今週は当該要素の重みを引き上げて再評価しています。",
+    "先週は新潟での精度が低調でした。今週はそれら開催で穴目を厚めにケアします。"
+  ]
+}
