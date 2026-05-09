@@ -117,10 +117,14 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         notes.append(note)
         print(f"  [OK] {note['title'][:55]}...")
 
-    # 全レースパック（割安セット価格）
-    day_pack = format_day_summary_note(race_results, target_date, venue_day)
-    notes.append(day_pack)
-    print(f"  [OK] パック: {day_pack['title'][:55]}...")
+    # 競馬場ごとの全レースパック（割安セット価格）
+    venues = {}
+    for item in race_results:
+        venues.setdefault(item["race"].venue, []).append(item)
+    for venue, items in venues.items():
+        venue_pack = format_day_summary_note(items, target_date, venue_day, venue)
+        notes.append(venue_pack)
+        print(f"  [OK] パック({venue} {len(items)}R): {venue_pack['title'][:55]}...")
 
     # 4. 投稿 / 保存
     print(f"\n[4/4] {'note.com投稿' if publish else 'ファイル保存のみ'}...")

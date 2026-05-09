@@ -50,20 +50,22 @@ def format_race_note(race, scores, plan, target_date: date, race_index: int, tot
     return format_race_note_v2(race, scores, plan, _dummy_context(scores), target_date, race_index)
 
 
-def format_day_summary_note(race_list: list[dict], target_date: date, venue_day: str) -> dict:
+def format_day_summary_note(race_list: list[dict], target_date: date, venue_day: str, venue: str = "") -> dict:
     date_str = target_date.strftime("%m月%d日")
     track = _get_track_record()
     track_line = f"\n> {track}" if track else ""
+    n = len(race_list)
+    venue_label = venue or "中央競馬"
 
-    title = f"【{date_str}({venue_day})】◎本命厳選！中央競馬 全レース完全データ予想パック"
+    title = f"【{date_str}({venue_day})】{venue_label}全{n}R 完全データ予想パック｜◎本命＆買い目"
 
     body_parts = [
-        f"# {date_str}({venue_day}) 全レース予想パック\n\n",
+        f"# {date_str}({venue_day}) {venue_label} 全{n}レース予想パック\n\n",
         f"{track_line}\n\n" if track_line else "",
-        _day_summary_hook(race_list, venue_day),
+        _day_summary_hook(race_list, venue_day, venue_label),
         "---\n\n",
-        f"{PAID_MARKER}\n\n",
-        f"## 🔓 各レース完全予想（全{len(race_list)}レース）\n\n",
+        f"## {PAID_MARKER}\n\n",
+        f"## 🔓 {venue_label} 全{n}レース完全予想\n\n",
     ]
     for item in race_list:
         body_parts.append(_build_pack_section(item["race"], item["scores"], item["plan"]))
@@ -71,7 +73,7 @@ def format_day_summary_note(race_list: list[dict], target_date: date, venue_day:
     return {
         "title": title,
         "body": "".join(body_parts),
-        "tags": ["競馬予想", "中央競馬", "全レース", "買い目", "JRA", "統計予想", venue_day],
+        "tags": ["競馬予想", "中央競馬", venue_label, "全レース", "買い目", "JRA", "統計予想", venue_day],
         "is_paid": True, "price": 1500,
     }
 
@@ -192,14 +194,15 @@ def _free_closing(race) -> str:
     )
 
 
-def _day_summary_hook(race_list, venue_day) -> str:
+def _day_summary_hook(race_list, venue_day, venue_label="中央競馬") -> str:
     total = len(race_list)
+    single_total = total * 300
     return (
-        f"## 本日{total}レースの完全予想パック\n\n"
-        f"毎週{venue_day}の全開催場・全レース（未勝利〜G1）を統計データで分析。\n"
-        f"単品{total}×300円 = {total*300}円のところ、**まとめ買いで1,500円**。\n\n"
+        f"## 本日の{venue_label} 全{total}レース完全予想パック\n\n"
+        f"{venue_label}で開催される{venue_day}の全{total}レース（未勝利〜重賞）を統計データで徹底分析。\n"
+        f"単品{total}×300円 = {single_total}円のところ、**まとめ買いで1,500円**（{single_total - 1500}円お得）。\n\n"
         f"各馬の過去全成績・血統・騎手相性・展開・敵レベルを統合した\n"
-        f"独自スコアで◎本命から穴馬まで完全公開します。\n\n"
+        f"独自スコアで◎本命から💎穴馬まで完全公開します。\n\n"
     )
 
 
@@ -220,7 +223,10 @@ def _section_full_ranking(scores, race) -> str:
     parts = ["## 🏆 全頭完全分析・順位付け\n\n"]
     parts.append("> 評点は統計総合値（過去全レース・血統・騎手相性・展開・敵レベル）。100点満点換算の相対評価です。\n\n")
 
-    for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):
+    sorted_scores = sorted(scores, key=lambda x: x.recommendation_rank)
+    top_score = getattr(sorted_scores[0], "final_score", 0) if sorted_scores else 0
+
+    for rank, s in enumerate(sorted_scores, 1):
         mark = MARK_MAP.get(rank, "")
         final = getattr(s, "final_score", getattr(s, "total_score", 0))
         base  = getattr(s, "base_score", final)
@@ -234,30 +240,56 @@ def _section_full_ranking(scores, race) -> str:
         spd   = getattr(s, "speed_index", 0)
         style = getattr(s, "running_style", "不明")
         narrative = getattr(s, "comment", "")
+        odds  = getattr(s, "odds", 0) or 0
+        form  = getattr(s, "form_score", 0)
 
         aff_obj = getattr(s, "affinity", None)
         aff_txt = ""
+        aff_detail = ""
         if aff_obj and aff_obj.total >= 2:
             aff_txt = f"（{aff_obj.wins}勝/{aff_obj.total}戦・複勝率{aff_obj.place_rate*100:.0f}%）"
+            aff_detail = (
+                f"騎手とのコンビでは過去{aff_obj.total}戦{aff_obj.wins}勝、"
+                f"複勝率{aff_obj.place_rate*100:.0f}%。"
+            )
 
         raw = getattr(s, "raw_stat", None)
 
-        # 本命・対抗は強調
-        header_prefix = "🔥 " if rank == 1 else ("✅ " if rank == 2 else "")
-        parts.append(f"### {rank}位 {mark} {s.horse_no}番 **{s.horse_name}**　評点: **{final:.1f}** {header_prefix}\n\n")
-        parts.append(f"| 騎手 | 脚質 | 斤量 | 通算 | 勝率 | 複勝率 | スピード指数 |\n")
-        parts.append(f"|---|---|---|---|---|---|---|\n")
+        header_prefix = "🔥 本命級 " if rank == 1 else ("✅ 対抗 " if rank == 2 else ("⚡ 単穴 " if rank == 3 else ""))
+        gap = top_score - final
+        gap_txt = "" if rank == 1 else f"（首位差 {gap:.1f}点）"
+
+        parts.append(f"### {rank}位 {mark} {s.horse_no}番 **{s.horse_name}**　評点: **{final:.1f}** {gap_txt} {header_prefix}\n\n")
+        parts.append(f"| 騎手 | 脚質 | 斤量 | 通算 | 勝率 | 複勝率 | スピード指数 | オッズ |\n")
+        parts.append(f"|---|---|---|---|---|---|---|---|\n")
         parts.append(
             f"| {s.jockey} | {style} | {s.weight_carry}kg "
-            f"| {races}戦 | {wr*100:.0f}% | {pr*100:.0f}% | {spd:.0f} |\n\n"
+            f"| {races}戦 | {wr*100:.0f}% | {pr*100:.0f}% | {spd:.0f} | {odds:.1f}倍 |\n\n"
         )
 
-        parts.append(f"**📝 分析**\n\n{narrative}\n\n")
+        parts.append(f"**📝 ナラティブ分析**\n\n{narrative}\n\n")
+
+        # 強み・懸念を統計から自動生成
+        strengths, concerns = _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap)
+        if strengths:
+            parts.append("**💪 強み**\n\n")
+            for x in strengths:
+                parts.append(f"- {x}\n")
+            parts.append("\n")
+        if concerns:
+            parts.append("**⚠️ 懸念点**\n\n")
+            for x in concerns:
+                parts.append(f"- {x}\n")
+            parts.append("\n")
+
+        if aff_detail:
+            parts.append(f"**🤝 騎手相性**：{aff_detail}\n\n")
+
+        parts.append(f"**🎯 想定買い目内位置**：{_role_text(rank, race.num_horses, odds)}\n\n")
 
         parts.append("**📊 評点内訳**\n\n")
         parts.append("| 基本統計 | 近走フォーム | 騎手相性 | 血統 | 展開 | 敵レベル補正 | **総合** |\n")
         parts.append("|---|---|---|---|---|---|---|\n")
-        form = getattr(s, "form_score", 0)
         parts.append(f"| {base:.1f} | {form:.1f} | {aff:+.1f}{aff_txt} | {ped:+.1f} | {ctx:+.1f} | {opp:+.1f} | **{final:.1f}** |\n\n")
 
         if raw:
@@ -269,10 +301,71 @@ def _section_full_ranking(scores, race) -> str:
                 f"{raw.venue_score:.0f} | {raw.condition_score:.0f} | "
                 f"{raw.form_score:.0f} | {raw.grade_score:.0f} |\n\n"
             )
+            parts.append(_aptitude_commentary(raw, race) + "\n\n")
 
         parts.append("---\n")
 
     return "".join(parts)
+
+
+def _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap):
+    strengths = []
+    concerns = []
+    wr = getattr(s, "win_rate", 0) or 0
+    pr = getattr(s, "place_rate", 0) or 0
+    spd = getattr(s, "speed_index", 0) or 0
+    races = getattr(s, "total_races", 0) or 0
+    form = getattr(s, "form_score", 0) or 0
+
+    if pr >= 0.5: strengths.append(f"複勝率{pr*100:.0f}%と高水準で、馬券圏内の安定感あり。")
+    if wr >= 0.2: strengths.append(f"勝率{wr*100:.0f}%は同クラス上位、勝ち切る力を示す。")
+    if spd >= 90: strengths.append(f"スピード指数{spd:.0f}はメンバー上位クラス、能力の絶対値が高い。")
+    if form >= 75: strengths.append("近走フォームが上昇基調、調子の良さがうかがえる。")
+    if aff_obj and aff_obj.total >= 3 and aff_obj.place_rate >= 0.6:
+        strengths.append(f"騎手との相性が抜群（複勝率{aff_obj.place_rate*100:.0f}%）。")
+
+    if raw:
+        if raw.surface_score >= 80: strengths.append(f"{race.surface}巧者（適性{raw.surface_score:.0f}）。")
+        if raw.distance_score >= 80: strengths.append(f"{race.distance}m前後で実績豊富。")
+        if raw.venue_score >= 80: strengths.append(f"{race.venue}コースで好走歴あり。")
+        if raw.surface_score < 50: concerns.append(f"{race.surface}実績が乏しい。")
+        if raw.distance_score < 50: concerns.append(f"{race.distance}mは経験値不足、距離適性に疑問。")
+        if raw.condition_score < 55: concerns.append(f"{race.condition}馬場での実績は限定的。")
+        if raw.grade_score < 50: concerns.append("クラスの壁を感じる近走内容。")
+
+    if races <= 5: concerns.append(f"通算{races}戦とキャリア浅く、未知の部分あり。")
+    if pr < 0.25 and races >= 5: concerns.append(f"複勝率{pr*100:.0f}%と取りこぼしが多い。")
+    if rank == 1 and gap < 1.5: strengths.append("評点トップだが2位とは僅差、混戦模様。")
+    if odds and odds <= 3.0 and rank > 5: concerns.append(f"単勝{odds:.1f}倍と人気だが、データ評価は{rank}位どまり。過剰人気の可能性。")
+    if odds and odds >= 20 and rank <= 3: strengths.append(f"オッズ{odds:.1f}倍と妙味十分、回収率を押し上げる穴候補。")
+
+    return strengths[:5], concerns[:4]
+
+
+def _aptitude_commentary(raw, race) -> str:
+    bits = []
+    if raw.surface_score >= 75:
+        bits.append(f"{race.surface}適性◎")
+    elif raw.surface_score < 55:
+        bits.append(f"{race.surface}適性に課題")
+    if raw.distance_score >= 75:
+        bits.append(f"{race.distance}m距離適性も上位")
+    elif raw.distance_score < 55:
+        bits.append(f"{race.distance}mは未知数")
+    if raw.venue_score >= 75:
+        bits.append(f"{race.venue}巧者")
+    if not bits:
+        bits.append("適性面は平均的")
+    return "総合適性：" + "、".join(bits) + "。"
+
+
+def _role_text(rank, num_horses, odds):
+    if rank == 1: return "◎本命の中心。単勝・複勝・馬連馬連軸・3連単軸まで全方位で起用。"
+    if rank == 2: return "○対抗。馬連・ワイド・3連系の相手筆頭。"
+    if rank == 3: return "▲単穴。馬連の3列目、3連複・3連単の中軸候補。"
+    if rank in (4, 5): return "△連下。ワイド・3連複の3列目に配置、波乱の押さえ。"
+    if odds and odds >= 15: return "押さえの穴候補。3連複ヒモまで。"
+    return "今回は静観推奨。買い目からは外す。"
 
 
 def _section_betting(scores, plan) -> str:
