@@ -2,12 +2,12 @@ name: 競馬予想 note自動投稿
 
 on:
   schedule:
-    # 毎週金曜 21:00 JST = 12:00 UTC → 土曜レース予想
-    - cron: '0 12 * * 5'
-    # 毎週土曜 21:00 JST = 12:00 UTC → 日曜レース予想
-    - cron: '0 12 * * 6'
+    # 毎週金曜 09:00 JST = 木曜 00:00 UTC → 土曜レース予想（前日朝）
+    - cron: '7 0 * * 5'
+    # 毎週土曜 09:00 JST = 金曜 00:00 UTC → 日曜レース予想（前日朝）
+    - cron: '7 0 * * 6'
     # 毎週月曜 07:00 JST = 日曜 22:00 UTC → 結果照合・モデル改善
-    - cron: '0 22 * * 0'
+    - cron: '7 22 * * 0'
   workflow_dispatch:
     inputs:
       mode:
@@ -63,8 +63,32 @@ jobs:
             fi
           fi
 
+      - name: Dedupe check (skip if recently posted)
+        id: dedupe
+        run: |
+          MODE="${{ steps.mode.outputs.mode }}"
+          # 直近6時間以内に同モードで成功完了したrunがあればスキップ
+          NOW=$(date -u +%s)
+          RECENT=$(gh run list --workflow=auto_post.yml --repo ${{ github.repository }} \
+            --status=success --limit=10 --json createdAt,conclusion,displayTitle 2>/dev/null \
+            | jq -r --arg mode "$MODE" '.[] | select(.displayTitle | contains($mode)) | .createdAt' | head -1)
+          if [ -n "$RECENT" ]; then
+            RECENT_TS=$(date -u -d "$RECENT" +%s 2>/dev/null || echo 0)
+            DIFF=$((NOW - RECENT_TS))
+            if [ $DIFF -lt 21600 ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "[SKIP] 直近6時間以内に $MODE モードで成功完了済み（${DIFF}秒前）"
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Run prediction (saturday)
-        if: steps.mode.outputs.mode == 'saturday'
+        if: steps.mode.outputs.mode == 'saturday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
@@ -72,7 +96,7 @@ jobs:
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
-        if: steps.mode.outputs.mode == 'sunday'
+        if: steps.mode.outputs.mode == 'sunday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
@@ -80,7 +104,7 @@ jobs:
         run: python main.py --run-now sunday
 
       - name: Weekly review & weight optimization
-        if: steps.mode.outputs.mode == 'review'
+        if: steps.mode.outputs.mode == 'review' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
