@@ -37,24 +37,38 @@ def login_and_save():
         page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
         page.goto("https://note.com/login", wait_until="networkidle")
-        time.sleep(2)
-        for sel in ['input[name="email"]', 'input[type="email"]', '#email']:
+        time.sleep(3)
+        # email
+        for sel in ['#email', 'input[type="email"]', 'input[name="email"]', 'input[autocomplete="username"]']:
             try:
-                page.fill(sel, NOTE_EMAIL); break
+                page.fill(sel, NOTE_EMAIL, timeout=4000); break
             except Exception:
                 continue
-        for sel in ['input[name="password"]', 'input[type="password"]', '#password']:
+        # password
+        for sel in ['#password', 'input[type="password"]', 'input[name="password"]']:
             try:
-                page.fill(sel, NOTE_PASSWORD); break
+                page.fill(sel, NOTE_PASSWORD, timeout=4000); break
             except Exception:
                 continue
-        time.sleep(0.5)
-        for sel in ['button[type="submit"]', 'button:has-text("ログイン")', 'button[data-type="primary"]']:
-            try:
-                page.click(sel); break
-            except Exception:
-                continue
-        time.sleep(5)
+        time.sleep(1)
+        # ログインボタン: data-type="primary" 推奨、disabledが解けるまで待つ
+        clicked = False
+        for _ in range(15):
+            for sel in ['button[data-type="primary"]:not([disabled])',
+                        'button:has-text("ログイン"):not([disabled])',
+                        'button[type="submit"]:not([disabled])']:
+                try:
+                    btns = page.locator(sel).all()
+                    if btns:
+                        btns[0].click(timeout=2000)
+                        clicked = True
+                        break
+                except Exception:
+                    continue
+            if clicked:
+                break
+            time.sleep(0.5)
+        time.sleep(8)
         if "login" in page.url:
             raise RuntimeError(f"ログイン失敗: {page.url}")
         print(f"    OK: {page.url}")

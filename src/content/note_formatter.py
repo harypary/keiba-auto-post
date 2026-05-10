@@ -443,77 +443,65 @@ def _section_header(race, target_date: date) -> str:
 
 
 def _section_free_hook(race, scores, plan) -> str:
-    """無料部分：レースの見どころ煽り＋有料部分の「予告」で読者を引き込む"""
+    """無料部分：人間味のある導入＋自然な煽り"""
     parts = []
-
     intro = _race_intro(race)
-    parts.append(f"## 📖 このレースのポイント\n\n{intro}\n\n")
+    parts.append(f"{intro}\n\n")
 
-    # メンバー構成のさわりだけ（名前は出さず「〇〇タイプの馬が複数」程度）
+    # メンバー構成のさわり（自然な口調で）
     if scores:
         front_cnt = sum(1 for s in scores if getattr(s, "running_style", "") in ["逃げ", "先行"])
         diff_cnt  = sum(1 for s in scores if getattr(s, "running_style", "") in ["差し", "追込"])
         top3_odds = [s.odds for s in scores[:3] if s.odds and s.odds > 0]
         avg_odds  = round(sum(top3_odds) / len(top3_odds), 1) if top3_odds else 0
 
-        parts.append("**メンバー構成の特徴**\n\n")
+        bullet = []
         if front_cnt >= 4:
-            parts.append(f"- 先行・逃げ馬が{front_cnt}頭と多く、序盤からペースが流れやすい構成。差し馬が台頭するか注目。\n")
+            bullet.append(f"逃げ・先行馬が{front_cnt}頭と多めで、序盤のペースは流れる想定。差しに展開向きそうです。")
         elif diff_cnt >= 5:
-            parts.append(f"- 差し・追込馬が{diff_cnt}頭と多く、ペース次第で大きく結果が変わりそう。\n")
+            bullet.append(f"差し・追込馬が{diff_cnt}頭と多く、ペース次第で前残りも大穴決着もある混戦。")
         else:
-            parts.append(f"- 脚質が分散した典型的なメンバー構成。展開の読みが勝負の鍵。\n")
-
+            bullet.append("脚質バラバラで隊列が落ち着きそう。地力勝負になる気がします。")
         if race.num_horses >= 14:
-            parts.append(f"- {race.num_horses}頭の大型レース。枠順・ポジション取りも重要な要素。\n")
-
+            bullet.append(f"頭数{race.num_horses}頭。枠順とポジション取りが結果を左右しそう。")
         if avg_odds > 0:
             if avg_odds <= 5:
-                parts.append(f"- 上位人気が集中する実力拮抗メンバー。統計では人気通りに決まるか、波乱があるかを読み解きます。\n")
+                bullet.append(f"上位人気のオッズが揃ってて拮抗ムード。人気通りに決まるか、波乱か。")
             else:
-                parts.append(f"- 上位人気のオッズが{avg_odds}倍前後と分散。穴馬が台頭するチャンスあり。\n")
+                bullet.append(f"上位人気が{avg_odds}倍前後とバラけてて、伏兵が突っ込むチャンスありそうです。")
+        for b in bullet:
+            parts.append(f"{b}\n")
         parts.append("\n")
 
-    # 有料部分の「予告」（具体的に何が書いてあるか）
-    honmei_no = plan.honmei[0] if plan.honmei else None
-    value_no  = plan.value_horse
-
-    parts.append("---\n\n")
-    parts.append("## 🔒 有料部分でわかること\n\n")
-    parts.append("下記をすべて公開しています：\n\n")
-    parts.append(f"- **展開予測**（ペース・各馬のポジション予想）\n")
-    parts.append(f"- **{race.num_horses}頭 全頭ナラティブ分析**（統計スコア＋根拠文）\n")
-    parts.append(f"- **◎本命・○対抗・▲単穴・△連下**の確定印\n")
-    parts.append(f"- **単勝・馬連・ワイド・3連複・3連単** の推奨買い目\n")
-    if value_no:
-        parts.append(f"- **💎 穴馬ピック**（高配当を狙える注目馬）\n")
-    parts.append(f"\n")
-
-    # 購買意欲を刺激するクローザー
+    # 有料部分の予告（自然な紹介文に変更、箇条書き多用は避ける）
+    parts.append(
+        "ここから先は有料部分。\n"
+        f"本命と対抗、単穴、連下、それから今回特に推したい穴馬まで全{race.num_horses}頭分の見方をまとめてます。\n"
+        f"展開の予測、各馬の評価根拠、そして単勝から3連単まで買い目もすべて公開。\n\n"
+    )
     parts.append(_free_closing(race))
-
     return "".join(parts)
 
 
 def _free_closing(race) -> str:
-    """購買クローザー：グレードに応じて変える"""
+    """購買クローザー：グレードに応じて変える（自然な口語）"""
     g = race.grade
     if g == "G1":
         return (
-            "> 📣 **G1は年に数回しかないビッグチャンス。**\n"
-            "> 全頭データ徹底分析＋過去G1傾向＋想定配当まで完全公開。\n"
-            "> 一度の的中でも十分元が取れる500円です。\n\n"
+            "G1って年に数回しか来ない楽しみなんですよね。\n"
+            "せっかくなら自分なりに本命を持って観たい。\n"
+            "全馬の見方と買い目はこの先で。500円、たぶん損はさせません。\n\n"
         )
     if g in ("G2", "G3"):
         return (
-            "> 📣 **重賞は高配当のチャンス。**\n"
-            "> 統計データが示す「消し」と「狙い目」、さらに過去傾向・想定配当も公開。\n"
-            "> 情報収集コストを考えれば500円は安いはず。\n\n"
+            "重賞は配当の伸びしろが大きいレース。\n"
+            "「危ない人気馬」と「狙い目の伏兵」、両方ピックしてあります。\n"
+            "続きから読めます。\n\n"
         )
     return (
-        "> 📣 **毎週コツコツ回収率プラスを目指しています。**\n"
-        "> 本命から穴馬まで、データが導く答えを有料部分で公開。\n"
-        "> 1レース300円。当たれば十分元が取れます。\n\n"
+        "毎週コツコツプラス収支を目指してる予想です。\n"
+        "今回も本命から穴まで、買い目を全部公開してます。\n"
+        "続きから読めます。\n\n"
     )
 
 
@@ -896,45 +884,49 @@ def _race_intro(race) -> str:
     surf = race.surface
     dist = race.distance
     venue = race.venue
+    rname = race.race_name
 
     if g == "G1":
         return (
-            f"**{race.race_name}は中央競馬最高峰のG1競走。**\n\n"
-            f"年に一度のビッグレース、出走馬はいずれも一流の精鋭揃い。\n"
-            f"過去の対戦成績・タイム指数・血統・騎手相性を徹底分析し、\n"
-            f"統計が弾き出した「本命」と「穴馬」を公開します。"
+            f"いよいよ{rname}。\n\n"
+            f"年間でも数えるほどしかないG1の舞台で、ファンも騎手も全力。\n"
+            f"こういうレースこそ、目立つ人気馬よりも「展開ハマったら一発」の伏兵を見極めたい。\n"
+            f"今回は当日のオッズ動向と血統、過去の同条件成績を全部突き合わせて、本命と穴をピックしてみました。"
         )
     if g == "G2":
         return (
-            f"**{race.race_name}はG1直結の重要なG2競走。**\n\n"
-            f"このレースを制した馬が次走G1を勝つケースは珍しくありません。\n"
-            f"勢いある上昇馬か、実績馬の意地か。データが示す答えをお届けします。"
+            f"{rname}はG1へつながる重要な前哨戦。\n\n"
+            f"勝った馬が次走G1で結果を出すパターン、けっこう見ますよね。\n"
+            f"今年は仕上がり途上の実績馬と上り調子の若手がぶつかる構図。\n"
+            f"全馬の近走を1走ずつ追いかけて、「データ的にチャンスある馬」を絞り込みました。"
         )
     if g == "G3":
         return (
-            f"**{race.race_name}は重賞G3。**\n\n"
-            f"重賞特有の高配当チャンスを秘めた一戦。\n"
-            f"人気馬の信頼度と穴馬の台頭可能性を統計で読み解きます。"
+            f"重賞{rname}。\n\n"
+            f"G3は穴党にとって美味しい舞台。1着・2着が荒れて配当数万円なんて年もあります。\n"
+            f"今回も人気どころに死角がないか、逆に伏兵の好走パターンに合致する馬がいないか、\n"
+            f"全頭しっかりチェックしました。"
         )
     if g == "OP":
         return (
-            f"**{venue}のオープン特別、好メンバー戦。**\n\n"
-            f"重賞を狙う実力馬と叩き上げの実績馬が激突する\n"
-            f"予想のしがいあるレースです。"
+            f"{venue}のオープン特別。重賞を視野に入れる実力馬と、ここを勝ち上がりたい馬が混在する一戦。\n\n"
+            f"オープン特別はメンバーに穴があくと一気に荒れる傾向あり。\n"
+            f"狙い目を見極めて買い目に落とし込みました。"
         )
     if g == "新馬":
         return (
-            f"**デビュー戦。将来のスター候補が揃う注目の一戦。**\n\n"
-            f"過去データが少ない分、血統・調教師・騎手の組み合わせを\n"
-            f"統計的に分析して「素質馬」を炙り出します。"
+            f"{venue}{race.race_no}Rは2歳の新馬戦。\n\n"
+            f"レース実績ゼロから血統と調教師、騎手の組み合わせで素質を測るのは難しいですが、\n"
+            f"過去の似た条件で活躍した血統パターンと照らし合わせて素質馬を炙り出してます。"
         )
 
     surf_desc = "芝" if surf == "芝" else "ダート"
     dist_desc = "短距離" if dist <= 1400 else ("マイル" if dist <= 1800 else ("中距離" if dist <= 2200 else "長距離"))
     return (
-        f"**{venue}の{surf_desc}{dist_desc}{_grade_label(g)}。**\n\n"
-        f"条件戦とはいえ、統計的に「勝ちやすい馬の条件」は明確に存在します。\n"
-        f"近走フォーム・距離適性・馬場適性・クラス変化を総合分析した結果をお届けします。"
+        f"{venue}の{surf_desc}{dist_desc}、{_grade_label(g)}。\n\n"
+        f"条件戦って「データを見れば見るほど面白い」レースだと思っていて、\n"
+        f"近走の形・距離経験・馬場適性・クラス変化を一通り突き合わせると、ハッキリ買える馬と消したい馬が見えてきます。\n"
+        f"今回もそのプロセスで本命と穴を選んでます。"
     )
 
 

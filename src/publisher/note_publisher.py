@@ -320,19 +320,48 @@ class NotePublisher:
             _wait(2)
 
     def _insert_paid_boundary(self, page):
+        """有料エリア境界線を挿入（複数戦略でフォールバック）"""
+        # 戦略1: + ボタン（メニューを開く）→ 有料エリア指定
         try:
             page.keyboard.press("Control+End")
             _wait(0.5)
-            page.hover(".ProseMirror > *:last-child", timeout=4000)
+            page.keyboard.press("Enter")
             _wait(0.3)
-            page.click('[aria-label="メニューを開く"]', timeout=4000)
+            # ProseMirror 行の左端に + ボタンが出る
+            page.hover(".ProseMirror > *:last-child", timeout=3000)
             _wait(0.5)
-            page.click('text=有料エリア指定', timeout=4000)
+            menu_btn = page.locator('[aria-label="メニューを開く"], button[aria-label*="メニュー"]').first
+            menu_btn.click(timeout=3000, force=True)
+            _wait(0.7)
+            page.click('text=有料エリア指定', timeout=3000)
             _wait(1)
-        except Exception:
+            print("[note] 有料エリア境界 挿入成功（+メニュー経由）")
+            return
+        except Exception as e:
+            print(f"[note] 戦略1失敗: {e}")
+
+        # 戦略2: スラッシュコマンド
+        try:
+            page.keyboard.press("Control+End")
+            _wait(0.3)
             page.keyboard.press("Enter")
-            page.keyboard.type("【ここから有料コンテンツ】")
+            _wait(0.3)
+            page.keyboard.type("/")
+            _wait(1)
+            page.keyboard.type("有料")
+            _wait(0.5)
             page.keyboard.press("Enter")
+            _wait(1)
+            print("[note] 有料エリア境界 挿入成功（/コマンド経由）")
+            return
+        except Exception as e:
+            print(f"[note] 戦略2失敗: {e}")
+
+        # 戦略3: テキストフォールバック（境界線にはならないが視覚的に区切る）
+        page.keyboard.press("Enter")
+        page.keyboard.type("───────── 有料エリア ─────────")
+        page.keyboard.press("Enter")
+        print("[note] 有料エリア境界 テキストフォールバック")
 
     def _set_hashtags(self, page, hashtags):
         try:
