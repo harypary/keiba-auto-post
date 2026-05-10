@@ -1,9 +1,172 @@
 """
 スコアから買い目を生成する
 """
+import math
 from dataclasses import dataclass, field
 from typing import Optional
 from .race_analyzer import HorseScore
+
+
+def _ml_probabilities(scores) -> dict:
+    """ML or final_score-based 勝率推定（馬番→p）"""
+    try:
+        from src.ml.meta_model import predict_win_prob, load_model
+        model = load_model()
+        if model:
+            ml = {}
+            for s in scores:
+                rs = getattr(s, "raw_stat", None)
+                if not rs:
+                    continue
+                ped_raw = getattr(s, "pedigree_bonus", 0) or 0
+                ped_norm = min(100, max(0, 50 + ped_raw * 4))
+                feats = {
+                    "recent_form": getattr(rs, "form_score", 50),
+                    "surface": getattr(rs, "surface_score", 50),
+                    "distance": getattr(rs, "distance_score", 50),
+                    "speed_index": getattr(s, "speed_score", 50),
+                    "class_change": getattr(rs, "grade_score", 50),
+                    "venue": getattr(rs, "venue_score", 50),
+                    "condition": getattr(rs, "condition_score", 50),
+                    "rest": getattr(rs, "rest_score", 50),
+                    "pace": getattr(rs, "pace_score", 50),
+                    "weight_stab": getattr(rs, "weight_score", 50),
+                    "pedigree": ped_norm,
+                }
+                p = predict_win_prob(feats, model)
+                if p is not None:
+                    ml[s.horse_no] = p
+            if ml:
+                z = sum(ml.values()) or 1.0
+                return {no: p / z for no, p in ml.items()}
+    except Exception:
+        pass
+    # fallback: softmax
+    vals = [(s.horse_no, getattr(s, "total_score", 0) or 0) for s in scores]
+    base = max(v for _, v in vals) if vals else 0
+    exps = [(no, math.exp((v - base) / 6.0)) for no, v in vals]
+    z = sum(e for _, e in exps) or 1.0
+    return {no: e / z for no, e in exps}
+
+
+def find_ev_optimal_bets(scores, race=None, max_per_kind: int = 8, ev_threshold: float = 1.0) -> dict:
+    """
+    全馬の勝率（ML予測）×オッズで全組合せのEVを計算し、
+    EV>=ev_threshold の買い目を券種別にトップEV順で返す。
+    返却形式: {"exacta_bets": [(a,b), ...], "quinella_bets":..., "trifecta_bets":..., ...}
+    """
+    p_win = _ml_probabilities(scores)
+    odds_of = {s.horse_no: (getattr(s, "odds", 0) or 0) for s in scores}
+
+    # 較正済みの想定配当係数
+    try:
+        from src.ml.payout_calibrator import get_coefs
+        COEF = get_coefs()
+    except Exception:
+        COEF = {"uren": 0.4, "wide": 0.15, "fuku3": 0.5, "fuku": 0.28}
+
+    horse_nos = [s.horse_no for s in scores]
+    n = len(horse_nos)
+
+    out = {"win_bets": [], "place_bets": [], "exacta_bets": [], "quinella_bets": [], "trifecta_bets": []}
+    if n < 4:
+        return out
+
+    # 単勝 EV: p × odds
+    win_cands = []
+    for no in horse_nos:
+        p = p_win.get(no, 0)
+        o = odds_of.get(no, 0)
+        if p and o:
+            ev = p * o
+            if ev >= ev_threshold:
+                win_cands.append((ev, no))
+    win_cands.sort(reverse=True)
+    out["win_bets"] = [no for _, no in win_cands[:3]]
+
+    # 複勝 EV: 三着内確率(p×2.5) × 複勝オッズ
+    place_cands = []
+    for no in horse_nos:
+        p3 = min(0.9, p_win.get(no, 0) * 2.5)
+        o = odds_of.get(no, 0)
+        if p3 and o:
+            ev = p3 * o * COEF["fuku"]
+            if ev >= ev_threshold:
+                place_cands.append((ev, no))
+    place_cands.sort(reverse=True)
+    out["place_bets"] = [no for _, no in place_cands[:5]]
+
+    # 馬連 EV（全組合せ）
+    uren_cands = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            a, b = horse_nos[i], horse_nos[j]
+            pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+            if pa <= 0 or pb <= 0:
+                continue
+            denom = max(0.05, 1 - min(pa, pb))
+            p_hit = min(0.5, 2 * pa * pb / denom)
+            oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
+            if not (oa and ob):
+                continue
+            est = oa * ob * COEF["uren"]
+            ev = p_hit * est
+            if ev >= ev_threshold:
+                uren_cands.append((ev, tuple(sorted([a, b]))))
+    uren_cands.sort(reverse=True)
+    out["exacta_bets"] = [pair for _, pair in uren_cands[:max_per_kind]]
+
+    # ワイド EV
+    wide_cands = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            a, b = horse_nos[i], horse_nos[j]
+            pa, pb = p_win.get(a, 0), p_win.get(b, 0)
+            if pa <= 0 or pb <= 0:
+                continue
+            denom = max(0.05, 1 - min(pa, pb))
+            p_hit = min(0.7, 4 * pa * pb / denom)
+            oa, ob = odds_of.get(a, 0), odds_of.get(b, 0)
+            if not (oa and ob):
+                continue
+            est = max(1.5, oa * ob * COEF["wide"])
+            ev = p_hit * est
+            if ev >= ev_threshold:
+                wide_cands.append((ev, tuple(sorted([a, b]))))
+    wide_cands.sort(reverse=True)
+    out["quinella_bets"] = [pair for _, pair in wide_cands[:max_per_kind]]
+
+    # 3連複 EV（組合せ多いので軸絞り：上位5頭から×残りを総当たり）
+    top_p = sorted(p_win.items(), key=lambda x: -x[1])[:6]
+    top_nos = [no for no, _ in top_p]
+    fuku3_cands = []
+    for i in range(len(top_nos)):
+        for j in range(i + 1, len(top_nos)):
+            for k in range(j + 1, n):
+                a, b, c = top_nos[i], top_nos[j], horse_nos[k]
+                if c in (a, b):
+                    continue
+                pa, pb, pc = p_win.get(a, 0), p_win.get(b, 0), p_win.get(c, 0)
+                if pa <= 0 or pb <= 0 or pc <= 0:
+                    continue
+                p_hit = min(0.4, 6 * pa * pb * pc / max(0.05, (1 - pa) * (1 - pb)))
+                oa, ob, oc = odds_of.get(a, 0), odds_of.get(b, 0), odds_of.get(c, 0)
+                if not (oa and ob and oc):
+                    continue
+                est = oa * ob * oc * COEF["fuku3"]
+                ev = p_hit * est
+                if ev >= ev_threshold:
+                    fuku3_cands.append((ev, tuple(sorted([a, b, c]))))
+    fuku3_cands.sort(reverse=True)
+    seen = set()
+    fuku3_unique = []
+    for ev, triple in fuku3_cands:
+        if triple not in seen:
+            seen.add(triple)
+            fuku3_unique.append(triple)
+    out["trifecta_bets"] = fuku3_unique[:max_per_kind + 2]
+
+    return out
 
 
 @dataclass
@@ -149,6 +312,24 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     # 3連単: 本命1着固定 × top4 → 6点
     trio_heads = [n for n in top_nos[:5] if n != honmei_no][:4] if honmei_no else []
     trio_bets = [(honmei_no, a, b) for a in trio_heads for b in trio_heads if a != b][:8] if honmei_no else []
+
+    # === 全頭EVスキャン：ML予測勝率 × オッズ で全組合せから最良を選定 ===
+    # 既存のヒューリスティック買い目をEV最適なものに置換（ML可用時のみ）
+    try:
+        ev_plan = find_ev_optimal_bets(scores, max_per_kind=8, ev_threshold=1.0)
+        if ev_plan["exacta_bets"]:
+            exacta_bets = ev_plan["exacta_bets"]
+        if ev_plan["quinella_bets"]:
+            quinella_bets = ev_plan["quinella_bets"]
+        if ev_plan["trifecta_bets"]:
+            trifecta_bets = ev_plan["trifecta_bets"]
+        if ev_plan["win_bets"]:
+            win_bets = ev_plan["win_bets"][:1]   # 単勝は最大EV1頭のみ
+        if ev_plan["place_bets"]:
+            place_bets = ev_plan["place_bets"][:3]
+    except Exception as ex:
+        # スキャン失敗時は従来のヒューリスティック買い目を使う
+        pass
 
     # === EV閾値フィルタ：期待値<0.7の買い目をリストから除外（マイナス期待値を排除）===
     odds_map = {s.horse_no: getattr(s, "odds", 0) or 0 for s in scores}

@@ -250,13 +250,54 @@ def _section_grade_payout_outlook(scores, plan) -> str:
 
 
 def _win_probabilities(scores) -> dict:
-    """final_scoreから勝率分布をsoftmaxで推定。馬番→勝率dict"""
+    """全馬の勝率分布を推定。MLモデルがあればそれを優先、なければsoftmax fallback。
+    返り値: 馬番→勝率(0〜1) dict
+    """
     import math
     if not scores:
         return {}
+
+    # === 優先1: 学習済みMLモデルで全頭の勝率を予測 ===
+    ml_probs = {}
+    try:
+        from src.ml.meta_model import predict_win_prob, load_model
+        model = load_model()
+        if model:
+            for s in scores:
+                rs = getattr(s, "raw_stat", None)
+                if not rs:
+                    continue
+                ped_raw = getattr(s, "pedigree_bonus", 0) or 0
+                ped_norm = min(100, max(0, 50 + ped_raw * 4))
+                feats = {
+                    "recent_form":  getattr(rs, "form_score", 50),
+                    "surface":      getattr(rs, "surface_score", 50),
+                    "distance":     getattr(rs, "distance_score", 50),
+                    "speed_index":  getattr(s, "speed_score", 50),
+                    "class_change": getattr(rs, "grade_score", 50),
+                    "venue":        getattr(rs, "venue_score", 50),
+                    "condition":    getattr(rs, "condition_score", 50),
+                    "rest":         getattr(rs, "rest_score", 50),
+                    "pace":         getattr(rs, "pace_score", 50),
+                    "weight_stab":  getattr(rs, "weight_score", 50),
+                    "pedigree":     ped_norm,
+                }
+                p = predict_win_prob(feats, model)
+                if p is not None:
+                    ml_probs[s.horse_no] = p
+    except Exception:
+        pass
+
+    if ml_probs and len(ml_probs) >= len(scores) * 0.5:
+        # MLは「複勝率」に近いので、最大値が1超えないよう正規化して勝率に変換
+        # MLは三着内確率なのでざっくり 0.4 の係数で勝率近似
+        z = sum(ml_probs.values()) or 1.0
+        return {no: (p / z) for no, p in ml_probs.items()}
+
+    # === fallback: softmax over final_score ===
     vals = [(s.horse_no, getattr(s, "final_score", 0) or 0) for s in scores]
     base = max(v for _, v in vals) if vals else 0
-    exps = [(no, math.exp((v - base) / 6.0)) for no, v in vals]  # 温度6でなだらかに
+    exps = [(no, math.exp((v - base) / 6.0)) for no, v in vals]
     z = sum(e for _, e in exps) or 1.0
     return {no: e / z for no, e in exps}
 
