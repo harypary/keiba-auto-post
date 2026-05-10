@@ -39,12 +39,22 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Setup Chrome (Selenium 用)
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
       - name: Restore cache
         uses: actions/cache@v4
         with:
           path: |
             data/cache
             data/model_weights.json
+            data/note_session.json
+            data/learnings.json
+            data/weekly_trend.json
+            data/payout_calibration.json
+            data/ml_meta_model.json
           key: keiba-cache-${{ github.run_id }}
           restore-keys: |
             keiba-cache-
@@ -121,6 +131,11 @@ jobs:
           path: |
             data/cache
             data/model_weights.json
+            data/note_session.json
+            data/learnings.json
+            data/weekly_trend.json
+            data/payout_calibration.json
+            data/ml_meta_model.json
           key: keiba-cache-${{ github.run_id }}
 
       - name: Upload artifacts
