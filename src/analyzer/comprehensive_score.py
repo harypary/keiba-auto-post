@@ -22,30 +22,68 @@ from src.analyzer.race_context import RaceContext
 
 # ---- 血統辞書 ----
 SIRE_AFFINITY = {
-    # 芝短距離
-    "ロードカナロア": {"surface":"芝","dist_min":1000,"dist_max":1600,"score":10},
-    "モーリス":       {"surface":"芝","dist_min":1400,"dist_max":2000,"score":9},
-    "キズナ":         {"surface":"芝","dist_min":1600,"dist_max":2400,"score":9},
-    "エピファネイア":  {"surface":"芝","dist_min":1800,"dist_max":3200,"score":10},
-    "ドゥラメンテ":   {"surface":"芝","dist_min":1600,"dist_max":2400,"score":10},
-    "ハーツクライ":   {"surface":"芝","dist_min":1800,"dist_max":3200,"score":9},
-    "ディープインパクト":{"surface":"芝","dist_min":1400,"dist_max":3200,"score":12},
-    "オルフェーヴル": {"surface":"芝","dist_min":1600,"dist_max":3200,"score":10},
-    "ルーラーシップ": {"surface":"any","dist_min":1600,"dist_max":2400,"score":8},
-    "サトノダイヤモンド":{"surface":"芝","dist_min":1800,"dist_max":2400,"score":8},
-    "スワーヴリチャード":{"surface":"芝","dist_min":1600,"dist_max":2400,"score":8},
-    "リオンディーズ": {"surface":"芝","dist_min":1400,"dist_max":1800,"score":7},
-    # ダート
-    "ヘニーヒューズ": {"surface":"ダート","dist_min":1000,"dist_max":1800,"score":11},
+    # === 芝・短距離（〜1400） ===
+    "ロードカナロア":     {"surface":"芝","dist_min":1000,"dist_max":1600,"score":10},
+    "ダイワメジャー":     {"surface":"芝","dist_min":1200,"dist_max":1800,"score":9},
+    "ビッグアーサー":     {"surface":"芝","dist_min":1000,"dist_max":1400,"score":10},
+    "ミッキーアイル":     {"surface":"芝","dist_min":1200,"dist_max":1600,"score":9},
+    "リアルインパクト":   {"surface":"芝","dist_min":1200,"dist_max":1600,"score":8},
+    "リオンディーズ":     {"surface":"芝","dist_min":1400,"dist_max":1800,"score":7},
+    "ストロングリターン": {"surface":"芝","dist_min":1200,"dist_max":1600,"score":7},
+    # === 芝・マイル〜中距離 ===
+    "モーリス":           {"surface":"芝","dist_min":1400,"dist_max":2000,"score":10},
+    "ディープインパクト": {"surface":"芝","dist_min":1400,"dist_max":3200,"score":12},
+    "キズナ":             {"surface":"芝","dist_min":1600,"dist_max":2400,"score":10},
+    "ドゥラメンテ":       {"surface":"芝","dist_min":1600,"dist_max":2400,"score":11},
+    "サトノクラウン":     {"surface":"芝","dist_min":1800,"dist_max":2400,"score":10},
+    "サトノダイヤモンド": {"surface":"芝","dist_min":1800,"dist_max":2400,"score":8},
+    "スワーヴリチャード": {"surface":"芝","dist_min":1600,"dist_max":2400,"score":9},
+    "イスラボニータ":     {"surface":"芝","dist_min":1400,"dist_max":1800,"score":8},
+    "ハービンジャー":     {"surface":"芝","dist_min":1800,"dist_max":2400,"score":9},
+    "リアルスティール":   {"surface":"芝","dist_min":1600,"dist_max":2200,"score":9},
+    "ブラックタイド":     {"surface":"芝","dist_min":1600,"dist_max":2400,"score":8},
+    "シルバーステート":   {"surface":"芝","dist_min":1400,"dist_max":2000,"score":8},
+    # === 芝・中長距離 ===
+    "エピファネイア":     {"surface":"芝","dist_min":1800,"dist_max":3200,"score":11},
+    "ハーツクライ":       {"surface":"芝","dist_min":1800,"dist_max":3200,"score":10},
+    "オルフェーヴル":     {"surface":"芝","dist_min":1600,"dist_max":3200,"score":10},
+    "ステイゴールド":     {"surface":"芝","dist_min":2000,"dist_max":3200,"score":9},
+    "ゴールドシップ":     {"surface":"芝","dist_min":2000,"dist_max":3200,"score":9},
+    "オウケンブルースリ": {"surface":"芝","dist_min":2000,"dist_max":2800,"score":7},
+    # === 芝/ダート両刀 ===
+    "キングカメハメハ":   {"surface":"any","dist_min":1400,"dist_max":2000,"score":10},
+    "ルーラーシップ":     {"surface":"any","dist_min":1600,"dist_max":2400,"score":9},
+    "ロベルト":           {"surface":"any","dist_min":1600,"dist_max":2400,"score":7},
+    "アドマイヤムーン":   {"surface":"any","dist_min":1600,"dist_max":2200,"score":8},
+    "ヴィクトワールピサ": {"surface":"any","dist_min":1800,"dist_max":2200,"score":7},
+    # === ダート短〜中 ===
+    "ヘニーヒューズ":     {"surface":"ダート","dist_min":1000,"dist_max":1800,"score":11},
+    "サウスヴィグラス":   {"surface":"ダート","dist_min":1000,"dist_max":1400,"score":10},
+    "ロードオブヴァーラ":{"surface":"ダート","dist_min":1200,"dist_max":1800,"score":9},
     "シニスターミニスター":{"surface":"ダート","dist_min":1200,"dist_max":1800,"score":10},
-    "パイロ":         {"surface":"ダート","dist_min":1000,"dist_max":1600,"score":10},
-    "カジノドライヴ": {"surface":"ダート","dist_min":1600,"dist_max":2100,"score":9},
-    "ゴールドアリュール":{"surface":"ダート","dist_min":1400,"dist_max":2100,"score":10},
-    "クロフネ":       {"surface":"ダート","dist_min":1200,"dist_max":1800,"score":9},
-    "サウスヴィグラス":{"surface":"ダート","dist_min":1000,"dist_max":1400,"score":10},
-    "エスポワールシチー":{"surface":"ダート","dist_min":1400,"dist_max":2100,"score":8},
-    "キングカメハメハ":{"surface":"any","dist_min":1400,"dist_max":2000,"score":9},
-    "ブラックタイド": {"surface":"芝","dist_min":1600,"dist_max":2400,"score":8},
+    "パイロ":             {"surface":"ダート","dist_min":1000,"dist_max":1600,"score":10},
+    "クロフネ":           {"surface":"ダート","dist_min":1200,"dist_max":1800,"score":9},
+    "ノーザンテースト":   {"surface":"ダート","dist_min":1400,"dist_max":1800,"score":7},
+    "ベーカバド":         {"surface":"ダート","dist_min":1200,"dist_max":1800,"score":8},
+    "プリサイスエンド":   {"surface":"ダート","dist_min":1200,"dist_max":1800,"score":8},
+    # === ダート中長 ===
+    "カジノドライヴ":     {"surface":"ダート","dist_min":1600,"dist_max":2100,"score":9},
+    "ゴールドアリュール": {"surface":"ダート","dist_min":1400,"dist_max":2100,"score":10},
+    "エスポワールシチー": {"surface":"ダート","dist_min":1400,"dist_max":2100,"score":8},
+    "マジェスティックウォリアー":{"surface":"ダート","dist_min":1600,"dist_max":2100,"score":9},
+    "ホッコータルマエ":   {"surface":"ダート","dist_min":1800,"dist_max":2200,"score":9},
+    "アジアエクスプレス": {"surface":"ダート","dist_min":1200,"dist_max":1800,"score":8},
+    "コパノリッキー":     {"surface":"ダート","dist_min":1400,"dist_max":2000,"score":8},
+    # === 海外/輸入種牡馬 ===
+    "ジャスタウェイ":     {"surface":"芝","dist_min":1600,"dist_max":2200,"score":9},
+    "ノヴェリスト":       {"surface":"芝","dist_min":2000,"dist_max":2400,"score":7},
+    "Frankel":            {"surface":"芝","dist_min":1600,"dist_max":2400,"score":11},
+    "Galileo":            {"surface":"芝","dist_min":1800,"dist_max":3200,"score":10},
+    "Dubawi":             {"surface":"any","dist_min":1600,"dist_max":2400,"score":10},
+    "American Pharoah":   {"surface":"any","dist_min":1600,"dist_max":2400,"score":9},
+    # === 母父効きでも使える主流系（参考） ===
+    "シンボリクリスエス": {"surface":"any","dist_min":1800,"dist_max":2400,"score":8},
+    "アグネスタキオン":   {"surface":"芝","dist_min":1800,"dist_max":2200,"score":8},
 }
 
 
@@ -308,6 +346,8 @@ def _apply_ml_overlay(scores: list) -> None:
         rs = getattr(s, "raw_stat", None)
         if not rs:
             continue
+        ped_raw = getattr(s, "pedigree_bonus", 0) or 0
+        ped_norm = min(100, max(0, 50 + ped_raw * 4))
         factors = {
             "recent_form":  getattr(rs, "form_score", 50),
             "surface":      getattr(rs, "surface_score", 50),
@@ -319,6 +359,7 @@ def _apply_ml_overlay(scores: list) -> None:
             "rest":         getattr(rs, "rest_score", 50),
             "pace":         getattr(rs, "pace_score", 50),
             "weight_stab":  getattr(rs, "weight_score", 50),
+            "pedigree":     ped_norm,
         }
         p = predict_win_prob(factors, model)
         if p is None:

@@ -10,10 +10,11 @@ from glob import glob
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "data", "ml_meta_model.json")
 
-# 入力特徴量（10要素 + final）
+# 入力特徴量（11要素：血統追加）
 FEATURES = [
     "recent_form", "surface", "distance", "speed_index",
     "class_change", "venue", "condition", "rest", "pace", "weight_stab",
+    "pedigree",
 ]
 
 

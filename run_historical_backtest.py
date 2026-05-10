@@ -42,6 +42,9 @@ def _extract_factors(s) -> dict:
     if not s:
         return {}
     rs = getattr(s, 'raw_stat', None)
+    # 血統スコアを 0〜100 スケールに正規化（pedigree_bonus は -5〜+12 程度）
+    ped_raw = getattr(s, 'pedigree_bonus', 0) or 0
+    pedigree_norm = min(100, max(0, 50 + ped_raw * 4))
     return {
         "recent_form":  round(getattr(rs, 'form_score',     50), 1) if rs else 50,
         "surface":      round(getattr(rs, 'surface_score',  50), 1) if rs else 50,
@@ -53,6 +56,7 @@ def _extract_factors(s) -> dict:
         "rest":         round(getattr(rs, 'rest_score',     50), 1) if rs else 50,
         "pace":         round(getattr(rs, 'pace_score',     50), 1) if rs else 50,
         "weight_stab":  round(getattr(rs, 'weight_score',   50), 1) if rs else 50,
+        "pedigree":     round(pedigree_norm, 1),
         "final":        round(getattr(s,  'final_score',    50), 1),
     }
 
