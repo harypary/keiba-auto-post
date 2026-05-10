@@ -148,6 +148,9 @@ class ComprehensiveAnalyzer:
         # === 改善5: 競馬場バイアス（差し有利/前残り）反映 ===
         _apply_venue_bias(scores, race)
 
+        # === 改善6: 穴馬（過去にオッズ↑で好走した馬）にスコアブースト ===
+        _apply_value_horse_boost(scores)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -310,6 +313,18 @@ def _apply_grade_overlay(scores: list, race) -> None:
         elif g in ("新馬", "未勝利"):
             # 新馬は血統と過去ない分、騎手・調教師が重要
             s.final_score = round(s.final_score + ped * 0.5, 2)
+
+
+def _apply_value_horse_boost(scores: list) -> None:
+    """過去に穴馬好走歴がある馬にスコアブースト（次走で穴馬として優先表示）"""
+    try:
+        from src.analyzer.value_horse_tracker import get_score_boost
+    except Exception:
+        return
+    for s in scores:
+        boost = get_score_boost(s.horse_name)
+        if boost > 0:
+            s.final_score = round(s.final_score + boost, 2)
 
 
 def _apply_venue_bias(scores: list, race) -> None:

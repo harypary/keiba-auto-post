@@ -1,0 +1,7404 @@
+{
+  "ショウナンラリー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020501",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "マブアンドフェール": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020502",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030202",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030603",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ジョードリウム": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020503",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ヤコブセン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020506",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "トルーマンテソーロ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020507",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "フレイムジョーカー": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020507",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "メイケイバートン": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020508",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040209",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ミスヨコハマ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020508",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "アルセナール": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020509",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "パワーホール": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020509",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "セイウンハーデス": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020511",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 8.2
+      }
+    ]
+  },
+  "フラーハ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-05-10",
+    "events": [
+      {
+        "date": "2025-05-10",
+        "venue": "東京",
+        "race_id": "202505020512",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ツインクルステージ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-06",
+    "events": [
+      {
+        "date": "2025-09-06",
+        "venue": "中山",
+        "race_id": "202506040108",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ヒサエノオモカゲ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-11",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020601",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "マイネルトラオム": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020603",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030306",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マンゲタック": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-11",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020604",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "シャルクハフト": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-11",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020605",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "シドニーホバート": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-11",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020605",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ロジシルバー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030311",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ピュアグルーヴ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-11",
+    "events": [
+      {
+        "date": "2025-05-11",
+        "venue": "東京",
+        "race_id": "202505020609",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ミュークチェルシー": {
+    "score_boost": 7.2,
+    "value_count": 3,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020701",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030401",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020502",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "クリオシダード": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-17",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020702",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ヒルビリーエレジー": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020703",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020109",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "シンガソング": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-17",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020703",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ジュンライデン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-17",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020706",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ベンヌ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-17",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020707",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ソニックライン": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020708",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020306",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ハニーコム": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-17",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020709",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "バランスダンサー": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-05-17",
+        "venue": "東京",
+        "race_id": "202505020712",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030108",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ロアリングフレイム": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020801",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ブリックンクリック": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020801",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ヤマニンエボルブ": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020803",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020103",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "クラレット": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020805",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "オウギノカナメ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020810",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "マンダリンボレロ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020810",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アスコリピチェーノ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-18",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020811",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ドンレパルス": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-05-18",
+        "venue": "東京",
+        "race_id": "202505020812",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030111",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020707",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "オニャンコポン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020611",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ネイチャーズロウ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-24",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020903",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ダブルメッセージ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-24",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020903",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ラントレイル": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020903",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030402",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 8.2
+      }
+    ]
+  },
+  "エンゲルシュピール": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020904",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030504",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "フィリップバローズ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-24",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020906",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ボルトテソーロ": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020906",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040407",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アームテイル": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020907",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      },
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030110",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "アルニラム": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-24",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020908",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "スペイドアン": {
+    "score_boost": 8.2,
+    "value_count": 3,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-05-24",
+        "venue": "東京",
+        "race_id": "202505020912",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030412",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020508",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ホシニネガイヲ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021001",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "デルマムーン": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021002",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "アメリカンビヨンド": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021003",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ゲンキイッパイ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021003",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "タイキブライトン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021004",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "イゾラフェリーチェ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021008",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "エーリアル": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021008",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ウインドラート": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021009",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "コスモアディラート": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021010",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "カズタンジャー": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021012",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ヤマニンエンディマ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-05-25",
+    "events": [
+      {
+        "date": "2025-05-25",
+        "venue": "東京",
+        "race_id": "202505021012",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ガストフロント": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021101",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "シュガーハイ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021101",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ブライトメール": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021102",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 5.8
+      }
+    ]
+  },
+  "メイショウヒンカク": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021105",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アサクサグレース": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021107",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "スピリットライズ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021107",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サムワンライクユー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021108",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "サンドオブエテル": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021108",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ウインアイオライト": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021110",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      },
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020606",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "エルゲルージ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021111",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ユアフラッシュ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021112",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      }
+    ]
+  },
+  "シグムンド": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "東京",
+        "race_id": "202505021112",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "クイーンハピ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "京都",
+        "race_id": "202508021101",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "アレーティア": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-05-31",
+    "events": [
+      {
+        "date": "2025-05-31",
+        "venue": "京都",
+        "race_id": "202508021101",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "イザベルソレイユ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021201",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "アシャカルーク": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021202",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "テンフレッシュ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021204",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ドントゥザムーン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021205",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "キミハスコール": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021207",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "テリフィックプラン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021209",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ニシノライコウ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021210",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ショウヘイ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021211",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ホーエリート": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-01",
+    "events": [
+      {
+        "date": "2025-06-01",
+        "venue": "東京",
+        "race_id": "202505021212",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "コンクエスト": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030101",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "アドリアフレイバー": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030102",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030312",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ファリーザ": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030103",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      },
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040212",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "バッキンガムパレス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030104",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      }
+    ]
+  },
+  "スタンピー": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030107",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030103",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サフランヒーロー": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030111",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ゴットランド": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-07",
+    "events": [
+      {
+        "date": "2025-06-07",
+        "venue": "東京",
+        "race_id": "202505030112",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "リカード": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030201",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ミヤグリフォン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030201",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "コスモグラニット": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030203",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "オブシディアーナ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030204",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ショウナンヤッホー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030207",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "マイネルトルファン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030209",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ソウルラッシュ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030211",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジャンタルマンタル": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030211",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      },
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040611",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ガイアフォース": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030211",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040611",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ゴールデンオスカー": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-06-08",
+    "events": [
+      {
+        "date": "2025-06-08",
+        "venue": "東京",
+        "race_id": "202505030212",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ロゼル": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040709",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "マキャベリー": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030301",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020502",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020604",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サトノクローク": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020111",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジェイエルバース": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030303",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 8.2
+      }
+    ]
+  },
+  "スヴァルナ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030304",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "オラヴィンリンナ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030305",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ヴィジブルライト": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030307",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "イブニングタイド": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030308",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ライジンマル": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030309",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "アルムラトゥール": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030310",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ガンウルフ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030310",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジャスパーロブスト": {
+    "score_boost": 7.2,
+    "value_count": 4,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030310",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020210",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      },
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030111",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      },
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040611",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      }
+    ]
+  },
+  "シルトホルン": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-14",
+    "events": [
+      {
+        "date": "2025-06-14",
+        "venue": "東京",
+        "race_id": "202505030311",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ミートザターゲット": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030401",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "トゥーザムーン": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030406",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ファイアトリック": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030406",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ヴォランテ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030410",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "エンドロール": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030410",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "カリボール": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030411",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ピコニ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-15",
+    "events": [
+      {
+        "date": "2025-06-15",
+        "venue": "東京",
+        "race_id": "202505030412",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "センジュコスモス": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030501",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020302",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "サクラパステル": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030502",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ソナタン": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030503",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020606",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040606",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "フィーユチャン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030504",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ドナシェーン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030506",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ピーターライズ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030507",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "エテオクロス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-21",
+    "events": [
+      {
+        "date": "2025-06-21",
+        "venue": "東京",
+        "race_id": "202505030507",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ミクニサンシャイン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030602",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "サトノアルタイル": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030602",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ホウオウルーレット": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030111",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "エコールナヴァール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030606",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "コパノトーマス": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030606",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020601",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040203",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "リュウノタブーク": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030607",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "アルメントフーベル": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030608",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "スズカコーズ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030609",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "リプレゼント": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-22",
+    "events": [
+      {
+        "date": "2025-06-22",
+        "venue": "東京",
+        "race_id": "202505030612",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ダイメイナガス": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020102",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "パワーオブドリーム": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020103",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020802",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サルーポルティ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020104",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ディフューズ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020104",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "チュラヴェール": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020106",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020501",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "リケアコンパンナ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020108",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "オーケーバーディー": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-06-28",
+    "events": [
+      {
+        "date": "2025-06-28",
+        "venue": "福島",
+        "race_id": "202503020112",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ブラックモノリス": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020201",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "リックメイン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020201",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "クレプスクルム": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020204",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "シャイニースイフト": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020208",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "クロースコンバット": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020210",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ニシノアヤカゼ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-06-29",
+    "events": [
+      {
+        "date": "2025-06-29",
+        "venue": "福島",
+        "race_id": "202503020212",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ノブレスジャン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-05",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020302",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ライヴマルガリータ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-05",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020304",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ヴェラグエリエロ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-05",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020306",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "タイヨウノキセツ": {
+    "score_boost": 6.0,
+    "value_count": 3,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020307",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020112",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020812",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マハーギータ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-05",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020307",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "スマートケープ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-05",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020310",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "オーブルクール": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-05",
+        "venue": "福島",
+        "race_id": "202503020311",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      },
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020811",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ウィズユアドリーム": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020401",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040201",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ミュージックマン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020402",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ニシノヒミチュ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020403",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ライラックダンサー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020403",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ウアーシュプルング": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020407",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      },
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020111",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ミッドセンチュリー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020407",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ガーネットウインク": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020408",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020212",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ビバップ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020409",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ヤマメキング": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020409",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ダイシンアポロン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020410",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "シゲルショウグン": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020411",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "オコジュ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-06",
+    "events": [
+      {
+        "date": "2025-07-06",
+        "venue": "福島",
+        "race_id": "202503020412",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "シンフォニーシーズ": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020503",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030204",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マイネルユーゲント": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020505",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "フレンドリーエール": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020506",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ボナーテソーロ": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-03",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020507",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020408",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "カルロヴェローチェ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020511",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "コラソンビート": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020511",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "クニノハッピー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-12",
+    "events": [
+      {
+        "date": "2025-07-12",
+        "venue": "福島",
+        "race_id": "202503020512",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジュンビクトワール": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020602",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030202",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ウインマグノリア": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020602",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ルシェロアズーリ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020604",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ジャストビコーズ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020605",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ファイアマン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020605",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "レオプルミエール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020607",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ミニョンマルーン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020608",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "フェデルミエール": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020608",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ミラーダカリエンテ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020609",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ノーブルゲイル": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-13",
+    "events": [
+      {
+        "date": "2025-07-13",
+        "venue": "福島",
+        "race_id": "202503020610",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "スマートアイ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020807",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "スズカキング": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020701",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "プロメテドール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020702",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ライヴスプーン": {
+    "score_boost": 8.2,
+    "value_count": 3,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020702",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020409",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030304",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ユキノサイエンス": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020704",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "シェリアドレ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020705",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "フィールオーサム": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020706",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020509",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "オーケーマヒナ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020706",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 8.2
+      }
+    ]
+  },
+  "フェスティヴルキナ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020707",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ママアリガトー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020707",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マイネルラファール": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020708",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ビッグドリーム": {
+    "score_boost": 7.0,
+    "value_count": 3,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020710",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020510",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040209",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ワイドアラジン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-19",
+    "events": [
+      {
+        "date": "2025-07-19",
+        "venue": "福島",
+        "race_id": "202503020711",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マイネルメサイア": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020801",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "マルベリーシチー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020801",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "カーフキック": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020802",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "テルケンレンスキー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020805",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "アミラジオネ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020807",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ノーブルオリンポス": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020809",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "コパノパサディナ": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020811",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020807",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ピックアップライン": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-10-04",
+    "events": [
+      {
+        "date": "2025-10-04",
+        "venue": "東京",
+        "race_id": "202505040112",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ラヴアンドライク": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-20",
+    "events": [
+      {
+        "date": "2025-07-20",
+        "venue": "福島",
+        "race_id": "202503020812",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ニシノマーレ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020102",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "アパレイユ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020103",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "シャンペトルブーケ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020103",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アルマリカシバ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020104",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "タマモキャリコ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020106",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "アルデショワ": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020108",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040608",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "リクエイ": {
+    "score_boost": 7.2,
+    "value_count": 2,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020110",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030212",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ドリームクルーズ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-07-26",
+    "events": [
+      {
+        "date": "2025-07-26",
+        "venue": "新潟",
+        "race_id": "202504020111",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "テラメリタ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020206",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "メイショウヨゾラ": {
+    "score_boost": 4.8,
+    "value_count": 2,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020206",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040409",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ボンドガール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020207",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "モリノセピア": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020208",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ダズリングダンス": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020208",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030109",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ブレードサクセス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020209",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "エターナルシルバー": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-07-27",
+    "events": [
+      {
+        "date": "2025-07-27",
+        "venue": "新潟",
+        "race_id": "202504020210",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ミルトハッピー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020303",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "デコラシオン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020307",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "タクシンイメル": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020307",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "エンデュミオン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020309",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "モントライゼ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020309",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "カージオイド": {
+    "score_boost": 4.8,
+    "value_count": 2,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020310",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040707",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "アーラグラシア": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-02",
+    "events": [
+      {
+        "date": "2025-08-02",
+        "venue": "新潟",
+        "race_id": "202504020311",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "グローリーアテイン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-03",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020401",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "サニーオーシャン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-03",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020401",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ワンダイレクト": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040811",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "テイエムスパーダ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-03",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020407",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "クラウンアールシー": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020409",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020802",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ハヌル": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020410",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030312",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ナギサノバルコニー": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-03",
+        "venue": "新潟",
+        "race_id": "202504020412",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      },
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020812",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マイネルリーヒム": {
+    "score_boost": 4.8,
+    "value_count": 2,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020502",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040204",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "カラーオブサクセス": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020503",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040203",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ブレゲアン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020504",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ナインオブレター": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020505",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サンダーアリュール": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020505",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      }
+    ]
+  },
+  "バレエマスター": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020507",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ラーナローザ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-09",
+    "events": [
+      {
+        "date": "2025-08-09",
+        "venue": "新潟",
+        "race_id": "202504020509",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ビーコング": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040706",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マイネルミストラル": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020603",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "イダテンシャチョウ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020603",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ウインバーテックス": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020605",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ミナデオロ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020606",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ルヴァンユニベール": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020607",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ヒルノハンブルク": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020607",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "エコロジーク": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020608",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ソルレース": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020608",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ロッカバイベイビー": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020609",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      },
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030106",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 8.2
+      }
+    ]
+  },
+  "アオイハナミチ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020609",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ニシノケンタマン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020610",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "クレオズニードル": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-10",
+    "events": [
+      {
+        "date": "2025-08-10",
+        "venue": "新潟",
+        "race_id": "202504020612",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "コヴェナント": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020703",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "プレシャスフェザー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020704",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "スマッシング": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020705",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "フォーカルフラワー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020706",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "マルカブリッツ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020708",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "タカサンフェイス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020708",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "アドマイヤコーク": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020710",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マジカルガール": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020711",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "マーゴットフェスタ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-16",
+    "events": [
+      {
+        "date": "2025-08-16",
+        "venue": "新潟",
+        "race_id": "202504020712",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "トーアケルキラ": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020802",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030304",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "コナブラック": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020806",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ウインマイルート": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020808",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "イクリール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020808",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ピコテンダー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020809",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "フォンメイリー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-17",
+    "events": [
+      {
+        "date": "2025-08-17",
+        "venue": "新潟",
+        "race_id": "202504020809",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "グランカッサ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030102",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ヴィーナスゼファー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030102",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ミッキーソルジャー": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030103",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ローザレイア": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030105",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ローズプリンセス": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030105",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ラテラルシンキング": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030110",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "デイジー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-23",
+    "events": [
+      {
+        "date": "2025-08-23",
+        "venue": "新潟",
+        "race_id": "202504030112",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "メイショウコウベ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030202",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ハニーアイリー": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030207",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ダズリングブレイヴ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030209",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "デュガ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030210",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "チャコール": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-24",
+    "events": [
+      {
+        "date": "2025-08-24",
+        "venue": "新潟",
+        "race_id": "202504030212",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ニシノパプルブリリ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030301",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "コウソクルリアン": {
+    "score_boost": 6.0,
+    "value_count": 2,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030302",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040404",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マスティカーレ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030305",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 17,
+        "boost": 7.0
+      }
+    ]
+  },
+  "クイーンラブ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-30",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030307",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "シャドウキャッスル": {
+    "score_boost": 5.8,
+    "value_count": 2,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-08-30",
+        "venue": "新潟",
+        "race_id": "202504030308",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      },
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040408",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "レヴァントリ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030402",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ドルマバフチェ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030403",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ヴィルナタール": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030404",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      }
+    ]
+  },
+  "エオリアンリッジ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030405",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ブルーミーティア": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030406",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "デルマエアロール": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030407",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ジェットブレード": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030409",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ディープモンスター": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030411",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "クールベイビー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-08-31",
+    "events": [
+      {
+        "date": "2025-08-31",
+        "venue": "新潟",
+        "race_id": "202504030412",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ケイツーブル": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-06",
+    "events": [
+      {
+        "date": "2025-09-06",
+        "venue": "中山",
+        "race_id": "202506040107",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "スタニングヴュー": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-06",
+    "events": [
+      {
+        "date": "2025-09-06",
+        "venue": "中山",
+        "race_id": "202506040107",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ガラク": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-06",
+    "events": [
+      {
+        "date": "2025-09-06",
+        "venue": "中山",
+        "race_id": "202506040109",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "リュキア": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-06",
+    "events": [
+      {
+        "date": "2025-09-06",
+        "venue": "中山",
+        "race_id": "202506040112",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ノーブルライナー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040202",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ジャストマイウェイ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040204",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ピースワンデュック": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040811",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 8.2
+      }
+    ]
+  },
+  "キセログラフィカ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040206",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "タッチダウン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040207",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アシャカタカ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-07",
+    "events": [
+      {
+        "date": "2025-09-07",
+        "venue": "中山",
+        "race_id": "202506040210",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "フォージドブリック": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040304",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "サンセリテ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040305",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "エマージェンス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040307",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "サノノアメリカン": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040308",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ベルベルコンパス": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040309",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ゲンジ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-13",
+    "events": [
+      {
+        "date": "2025-09-13",
+        "venue": "中山",
+        "race_id": "202506040312",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "スレドナゴラ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040402",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "サトミノアカリ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040403",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "フローラルデザイン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040406",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "キョウキランブ": {
+    "score_boost": 8.2,
+    "value_count": 2,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040408",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 8.2
+      },
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040310",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ミカッテヨンデイイ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040410",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "バグラダス": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040411",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジョーローリット": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-14",
+    "events": [
+      {
+        "date": "2025-09-14",
+        "venue": "中山",
+        "race_id": "202506040411",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ファインダーズ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040604",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ロジクリスエス": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040605",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マウントバーノン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040606",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "レイヤードレッド": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040607",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ティティナ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-20",
+    "events": [
+      {
+        "date": "2025-09-20",
+        "venue": "中山",
+        "race_id": "202506040607",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ミセスジョーンズ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040701",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "セントリアン": {
+    "score_boost": 7.0,
+    "value_count": 2,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040702",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      },
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040602",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ケイベエ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040702",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ナリノシャーウッド": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040704",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 8.2
+      }
+    ]
+  },
+  "チャロ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040706",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "マイネルステラート": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040708",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "イコノスタシス": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040708",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "タマカヅラ": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040708",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "モズカトレア": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-21",
+    "events": [
+      {
+        "date": "2025-09-21",
+        "venue": "中山",
+        "race_id": "202506040712",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ゴーツウキリシマ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040801",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "レディサン": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040803",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "フレアリングベリー": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040805",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ランスノーブル": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040806",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ビップチェイス": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040807",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ピコレッド": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040808",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "トーセンエスクード": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040811",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "スミレファースト": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-27",
+    "events": [
+      {
+        "date": "2025-09-27",
+        "venue": "中山",
+        "race_id": "202506040812",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 7.0
+      }
+    ]
+  },
+  "パーシヴァル": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040905",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "プロスペクトパーク": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040906",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ベラジオワールド": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040907",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ベレーバスク": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040909",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "コスモアバンサ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040910",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ドゥカート": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040910",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ウインカーネリアン": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040911",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ジューンブレア": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040911",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "カズゴルティス": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-09-28",
+    "events": [
+      {
+        "date": "2025-09-28",
+        "venue": "中山",
+        "race_id": "202506040912",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 15,
+        "boost": 8.2
+      }
+    ]
+  },
+  "アルゲンテウス": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-04",
+    "events": [
+      {
+        "date": "2025-10-04",
+        "venue": "東京",
+        "race_id": "202505040109",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マテンロウコマンド": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-10-04",
+    "events": [
+      {
+        "date": "2025-10-04",
+        "venue": "東京",
+        "race_id": "202505040111",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ユティタム": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-04",
+    "events": [
+      {
+        "date": "2025-10-04",
+        "venue": "東京",
+        "race_id": "202505040111",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 14,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ヨドノティアラ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040203",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "リアライズガイザー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040206",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "バンブルビー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040207",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ホウオウビスケッツ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-10-05",
+    "events": [
+      {
+        "date": "2025-10-05",
+        "venue": "東京",
+        "race_id": "202505040211",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ツァレヴナ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040302",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ウィッキドピケット": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040304",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ルクソンライト": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040304",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "テーオーカイザー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040305",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "メアヴィア": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040307",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 4.8
+      }
+    ]
+  },
+  "トクシースタローン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040310",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ガリレア": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040311",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "アンクエンチャブル": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040312",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "トラヴェリンバンド": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-10-11",
+    "events": [
+      {
+        "date": "2025-10-11",
+        "venue": "東京",
+        "race_id": "202505040312",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ヴァルボナ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040401",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "テンユウ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040402",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ガイストライヒ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040404",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "アクロスメモリア": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040404",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 5.8
+      }
+    ]
+  },
+  "サンタアニタ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040406",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ジェシーテソーロ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040407",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "マテンロウバローズ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040409",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ペプチドタイガー": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040410",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ワイワイレジェンド": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-10-12",
+    "events": [
+      {
+        "date": "2025-10-12",
+        "venue": "東京",
+        "race_id": "202505040410",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 8.2
+      }
+    ]
+  },
+  "エルアン": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040603",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ミスティユニバンス": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040604",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ハニージョー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040605",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 5.8
+      }
+    ]
+  },
+  "グレイルクエスト": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040606",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 5.8
+      }
+    ]
+  },
+  "アルレッキーノ": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040607",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ピカピカサンダー": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040610",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "ノットイナフ": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040610",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 7.0
+      }
+    ]
+  },
+  "エチャケナ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040612",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "コシュデリ": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-10-18",
+    "events": [
+      {
+        "date": "2025-10-18",
+        "venue": "東京",
+        "race_id": "202505040612",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 9,
+        "boost": 7.2
+      }
+    ]
+  },
+  "マイネルテオドロス": {
+    "score_boost": 7.0,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040701",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 13,
+        "boost": 7.0
+      }
+    ]
+  },
+  "ルージュアストレア": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040702",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 4.8
+      }
+    ]
+  },
+  "ヴェンデボヌール": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040703",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 6.0
+      }
+    ]
+  },
+  "エコロガノン": {
+    "score_boost": 6.0,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040704",
+        "finish": 2,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 6.0
+      }
+    ]
+  },
+  "ピアス": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040705",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 16,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ワイルデンウーリー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040708",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "クールブロン": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040710",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 7,
+        "boost": 7.2
+      }
+    ]
+  },
+  "アピーリングルック": {
+    "score_boost": 7.2,
+    "value_count": 1,
+    "last_seen": "2025-10-19",
+    "events": [
+      {
+        "date": "2025-10-19",
+        "venue": "東京",
+        "race_id": "202505040711",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 7.2
+      }
+    ]
+  },
+  "セイウンリメンバー": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-25",
+    "events": [
+      {
+        "date": "2025-10-25",
+        "venue": "東京",
+        "race_id": "202505040801",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "ジャレッド": {
+    "score_boost": 8.2,
+    "value_count": 1,
+    "last_seen": "2025-10-25",
+    "events": [
+      {
+        "date": "2025-10-25",
+        "venue": "東京",
+        "race_id": "202505040804",
+        "finish": 1,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 10,
+        "boost": 8.2
+      }
+    ]
+  },
+  "ジャガーライズ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-25",
+    "events": [
+      {
+        "date": "2025-10-25",
+        "venue": "東京",
+        "race_id": "202505040804",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 11,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マイネルトレマーズ": {
+    "score_boost": 5.8,
+    "value_count": 1,
+    "last_seen": "2025-10-25",
+    "events": [
+      {
+        "date": "2025-10-25",
+        "venue": "東京",
+        "race_id": "202505040806",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 12,
+        "boost": 5.8
+      }
+    ]
+  },
+  "マクミランテソーロ": {
+    "score_boost": 4.8,
+    "value_count": 1,
+    "last_seen": "2025-10-25",
+    "events": [
+      {
+        "date": "2025-10-25",
+        "venue": "東京",
+        "race_id": "202505040807",
+        "finish": 3,
+        "odds": 0,
+        "pop_rank": null,
+        "score_rank": 8,
+        "boost": 4.8
+      }
+    ]
+  }
+}

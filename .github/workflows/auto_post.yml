@@ -25,7 +25,7 @@ on:
 jobs:
   predict-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 350   # GitHub Actions最大近く（6時間）
     steps:
       - name: Checkout
         uses: actions/checkout@v4
