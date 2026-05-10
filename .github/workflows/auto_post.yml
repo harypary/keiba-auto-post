@@ -38,6 +38,8 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          pip install playwright
+          playwright install chromium
 
       - name: Setup Chrome (Selenium 用)
         uses: browser-actions/setup-chrome@v1
@@ -104,6 +106,7 @@ jobs:
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
@@ -113,6 +116,7 @@ jobs:
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python main.py --run-now sunday
 
       - name: Weekly review & weight optimization
@@ -122,6 +126,7 @@ jobs:
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python weekly_review.py
 
       - name: Save updated weights & cache

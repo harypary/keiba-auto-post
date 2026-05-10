@@ -1,0 +1,30 @@
+name: note セッション自動更新
+
+# 月1回 自動でnote.comに再ログインして NOTE_SESSION_B64 Secret を更新する。
+# これにより人間の介入なしで永遠に自動投稿が続く。
+
+on:
+  schedule:
+    - cron: '17 18 1 * *'   # 毎月1日 03:17 JST
+  workflow_dispatch:
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: |
+          pip install playwright pynacl python-dotenv
+          playwright install chromium
+      - name: Renew session
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: python scripts/renew_note_session.py
