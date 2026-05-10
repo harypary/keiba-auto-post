@@ -1,0 +1,59 @@
+{
+  "url": "https://note.com/",
+  "buttons": [
+    {
+      "text": "急上昇",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "くらし",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "社会・経済",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "テクノロジー",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "エンタメ",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "趣味・関心",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "創作",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "text": "まなび",
+      "enabled": true,
+      "visible": true
+    }
+  ],
+  "inputs": [
+    {
+      "type": "search",
+      "id": null,
+      "name": "q",
+      "placeholder": "キーワードやクリエイターで検索"
+    },
+    {
+      "type": "search",
+      "id": null,
+      "name": "q",
+      "placeholder": "キーワードやクリエイターで検索"
+    }
+  ]
+}

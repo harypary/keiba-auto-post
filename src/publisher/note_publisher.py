@@ -130,16 +130,42 @@ class NotePublisher:
             page.on("dialog", lambda d: d.accept())
 
             try:
-                # セッション確認
+                # セッション確認 + 新規ノート作成のためにトップから「投稿」リンクをクリック
                 page.goto("https://note.com", wait_until="networkidle", timeout=30000)
                 _wait(2)
-                if not page.query_selector('[data-testid="user-icon"], .o-header__userIcon, a[href*="/settings"]'):
-                    print("[note] セッション期限切れの可能性 → renew_note_session.py を実行してください")
-
-                # 新規記事ページへ
                 print(f"[note] 投稿開始: {title[:40]}")
-                page.goto(NOTE_NEW_ARTICLE_URL, wait_until="networkidle", timeout=30000)
-                _wait(3)
+
+                # ★トップページの年齢認証/同意モーダルを最初に閉じる
+                self._dismiss_modals(page)
+
+                # 「投稿する」リンク経由でエディタを起動（force=True でモーダル無視）
+                opened = False
+                for sel in [
+                    'a[href*="/notes/new"]',
+                    'a[href="/notes/new"]',
+                    'a:has-text("投稿")',
+                ]:
+                    try:
+                        els = page.locator(sel).all()
+                        if els:
+                            els[0].click(timeout=5000, force=True)
+                            opened = True
+                            break
+                    except Exception:
+                        continue
+                if not opened:
+                    page.goto(NOTE_NEW_ARTICLE_URL, wait_until="networkidle", timeout=30000)
+                _wait(5)
+                # editorのProseMirrorが現れるまで待機（最大30秒）
+                try:
+                    page.wait_for_selector(".ProseMirror, [contenteditable='true']", timeout=30000)
+                except Exception as ex:
+                    print(f"[note] エディタ起動タイムアウト: {ex} (URL: {page.url})")
+                    return None
+                _wait(2)
+
+                # モーダル（年齢認証など）が現れたら閉じる
+                self._dismiss_modals(page)
 
                 # タイトル入力
                 self._fill_title(page, title)
@@ -205,6 +231,46 @@ class NotePublisher:
                 return url
             finally:
                 browser.close()
+
+    def _dismiss_modals(self, page):
+        """note.com で出てくるモーダル（年齢認証/同意/通知許可など）を強制的に閉じる"""
+        for attempt in range(8):
+            modal = page.query_selector(".ReactModal__Overlay--after-open, .IdentificationModal__overlay")
+            if not modal:
+                # JSで強制非表示
+                try:
+                    page.evaluate("""
+                        document.querySelectorAll('.ReactModalPortal, .ReactModal__Overlay, [class*="Modal__overlay"]').forEach(el => el.remove());
+                    """)
+                except Exception:
+                    pass
+                return
+            print(f"[note] モーダル検出 (attempt {attempt+1}) → 閉じる")
+            # ボタンクリック試行
+            for sel in [
+                'button:has-text("確認")', 'button:has-text("OK")',
+                'button:has-text("はい")', 'button:has-text("同意")',
+                'button:has-text("閉じる")', 'button:has-text("Skip")',
+                'button[aria-label="閉じる"]', 'button[aria-label="Close"]',
+                '.ReactModal__Content button',
+            ]:
+                try:
+                    btns = page.locator(sel).all()
+                    if btns:
+                        btns[-1].click(timeout=1500, force=True)
+                        _wait(1)
+                        break
+                except Exception:
+                    continue
+            # それでも残っていれば JS で強制削除
+            try:
+                page.evaluate("""
+                    document.querySelectorAll('.ReactModalPortal, .ReactModal__Overlay, [class*="Modal__overlay"]').forEach(el => el.remove());
+                    document.body.style.overflow = 'auto';
+                """)
+            except Exception:
+                pass
+            _wait(0.5)
 
     def _fill_title(self, page, title: str):
         for sel in [
