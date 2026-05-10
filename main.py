@@ -38,6 +38,16 @@ if __name__ == "__main__":
         from src.pipeline import run_pipeline
         if args.date:
             target = datetime.strptime(args.date, "%Y%m%d").date()
+        elif args.run_now == "saturday":
+            # 直近の土曜（今日が土曜なら今日、それ以外は次の土曜）
+            today = date.today()
+            days = (5 - today.weekday()) % 7
+            target = today + timedelta(days=days)
+        elif args.run_now == "sunday":
+            # 直近の日曜（今日が日曜なら今日、それ以外は次の日曜）
+            today = date.today()
+            days = (6 - today.weekday()) % 7
+            target = today + timedelta(days=days)
         else:
             target = date.today() + timedelta(days=1)
         publish = not args.dry_run
