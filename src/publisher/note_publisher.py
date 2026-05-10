@@ -154,7 +154,26 @@ class NotePublisher:
                     page.click('button:has-text("公開に進む")', timeout=8000)
                     _wait(4)
                 except Exception as e:
+                    # スクリーンショット＋HTML保存
+                    try:
+                        page.screenshot(path=f"/tmp/note_fail_publish_btn_{int(time.time())}.png")
+                        with open(f"/tmp/note_fail_html_{int(time.time())}.html", "w", encoding="utf-8") as f:
+                            f.write(page.content()[:50000])
+                    except Exception:
+                        pass
                     print(f"[note] 「公開に進む」失敗: {e}")
+                    print(f"[note] 現URL: {page.url}")
+                    # ボタンテキスト探索
+                    buttons = page.locator("button").all()
+                    btn_texts = []
+                    for b in buttons[:30]:
+                        try:
+                            t = b.text_content() or ""
+                            if t.strip():
+                                btn_texts.append(t.strip()[:30])
+                        except Exception:
+                            pass
+                    print(f"[note] 利用可能ボタン: {btn_texts}")
                     return None
 
                 # ハッシュタグ
