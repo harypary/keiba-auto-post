@@ -27,10 +27,16 @@ def _sigmoid(x: float) -> float:
 
 
 def _gather_training_samples() -> list:
-    """過去のhistorical_raw_*.json を全部読み、(features, label) ペアを集める"""
+    """過去のレースから(features, label)ペアを集める。
+    1. winner / honmei レベルの集計（旧形式・互換）
+    2. all_horses_training.jsonl の全頭因子（新形式・大量サンプル）
+       label定義: 3着以内=1, 4着以下=0（複勝予測ベース。勝率予測より安定）
+    """
     samples = []
-    paths = glob(os.path.join(os.path.dirname(__file__), "..", "..", "data", "backtest", "historical_raw_*.json"))
-    paths += glob(os.path.join(os.path.dirname(__file__), "..", "..", "data", "backtest", "_progress.json"))
+    base = os.path.join(os.path.dirname(__file__), "..", "..", "data", "backtest")
+
+    # === 1. 旧形式（winner_factors, honmei_factors）===
+    paths = glob(os.path.join(base, "historical_raw_*.json")) + glob(os.path.join(base, "_progress.json"))
     for p in paths:
         try:
             with open(p, encoding="utf-8") as f:
@@ -41,9 +47,31 @@ def _gather_training_samples() -> list:
             wf = r.get("winner_factors", {})
             pf = r.get("honmei_factors", {})
             if wf:
-                samples.append((wf, 1))   # 勝ち馬は確実に勝者
+                samples.append((wf, 1))
             if pf:
                 samples.append((pf, 1 if r.get("honmei_win") else 0))
+
+    # === 2. 新形式：全頭データ（複勝率予測）===
+    all_horses_path = os.path.join(base, "all_horses_training.jsonl")
+    if os.path.exists(all_horses_path):
+        try:
+            with open(all_horses_path, encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        race = json.loads(line)
+                    except Exception:
+                        continue
+                    for h in race.get("horses", []):
+                        feats = h.get("factors", {})
+                        finish = h.get("finish_order", 99)
+                        if not feats:
+                            continue
+                        # ラベル: 3着以内なら1、それ以外0
+                        label = 1 if (finish and finish <= 3) else 0
+                        samples.append((feats, label))
+        except Exception as ex:
+            print(f"[ML] all_horses読み込み失敗: {ex}")
+
     return samples
 
 
