@@ -29,10 +29,10 @@ from src.validator.performance_tracker import save_prediction, get_track_record_
 from config.settings import OUTPUT_DIR, CACHE_DIR
 
 
-def run_pipeline(target_date: date, publish: bool = True, save_files: bool = True):
+def run_pipeline(target_date: date, publish: bool = True, save_files: bool = True, main_only: bool = False):
     """
     中央競馬全レースの完全分析 → note.com自動投稿
-    未勝利〜G1まで全レース対応
+    main_only=True: 投稿は重賞・OP特別・メインレース（11R）のみ。他は予測のみ実施し学習に使う。
     """
     print(f"\n{'='*60}")
     print(f"[START] {target_date} 全レース完全分析パイプライン")
@@ -107,8 +107,19 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
     weekday   = target_date.weekday()
     venue_day = "日曜" if weekday == 6 else "土曜"
 
+    # main_only モード: 投稿対象は重賞 / OP / メイン(11R)のみ。他はnote生成スキップ。
+    def _is_main(item):
+        race = item["race"]
+        if race.grade in ("G1", "G2", "G3", "OP"):
+            return True
+        if race.race_no == 11:
+            return True
+        return False
+
     notes = []
     for i, item in enumerate(race_results):
+        if main_only and not _is_main(item):
+            continue
         note = format_race_note_v2(
             race=item["race"], scores=item["scores"],
             plan=item["plan"], context=item["context"],
@@ -117,16 +128,20 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         notes.append(note)
         print(f"  [OK] {note['title'][:55]}...")
 
-    # 競馬場ごとの全レースパック（割安セット価格）
-    venues = {}
-    for item in race_results:
-        venues.setdefault(item["race"].venue, []).append(item)
-    for venue, items in venues.items():
-        venue_pack = format_day_summary_note(items, target_date, venue_day, venue)
-        notes.append(venue_pack)
-        print(f"  [OK] パック({venue} {len(items)}R): {venue_pack['title'][:55]}...")
+    # 競馬場ごとの全レースパック（main_only時はスキップ）
+    if not main_only:
+        venues = {}
+        for item in race_results:
+            venues.setdefault(item["race"].venue, []).append(item)
+        for venue, items in venues.items():
+            venue_pack = format_day_summary_note(items, target_date, venue_day, venue)
+            notes.append(venue_pack)
+            print(f"  [OK] パック({venue} {len(items)}R): {venue_pack['title'][:55]}...")
 
     # 4. 投稿 / 保存
+    if main_only:
+        skipped = len(race_results) - sum(1 for it in race_results if _is_main(it))
+        print(f"  ※ メインのみモード: 投稿対象{len(notes)}件 / {skipped}レースは予測のみ（学習データ蓄積）")
     print(f"\n[4/4] {'note.com投稿' if publish else 'ファイル保存のみ'}...")
     published = []
     for note in notes:

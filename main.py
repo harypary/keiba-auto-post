@@ -26,6 +26,7 @@ if __name__ == "__main__":
     parser.add_argument("--dry-run", action="store_true", help="noteに投稿せずファイル保存のみ")
     parser.add_argument("--run-now", choices=["saturday", "sunday"], help="今すぐ実行")
     parser.add_argument("--clear-cache", action="store_true", help="キャッシュクリア")
+    parser.add_argument("--main-only", action="store_true", help="重賞・メインレース（11R）のみ投稿（他は予測のみで学習に使用）")
     args = parser.parse_args()
 
     import logging
@@ -51,7 +52,7 @@ if __name__ == "__main__":
         else:
             target = date.today() + timedelta(days=1)
         publish = not args.dry_run
-        print(f"対象日: {target}  投稿: {publish}")
-        run_pipeline(target_date=target, publish=publish, save_files=True)
+        print(f"対象日: {target}  投稿: {publish}  メインのみ: {args.main_only}")
+        run_pipeline(target_date=target, publish=publish, save_files=True, main_only=args.main_only)
     else:
         run_forever()

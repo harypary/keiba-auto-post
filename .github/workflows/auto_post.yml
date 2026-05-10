@@ -11,13 +11,15 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: '実行モード (saturday / sunday / review)'
+        description: '実行モード'
         required: true
         default: 'saturday'
         type: choice
         options:
           - saturday
           - sunday
+          - saturday_main_only
+          - sunday_main_only
           - review
 
 jobs:
@@ -118,6 +120,26 @@ jobs:
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python main.py --run-now sunday
+
+      - name: Run prediction (sunday main only)
+        if: steps.mode.outputs.mode == 'sunday_main_only'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: python main.py --run-now sunday --main-only
+
+      - name: Run prediction (saturday main only)
+        if: steps.mode.outputs.mode == 'saturday_main_only'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: python main.py --run-now saturday --main-only
 
       - name: Weekly review & weight optimization
         if: steps.mode.outputs.mode == 'review' && steps.dedupe.outputs.skip != 'true'
