@@ -82,11 +82,17 @@ class NotePublisher:
             print("[note] セッションなし → 投稿不可。setup_note_session.py を先に実行してください。")
             return None
 
-        # 無料/有料の分割
+        # 無料/有料の分割（マーカー以降が有料、ただしマーカー行自体は本文から削除）
         if paid_body_start_marker in body:
             idx = body.index(paid_body_start_marker)
             free_body = body[:idx].strip()
-            paid_body = body[idx:].strip()
+            # マーカー行と前後の区切りを除いて paid を取得
+            rest = body[idx:]
+            # 1行目（マーカー）を取り除く
+            paid_body = "\n".join(rest.split("\n")[1:]).lstrip("\n").strip()
+            # paid_body 先頭に余分な区切り（---）があれば除去
+            while paid_body.startswith("---"):
+                paid_body = paid_body[3:].lstrip("\n")
         else:
             free_body = body
             paid_body = ""
@@ -346,9 +352,11 @@ class NotePublisher:
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
-        """マーカー段落を選択 → カーソル設定 → +メニュー → 有料エリア指定"""
+        """マーカー段落のテキストを JS で削除 → カーソル設置 → +メニュー → 有料エリア指定"""
         try:
-            # マーカーを含む段落要素を特定し、その要素にユニークIDを設定
+            # 1. JS で マーカー段落を見つけて、テキストを完全に空にする
+            #    （DOMから直接削除すると ProseMirror が再レンダリングして座標がズレるので
+            #     textContent を空にして「空段落」状態にする）
             bbox = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
@@ -357,7 +365,6 @@ class NotePublisher:
                         if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
                             child.scrollIntoView({{block: 'center'}});
                             const r = child.getBoundingClientRect();
-                            // マーカー段落のテキストを空にしてカーソル設定の準備
                             return {{x: r.x, y: r.y, w: r.width, h: r.height}};
                         }}
                     }}
@@ -372,43 +379,60 @@ class NotePublisher:
             cx = bbox["x"] + bbox["w"] / 2
             cy = bbox["y"] + bbox["h"] / 2
 
-            # ★ STEP1: マーカー段落をクリックしてカーソルを置く
+            # 2. その段落をクリック→トリプルクリックでマーカー文字を選択→Delete
             page.mouse.click(cx, cy)
-            _wait(0.5)
-            # マーカーテキストを全選択して削除（空段落になる、カーソルそこに残る）
-            page.keyboard.press("Control+a")  # 文字単位で全選択は段落全体
-            _wait(0.2)
-            # 全選択は全体になってしまうので、Home → Shift+End で段落内のみ選択
-            page.keyboard.press("Home")
-            _wait(0.1)
-            page.keyboard.press("Shift+End")
-            _wait(0.2)
+            _wait(0.3)
+            # Triple-click selects the whole paragraph text
+            page.mouse.click(cx, cy, click_count=3)
+            _wait(0.3)
             page.keyboard.press("Delete")
             _wait(0.5)
 
-            # ★ STEP2: 同じ位置にマウス移動して + ボタンを発火（カーソルもそこにある）
+            # 3. その位置にマウス移動して + が出るのを待つ
             page.mouse.move(cx, cy, steps=8)
             _wait(0.8)
 
-            # +ボタンクリック
             menu_btn = page.locator('[aria-label="メニューを開く"]').first
             try:
                 menu_btn.wait_for(state="visible", timeout=4000)
             except Exception:
-                # 出ない場合はマウスを少し動かして再発火
-                page.mouse.move(bbox["x"] - 50, cy, steps=5)
-                _wait(0.5)
-                page.mouse.move(cx, cy, steps=5)
+                # マウスを左右に揺らして再発火
+                page.mouse.move(bbox["x"] - 60, cy, steps=4)
+                _wait(0.3)
+                page.mouse.move(cx, cy, steps=4)
                 _wait(0.8)
                 menu_btn.wait_for(state="visible", timeout=2000)
 
             menu_btn.click(timeout=3000, force=True)
             _wait(1)
 
-            # ★ STEP3: 「有料エリア指定」をクリック
+            # 4. 「有料エリア指定」クリック
             page.click('text=有料エリア指定', timeout=4000)
-            _wait(2)
-            print("[note] 境界マーカー置換成功（クリック+マウス+メニュー）")
+            _wait(2.5)
+
+            # 5. 境界が挿入されたか検証（paywall関連のDOMがあるか）
+            inserted = page.evaluate("""
+                () => {
+                    const html = document.querySelector('.ProseMirror').innerHTML;
+                    return /paywall|paid_area|有料/i.test(html);
+                }
+            """)
+            if inserted:
+                print("[note] 境界マーカー置換成功（クリック+マウス+メニュー）")
+                # 残ったマーカー文字列があれば JS で除去
+                page.evaluate(f"""
+                    () => {{
+                        const pm = document.querySelector('.ProseMirror');
+                        if (!pm) return;
+                        for (const child of pm.children) {{
+                            if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
+                                child.textContent = '';
+                            }}
+                        }}
+                    }}
+                """)
+            else:
+                print("[note] 境界挿入確認できず、リトライ未実装")
         except Exception as e:
             print(f"[note] +メニュー失敗: {e}")
 
