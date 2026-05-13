@@ -333,45 +333,58 @@ class NotePublisher:
             body_el.click()
         _wait(0.5)
 
-        # 無料部分を貼り付け
-        self._paste_chunked(page, teaser)
-        _wait(1)
+        # ▼ 戦略: 一意マーカー文字列を本文に埋め込んで全文貼付
+        #   → 貼付後にProseMirror APIでマーカー位置を特定して境界に置換
+        BOUNDARY_MARKER = "==PAID_BOUNDARY_HERE=="
+        full_body = teaser + ("\n\n" + BOUNDARY_MARKER + "\n\n" + paid if paid else "")
+
+        self._paste_chunked(page, full_body)
+        _wait(2)
 
         if paid:
-            # 末尾にカーソル移動して改行
-            page.keyboard.press("Control+End")
-            _wait(0.3)
-            page.keyboard.press("Enter")
-            _wait(0.5)
-            # 先に paid 本文を全部貼り付け（boundary は後で挿入）
-            self._paste_chunked(page, paid)
+            self._replace_marker_with_boundary(page, BOUNDARY_MARKER)
             _wait(2)
 
-            # 貼り付け後、境界を入れる位置までカーソルを戻す
-            # 簡易: paid セクションの先頭にカーソル移動して boundary 挿入
-            # ※ note の有料エリア境界は「最初の paid 行の直前」に置く必要があるため
-            # 実装簡略化: 末尾から有料行数 - 1 回 ArrowUp で先頭に戻り、boundary を挿入
-            self._reposition_and_insert_boundary(page, paid)
-            _wait(2)
-
-    def _reposition_and_insert_boundary(self, page, paid_text: str):
-        """paid本文の冒頭にカーソルを戻し、有料エリア境界を挿入する"""
+    def _replace_marker_with_boundary(self, page, marker: str):
+        """貼付後のエディタからマーカー行を見つけ、有料境界に置換"""
         try:
-            # Ctrl+Endで末尾、そこからArrowUp繰り返してpaid本文先頭まで戻る
-            page.keyboard.press("Control+End")
-            _wait(0.2)
-            # paid_textの行数+1だけ上に戻る
-            lines = paid_text.count("\n") + 1
-            for _ in range(lines):
-                page.keyboard.press("ArrowUp")
-            _wait(0.3)
-            page.keyboard.press("Home")
-            _wait(0.3)
-            # ここで境界線を挿入
+            # JSで該当テキスト位置を選択 → DEL → 境界挿入
+            found = page.evaluate(f"""
+                () => {{
+                    const pm = document.querySelector('.ProseMirror');
+                    if (!pm) return false;
+                    // マーカーを含むテキストノードを見つける
+                    const walker = document.createTreeWalker(pm, NodeFilter.SHOW_TEXT);
+                    let node;
+                    while (node = walker.nextNode()) {{
+                        const idx = node.textContent.indexOf({json.dumps(marker)});
+                        if (idx >= 0) {{
+                            // 選択範囲を作成
+                            const range = document.createRange();
+                            range.setStart(node, idx);
+                            range.setEnd(node, idx + {len(marker)});
+                            const sel = window.getSelection();
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                            return true;
+                        }}
+                    }}
+                    return false;
+                }}
+            """)
+            if not found:
+                print(f"[note] マーカー位置不明、有料境界スキップ")
+                return
+            _wait(0.5)
+            # マーカー文字列が選択された状態 → Delete でマーカー削除
+            page.keyboard.press("Delete")
+            _wait(0.5)
+            # その位置に有料境界を挿入
             self._insert_paid_boundary(page)
             _wait(1.5)
+            print("[note] 境界マーカー置換成功")
         except Exception as e:
-            print(f"[note] 境界再挿入失敗: {e}")
+            print(f"[note] マーカー置換失敗: {e}")
 
     def _paste_chunked(self, page, text: str, chunk_size: int = 1500):
         """長文を行単位で小さく分割し keyboard.type() で確実に挿入"""
