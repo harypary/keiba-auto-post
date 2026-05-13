@@ -333,46 +333,75 @@ class NotePublisher:
             body_el.click()
         _wait(0.5)
 
-        # 無料部分を分割して貼り付け（長文の貼付失敗を防ぐ）
+        # 無料部分を貼り付け
         self._paste_chunked(page, teaser)
         _wait(1)
 
         if paid:
-            self._insert_paid_boundary(page)
-            _wait(1)
+            # 末尾にカーソル移動して改行
+            page.keyboard.press("Control+End")
+            _wait(0.3)
+            page.keyboard.press("Enter")
+            _wait(0.5)
+            # 先に paid 本文を全部貼り付け（boundary は後で挿入）
             self._paste_chunked(page, paid)
             _wait(2)
 
-    def _paste_chunked(self, page, text: str, chunk_size: int = 4000):
-        """長文を分割してクリップボード経由で貼付。Markdown構造を保つため改行で区切る"""
+            # 貼り付け後、境界を入れる位置までカーソルを戻す
+            # 簡易: paid セクションの先頭にカーソル移動して boundary 挿入
+            # ※ note の有料エリア境界は「最初の paid 行の直前」に置く必要があるため
+            # 実装簡略化: 末尾から有料行数 - 1 回 ArrowUp で先頭に戻り、boundary を挿入
+            self._reposition_and_insert_boundary(page, paid)
+            _wait(2)
+
+    def _reposition_and_insert_boundary(self, page, paid_text: str):
+        """paid本文の冒頭にカーソルを戻し、有料エリア境界を挿入する"""
+        try:
+            # Ctrl+Endで末尾、そこからArrowUp繰り返してpaid本文先頭まで戻る
+            page.keyboard.press("Control+End")
+            _wait(0.2)
+            # paid_textの行数+1だけ上に戻る
+            lines = paid_text.count("\n") + 1
+            for _ in range(lines):
+                page.keyboard.press("ArrowUp")
+            _wait(0.3)
+            page.keyboard.press("Home")
+            _wait(0.3)
+            # ここで境界線を挿入
+            self._insert_paid_boundary(page)
+            _wait(1.5)
+        except Exception as e:
+            print(f"[note] 境界再挿入失敗: {e}")
+
+    def _paste_chunked(self, page, text: str, chunk_size: int = 1500):
+        """長文を行単位で小さく分割し keyboard.type() で確実に挿入"""
         if not text:
             return
-        if len(text) <= chunk_size:
-            self._paste_one(page, text)
-            return
-        # 改行ベースで分割
+        # 1500文字ごと（行単位で区切る）
         chunks = []
         cur = ""
         for line in text.split("\n"):
-            if len(cur) + len(line) + 1 > chunk_size:
+            if len(cur) + len(line) + 1 > chunk_size and cur:
                 chunks.append(cur)
                 cur = line
             else:
                 cur = (cur + "\n" + line) if cur else line
         if cur:
             chunks.append(cur)
-        for i, ch in enumerate(chunks):
-            self._paste_one(page, ch if i == 0 else "\n" + ch)
-            _wait(0.5)
 
-    def _paste_one(self, page, text: str):
-        try:
-            page.evaluate(f"navigator.clipboard.writeText({json.dumps(text)})")
-            _wait(0.2)
-            page.keyboard.press("Control+v")
-            _wait(0.4)
-        except Exception as e:
-            print(f"[note] paste chunk失敗: {e}")
+        total = len(chunks)
+        print(f"[note] 本文 {len(text)}文字 → {total}分割で貼付")
+        for i, ch in enumerate(chunks):
+            try:
+                # クリップボード経由（高速）
+                page.evaluate(f"navigator.clipboard.writeText({json.dumps(ch if i == 0 else chr(10) + ch)})")
+                _wait(0.3)
+                page.keyboard.press("Control+v")
+                _wait(0.6)
+                if i > 0 and i % 5 == 0:
+                    print(f"[note]  ...{i}/{total}件")
+            except Exception as e:
+                print(f"[note] paste chunk {i} 失敗: {e}")
 
     def _insert_paid_boundary(self, page):
         """有料エリア境界線を挿入（複数戦略でフォールバック）"""
