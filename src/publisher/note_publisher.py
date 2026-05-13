@@ -339,16 +339,89 @@ class NotePublisher:
             body_el.click()
         _wait(0.5)
 
-        # ▼ 戦略: 一意マーカー文字列を本文に埋め込んで全文貼付
-        #   → 貼付後にProseMirror APIでマーカー位置を特定して境界に置換
-        BOUNDARY_MARKER = "==PAID_BOUNDARY_HERE=="
-        full_body = teaser + ("\n\n" + BOUNDARY_MARKER + "\n\n" + paid if paid else "")
-
-        self._paste_chunked(page, full_body)
-        _wait(2)
+        # Step 1: teaser 部分のみ貼付
+        self._paste_chunked(page, teaser)
+        _wait(1.5)
 
         if paid:
-            self._replace_marker_with_boundary(page, BOUNDARY_MARKER)
+            # Step 2: 末尾に確実にカーソル移動＋改行
+            page.keyboard.press("Control+End")
+            _wait(0.4)
+            page.keyboard.press("Enter")
+            _wait(0.6)
+
+            # Step 3: 末尾段落の bbox 取得
+            bbox = page.evaluate("""
+                () => {
+                    const pm = document.querySelector('.ProseMirror');
+                    if (!pm) return null;
+                    const last = pm.lastElementChild;
+                    if (!last) return null;
+                    last.scrollIntoView({block: 'center'});
+                    const r = last.getBoundingClientRect();
+                    return {x: r.x, y: r.y, w: r.width, h: r.height};
+                }
+            """)
+            if bbox:
+                cx = bbox["x"] + bbox["w"] / 2
+                cy = bbox["y"] + bbox["h"] / 2
+                # Step 4: マウスを末尾段落に物理移動して + を発火
+                page.mouse.move(cx, cy, steps=8)
+                _wait(0.8)
+                try:
+                    menu_btn = page.locator('[aria-label="メニューを開く"]').first
+                    menu_btn.wait_for(state="visible", timeout=4000)
+                    menu_btn.click(timeout=3000, force=True)
+                    _wait(1)
+                    # Step 5: 「有料エリア指定」をクリック → 境界挿入
+                    page.click('text=有料エリア指定', timeout=4000)
+                    _wait(2.5)
+                    has_paywall = page.evaluate("""
+                        () => /paywall|paid_area|paid-area/i.test(document.querySelector('.ProseMirror').innerHTML)
+                    """)
+                    print(f"[note] 境界挿入 has_paywall={has_paywall}")
+
+                    # ★ Step 6: paywall要素の「下」を物理的にクリックしてカーソル設置
+                    # paywall要素を探して、その下端より下のY座標にクリック
+                    paywall_bbox = page.evaluate("""
+                        () => {
+                            const pm = document.querySelector('.ProseMirror');
+                            if (!pm) return null;
+                            // paywall関連クラスを持つ要素を探す
+                            const all = pm.querySelectorAll('*');
+                            for (const el of all) {
+                                const cls = el.className || '';
+                                if (/paywall|paid_area|paid-area/i.test(cls)) {
+                                    el.scrollIntoView({block: 'center'});
+                                    const r = el.getBoundingClientRect();
+                                    return {x: r.x, y: r.y, w: r.width, h: r.height, bottom: r.bottom};
+                                }
+                            }
+                            // 直接の paywall 要素がなければ ProseMirror の lastElementChild を返す
+                            const last = pm.lastElementChild;
+                            const r = last.getBoundingClientRect();
+                            return {x: r.x, y: r.y, w: r.width, h: r.height, bottom: r.bottom};
+                        }
+                    """)
+                    if paywall_bbox:
+                        # paywall の下端 + 30px の位置をクリックしてカーソルを下に置く
+                        click_x = paywall_bbox["x"] + paywall_bbox["w"] / 2
+                        click_y = paywall_bbox["bottom"] + 30
+                        page.mouse.click(click_x, click_y)
+                        _wait(0.4)
+                        # Ctrl+End で末尾（境界の下）まで移動を保証
+                        page.keyboard.press("Control+End")
+                        _wait(0.3)
+                        page.keyboard.press("Enter")
+                        _wait(0.3)
+                        print("[note] カーソルを境界の下に移動")
+                except Exception as e:
+                    print(f"[note] +メニュー失敗: {e}")
+            else:
+                print("[note] bbox 取得失敗")
+
+            # Step 7: paid 本文を貼付（境界の下に追加される）
+            self._paste_chunked(page, paid)
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
