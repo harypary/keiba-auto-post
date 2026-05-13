@@ -347,54 +347,73 @@ class NotePublisher:
 
     def _replace_marker_with_boundary(self, page, marker: str):
         """貼付後のエディタからマーカー行を見つけ、有料境界に置換。
-        重要: 境界挿入は「現在のカーソル位置」で行う必要がある。
-        +メニュー方式は最後の要素にホバーしてしまうため使えない。
-        → スラッシュコマンド方式で挿入する。"""
+        マーカーを含む段落（要素）を特定 → その要素にホバー → +メニュー → 有料エリア指定"""
         try:
-            # JSでマーカーを含む段落要素を見つけ、そこにフォーカスを移す
-            found = page.evaluate(f"""
+            # JSでマーカーを含む段落要素を取得＋一意IDを振る
+            elem_id = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
-                    if (!pm) return false;
-                    const walker = document.createTreeWalker(pm, NodeFilter.SHOW_TEXT);
-                    let node;
-                    while (node = walker.nextNode()) {{
-                        const idx = node.textContent.indexOf({json.dumps(marker)});
-                        if (idx >= 0) {{
-                            const range = document.createRange();
-                            range.setStart(node, idx);
-                            range.setEnd(node, idx + {len(marker)});
-                            const sel = window.getSelection();
-                            sel.removeAllRanges();
-                            sel.addRange(range);
-                            return true;
+                    if (!pm) return null;
+                    for (const child of pm.children) {{
+                        if (child.textContent.includes({json.dumps(marker)})) {{
+                            const id = '__paid_boundary_target__';
+                            child.id = id;
+                            return id;
                         }}
                     }}
-                    return false;
+                    return null;
                 }}
             """)
-            if not found:
-                print(f"[note] マーカー位置不明、有料境界スキップ")
+            if not elem_id:
+                print(f"[note] マーカー段落不明")
                 return
-            _wait(0.5)
-            # 選択中のマーカーを削除（その位置にカーソルが残る）
-            page.keyboard.press("Delete")
-            _wait(0.5)
-            # 段落全体を選択解除して空行を確保
-            page.keyboard.press("Home")
-            _wait(0.2)
+            _wait(0.3)
 
-            # ★スラッシュコマンドで「有料エリア指定」を挿入
-            page.keyboard.type("/")
-            _wait(0.8)
-            page.keyboard.type("有料")
+            # その段落をホバー → 左端に + アイコンが出現
+            page.hover(f"#{elem_id}", timeout=3000)
             _wait(0.5)
-            # メニューから「有料エリア指定」を Enter で選択
-            page.keyboard.press("Enter")
+
+            # マーカー段落のテキスト全体を選択して削除（カーソルはその段落に残る）
+            page.evaluate(f"""
+                () => {{
+                    const el = document.getElementById('{elem_id}');
+                    if (!el) return false;
+                    const range = document.createRange();
+                    range.selectNodeContents(el);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    return true;
+                }}
+            """)
+            _wait(0.3)
+            page.keyboard.press("Delete")
+            _wait(0.3)
+
+            # +ボタン（メニューを開く）を見つけてクリック
+            menu_btn = page.locator('[aria-label="メニューを開く"], button[aria-label*="メニュー"]').first
+            menu_btn.click(timeout=3000, force=True)
+            _wait(0.7)
+            page.click('text=有料エリア指定', timeout=3000)
             _wait(1.5)
-            print("[note] 境界マーカー置換成功（スラッシュ）")
+            print("[note] 境界マーカー置換成功（段落 + メニュー）")
+
+            # フォールバック: 境界が見えなければスラッシュコマンドも試す
         except Exception as e:
-            print(f"[note] マーカー置換失敗: {e}")
+            print(f"[note] +メニュー失敗: {e} → スラッシュ試行")
+            try:
+                # マーカーを再選択して削除（既に消えてる場合はスキップ）
+                page.keyboard.press("Home")
+                _wait(0.3)
+                page.keyboard.type("/")
+                _wait(1.0)
+                page.keyboard.type("有料")
+                _wait(0.7)
+                page.keyboard.press("Enter")
+                _wait(1.5)
+                print("[note] スラッシュフォールバック完了")
+            except Exception as e2:
+                print(f"[note] スラッシュも失敗: {e2}")
 
     def _paste_chunked(self, page, text: str, chunk_size: int = 1500):
         """長文を行単位で小さく分割し keyboard.type() で確実に挿入"""

@@ -74,6 +74,6 @@ result = p.create_paid_article(
     body=note['body'],
     tags=note['tags'][:5],
     price=note['price'],
-    draft_only=True,
+    draft_only=False,
 )
 print(f"\nResult: {result}")

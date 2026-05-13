@@ -775,30 +775,59 @@ def _section_full_ranking(scores, race) -> str:
 
 
 def _short_negative_comment(s, race) -> str:
-    """6位以下の馬になぜ評価が低いかを一言で"""
+    """6位以下の馬になぜ「この馬に今回が合っていない」かを具体的に一言で"""
     rs = getattr(s, "raw_stat", None)
     odds = getattr(s, "odds", 0) or 0
     pr = getattr(s, "place_rate", 0) or 0
-    wr = getattr(s, "win_rate", 0) or 0
     races = getattr(s, "total_races", 0) or 0
     form = getattr(s, "form_score", 0) or 0
+    style = getattr(s, "running_style", "")
 
     reasons = []
     if rs:
-        if rs.surface_score < 50: reasons.append(f"{race.surface}実績乏しい")
-        if rs.distance_score < 50: reasons.append(f"{race.distance}m未経験気味")
-        if rs.venue_score < 50: reasons.append(f"{race.venue}コースで結果なし")
-        if rs.condition_score < 50: reasons.append(f"{race.condition}馬場は不向き")
-        if rs.grade_score < 50: reasons.append("クラスの壁")
-    if pr < 0.2 and races >= 5: reasons.append(f"複勝率{pr*100:.0f}%と低調")
-    if form < 50: reasons.append("近走の調子が下降")
-    if races <= 2: reasons.append(f"通算{races}戦と経験不足")
-    if odds and odds >= 50: reasons.append(f"オッズ{odds:.0f}倍と評価薄")
+        # 馬場（芝/ダート）が合わない
+        if rs.surface_score < 50:
+            if race.surface == "芝":
+                reasons.append("ダート寄りの実績で芝で踏ん張れない")
+            else:
+                reasons.append("芝での実績が中心でダート適性に疑問")
+        # 距離
+        if rs.distance_score < 50:
+            if race.distance >= 2000:
+                reasons.append(f"スプリント・マイル型で{race.distance}mは長い")
+            elif race.distance <= 1400:
+                reasons.append(f"中距離型で{race.distance}mはスピード不足")
+            else:
+                reasons.append(f"{race.distance}m前後の経験が浅く対応に不安")
+        # コース固有
+        if rs.venue_score < 50:
+            shape = "直線が長く決め手勝負" if race.venue == "東京" else (
+                "起伏のあるコースで持続力勝負" if race.venue in ("中山","阪神") else (
+                "平坦かつスタミナ問われるコース" if race.venue == "新潟" else "局面の特徴が合いづらい")
+            )
+            reasons.append(f"{race.venue}は{shape}、この馬の脚質と噛み合わない")
+        # 馬場状態
+        if rs.condition_score < 50:
+            if race.condition in ("稍重","重","不良"):
+                reasons.append(f"良馬場専用の脚質で{race.condition}は割引")
+            else:
+                reasons.append(f"道悪に強い馬で良馬場の高速決着では分が悪い")
+        # クラス
+        if rs.grade_score < 50:
+            reasons.append("前走から相手強化、力量的に厳しい")
+    # 近走・複勝
+    if pr < 0.2 and races >= 5:
+        reasons.append(f"近走で結果が出ておらず流れに乗れていない")
+    if form < 50:
+        reasons.append("直近のレース内容に下降傾向")
+    if races <= 2:
+        reasons.append("キャリア浅く本格化はまだ先")
+    if odds and odds >= 50:
+        reasons.append("市場評価も非常に低く、買い材料に乏しい")
 
     if not reasons:
-        # ポジティブ要素弱いタイプ
-        return "致命的な穴はないが、上位陣に比べて決め手不足。押さえまで"
-    return "／".join(reasons[:2]) + "。見送り対象"
+        return "致命的な穴はないが、上位陣との力量差で押さえまで"
+    return reasons[0] + ("／" + reasons[1] if len(reasons) > 1 else "")
 
 
 def _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap):
