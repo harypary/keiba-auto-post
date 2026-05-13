@@ -74,8 +74,10 @@ class NotePublisher:
         tags: list[str],
         price: int = 300,
         paid_body_start_marker: str = "👇 ここから有料公開部分",
+        draft_only: bool = False,
     ) -> dict | None:
-        """有料記事を作成・公開してURL情報を返す"""
+        """有料記事を作成・公開してURL情報を返す。
+        draft_only=True で公開せず下書き保存のみ"""
         if not self._storage_state:
             print("[note] セッションなし → 投稿不可。setup_note_session.py を先に実行してください。")
             return None
@@ -97,7 +99,7 @@ class NotePublisher:
 
         url = self._publish_with_playwright(
             title=title, teaser=free_body, paid=paid_body,
-            tags=tags or [], price=price,
+            tags=tags or [], price=price, draft_only=draft_only,
         )
         if url:
             return {"url": url, "title": title}
@@ -107,7 +109,7 @@ class NotePublisher:
     # Playwrightによる投稿
     # ────────────────────────────────────────────
 
-    def _publish_with_playwright(self, title, teaser, paid, tags, price) -> Optional[str]:
+    def _publish_with_playwright(self, title, teaser, paid, tags, price, draft_only: bool = False) -> Optional[str]:
         from playwright.sync_api import sync_playwright
 
         with sync_playwright() as p:
@@ -207,23 +209,52 @@ class NotePublisher:
                     self._set_hashtags(page, tags[:5])
                     _wait(1)
 
+                # 有料モードへ切替：#paid ラジオを確実に選択（scroll + JS click）
+                try:
+                    paid_radio = page.locator('#paid').first
+                    paid_radio.scroll_into_view_if_needed(timeout=3000)
+                    _wait(0.3)
+                    # JS で確実にチェック状態にして change イベント発火
+                    page.evaluate("""
+                        const r = document.getElementById('paid');
+                        if (r) { r.click(); r.checked = true; r.dispatchEvent(new Event('change', {bubbles: true})); }
+                    """)
+                    _wait(1.5)
+                    print("[note] 有料モード切替 OK (JS)")
+                except Exception as e:
+                    print(f"[note] 有料モード切替失敗: {e}")
+
                 # 価格設定
                 self._set_price(page, price)
                 _wait(1)
 
-                # 有料エリア設定
+                # 「有料エリア設定」ボタン → 投稿確認画面 → 「投稿する」表示
                 try:
-                    page.click('button:has-text("有料エリア設定")', timeout=8000)
-                    _wait(4)
-                except Exception:
-                    pass
-
-                # 投稿する
-                try:
-                    page.click('button:has-text("投稿する")', timeout=8000)
-                    _wait(8)
+                    page.click('button:has-text("有料エリア設定")', timeout=8000, force=True)
+                    _wait(5)
                 except Exception as e:
-                    print(f"[note] 「投稿する」失敗: {e}")
+                    print(f"[note] 有料エリア設定失敗: {e}")
+
+                # draft_only モードなら投稿せず編集URLを返す
+                if draft_only:
+                    print("[note] draft_only: 公開せず下書き保存")
+                    _wait(3)
+                    return page.url
+
+                # 「投稿する」「公開する」のいずれかをクリック
+                published = False
+                for txt in ["投稿する", "公開する", "公開"]:
+                    try:
+                        btns = page.locator(f'button:has-text("{txt}"):not([disabled])').all()
+                        if btns:
+                            btns[-1].click(timeout=5000, force=True)
+                            published = True
+                            _wait(8)
+                            break
+                    except Exception:
+                        continue
+                if not published:
+                    print(f"[note] 「投稿する」相当ボタンが見つからない")
                     return None
 
                 url = page.url
@@ -377,14 +408,26 @@ class NotePublisher:
     def _set_price(self, page, price):
         try:
             loc = page.locator('#price').first
+            loc.scroll_into_view_if_needed(timeout=3000)
+            _wait(0.3)
             loc.wait_for(state="visible", timeout=4000)
             loc.click(click_count=3)
             _wait(0.2)
             loc.fill(str(price))
             _wait(0.3)
             loc.press("Tab")
+            print(f"[note] 価格設定 OK: {price}円")
         except Exception as e:
             print(f"[note] 価格設定失敗: {e}")
+            # JSフォールバック
+            try:
+                page.evaluate(f"""
+                    const p = document.getElementById('price');
+                    if (p) {{ p.value = '{price}'; p.dispatchEvent(new Event('input', {{bubbles:true}})); p.dispatchEvent(new Event('change', {{bubbles:true}})); }}
+                """)
+                print(f"[note] 価格設定 JSフォールバック")
+            except Exception as ex:
+                print(f"[note] 価格JS失敗: {ex}")
 
     # ────────────────────────────────────────────
     # ファイル保存（バックアップ用）

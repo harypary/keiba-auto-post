@@ -142,19 +142,26 @@ def format_day_summary_note(race_list: list[dict], target_date: date, venue_day:
 def _build_full_body(race, scores, plan, context, target_date: date) -> str:
     parts = []
 
-    # ---- 無料ゾーン（購買意欲を高める構成） ----
-    track_record = _get_track_record()
-    if track_record:
-        parts.append(f"> {track_record}\n\n")
+    # ---- 無料ゾーン：視覚的に引き込むデザイン ----
+    # 1. オープニングフック（実績+今日のレース概要）
+    parts.append(_opening_hook(race, scores, plan, target_date))
 
-    parts.append(_section_header(race, target_date))
+    # 2. レース基本情報（コンパクト・表形式）
+    parts.append(_section_header_compact(race, target_date))
+
+    # 3. このレースをどう見るか（人間味のあるイントロ）
+    parts.append(_section_free_hook(race, scores, plan))
+
+    # 4. 進化中アピール
     lessons = _get_lessons_block()
     if lessons:
         parts.append(lessons)
     extra = _get_extra_signals_block(race, target_date)
     if extra:
         parts.append(extra)
-    parts.append(_section_free_hook(race, scores, plan))  # 煽りティーザー
+
+    # 5. 有料部分への橋渡し
+    parts.append(_paid_bridge(race, plan, scores))
 
     # ---- 有料ゾーン ----
     parts.append(f"\n---\n\n## {PAID_MARKER}\n\n")
@@ -423,6 +430,83 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
     out.append("- 想定配当 × 的中確率 = EV、EV > 1.0 の買い目に EV比例で資金配分\n")
     out.append("- 100円単位で丸め、最終的に期待回収率がプラスとなる組み合わせを選定\n\n")
     return "".join(out)
+
+
+def _opening_hook(race, scores, plan, target_date) -> str:
+    """記事冒頭の引き込み：実績アピール + 今日の予想エッセンス"""
+    parts = []
+    track_record = _get_track_record()
+    grade_emoji = GRADE_EMOJI.get(race.grade, "🐎")
+    honmei_name = ""
+    if plan.honmei and scores:
+        for s in scores:
+            if s.horse_no == plan.honmei[0]:
+                honmei_name = s.horse_name
+                break
+
+    # === 視覚的に強いオープニング ===
+    parts.append(f"## {grade_emoji} {race.race_name} ・ 本命公開\n\n")
+
+    if track_record:
+        parts.append(f"> ✨ **{track_record}**\n\n")
+
+    # 強い導入文（フック）
+    if race.grade == "G1":
+        parts.append(
+            "G1の舞台、ここで外すと一年待つことになる。\n"
+            "そういうレースだからこそ、自分の中で **「これしかない」** という本命を持って勝負したい。\n\n"
+        )
+    elif race.grade in ("G2", "G3"):
+        parts.append(
+            "重賞は配当の振れ幅が大きい。\n"
+            "**1点の的中で月のプラスマイナスがひっくり返る**のがここの面白さ。\n\n"
+        )
+    else:
+        parts.append(
+            "条件戦は人気馬の信頼度と穴馬の台頭、両方の見極めが回収率を分けます。\n"
+            "今回も全頭まんべんなく分析しました。\n\n"
+        )
+
+    if honmei_name:
+        parts.append(f"今回の本命は **◎ {honmei_name}**。\n選定根拠を含めて、続きで全部書いてます。\n\n")
+    parts.append("---\n\n")
+    return "".join(parts)
+
+
+def _section_header_compact(race, target_date) -> str:
+    """レース基本情報をコンパクトな表で。視覚密度を高める"""
+    surface_label = SURFACE_LABEL.get(race.surface, race.surface)
+    grade_label = _grade_label(race.grade)
+    return (
+        f"### 📋 レース概要\n\n"
+        f"| | |\n|---|---|\n"
+        f"| 🏟 開催 | {race.venue}競馬場 {race.race_no}R |\n"
+        f"| 🗓 日付 | {target_date.strftime('%Y年%m月%d日')} |\n"
+        f"| 🎯 条件 | {surface_label} {race.distance}m / {grade_label} |\n"
+        f"| 🌤 馬場 | {race.condition} / {race.weather} |\n"
+        f"| 🐎 頭数 | {race.num_horses}頭 |\n\n"
+    )
+
+
+def _paid_bridge(race, plan, scores) -> str:
+    """無料→有料の橋渡し：何が手に入るかを魅力的に予告"""
+    parts = ["\n### 🔑 続き（有料部分）に書いてあること\n\n"]
+    parts.append(
+        f"- ◎本命の選定理由（データと感覚、両方の言葉で）\n"
+        f"- ○対抗 / ▲単穴 / △連下 の確定印\n"
+        f"- {race.num_horses}頭ぜんぶの強み・懸念点・想定着順\n"
+        f"- ペースと隊列の予測図\n"
+    )
+    if plan.value_horse:
+        parts.append(f"- 💎 **今回いちばん推したい穴馬1頭**（オッズ的妙味あり）\n")
+    parts.append(
+        f"- 単勝 / 馬連 / ワイド / 3連複 / 3連単 の買い目\n"
+        f"- **Kelly基準で資金配分**（10,000円換算の投資配分表）\n\n"
+    )
+    # 価格と訴求
+    price = 500 if race.grade in ("G1", "G2", "G3") else 300
+    parts.append(_free_closing(race))
+    return "".join(parts)
 
 
 def _section_header(race, target_date: date) -> str:

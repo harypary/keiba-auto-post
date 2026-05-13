@@ -1,12 +1,12 @@
 {
-  "recent_form": 0.2258,
-  "surface": 0.1142,
-  "distance": 0.1255,
-  "speed_index": 0.101,
-  "class_change": 0.0844,
-  "venue": 0.1098,
-  "condition": 0.0713,
-  "rest": 0.0582,
-  "pace": 0.0761,
-  "weight_stab": 0.0335
+  "recent_form": 0.2057,
+  "surface": 0.1076,
+  "distance": 0.1224,
+  "speed_index": 0.0951,
+  "class_change": 0.0853,
+  "venue": 0.1211,
+  "condition": 0.0767,
+  "rest": 0.0632,
+  "pace": 0.084,
+  "weight_stab": 0.0389
 }
