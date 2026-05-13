@@ -346,18 +346,18 @@ class NotePublisher:
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
-        """貼付後のマーカー段落にマウスを物理移動 → +メニュー → 有料エリア指定"""
+        """マーカー段落を選択 → カーソル設定 → +メニュー → 有料エリア指定"""
         try:
-            # マーカーを含む段落の bounding box を取得
+            # マーカーを含む段落要素を特定し、その要素にユニークIDを設定
             bbox = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
                     if (!pm) return null;
                     for (const child of pm.children) {{
                         if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
-                            // スクロールして見えるようにする
                             child.scrollIntoView({{block: 'center'}});
                             const r = child.getBoundingClientRect();
+                            // マーカー段落のテキストを空にしてカーソル設定の準備
                             return {{x: r.x, y: r.y, w: r.width, h: r.height}};
                         }}
                     }}
@@ -369,47 +369,46 @@ class NotePublisher:
                 return
             _wait(0.5)
 
-            # マウスを段落中央に物理的に移動（+ボタンが出現する条件）
             cx = bbox["x"] + bbox["w"] / 2
             cy = bbox["y"] + bbox["h"] / 2
-            page.mouse.move(cx, cy, steps=10)
+
+            # ★ STEP1: マーカー段落をクリックしてカーソルを置く
+            page.mouse.click(cx, cy)
+            _wait(0.5)
+            # マーカーテキストを全選択して削除（空段落になる、カーソルそこに残る）
+            page.keyboard.press("Control+a")  # 文字単位で全選択は段落全体
+            _wait(0.2)
+            # 全選択は全体になってしまうので、Home → Shift+End で段落内のみ選択
+            page.keyboard.press("Home")
+            _wait(0.1)
+            page.keyboard.press("Shift+End")
+            _wait(0.2)
+            page.keyboard.press("Delete")
+            _wait(0.5)
+
+            # ★ STEP2: 同じ位置にマウス移動して + ボタンを発火（カーソルもそこにある）
+            page.mouse.move(cx, cy, steps=8)
             _wait(0.8)
 
-            # +ボタン（メニューを開く）を探してクリック
+            # +ボタンクリック
             menu_btn = page.locator('[aria-label="メニューを開く"]').first
             try:
-                menu_btn.wait_for(state="visible", timeout=3000)
+                menu_btn.wait_for(state="visible", timeout=4000)
             except Exception:
-                # ホバー反応しない場合は段落左端 30px 付近にマウス移動して再試行
-                page.mouse.move(bbox["x"] - 30, cy, steps=8)
-                _wait(0.6)
-                page.mouse.move(cx, cy, steps=8)
+                # 出ない場合はマウスを少し動かして再発火
+                page.mouse.move(bbox["x"] - 50, cy, steps=5)
+                _wait(0.5)
+                page.mouse.move(cx, cy, steps=5)
                 _wait(0.8)
                 menu_btn.wait_for(state="visible", timeout=2000)
 
             menu_btn.click(timeout=3000, force=True)
-            _wait(0.8)
+            _wait(1)
 
-            # 「有料エリア指定」メニュー項目をクリック
+            # ★ STEP3: 「有料エリア指定」をクリック
             page.click('text=有料エリア指定', timeout=4000)
             _wait(2)
-
-            # 境界が挿入された後、マーカー文字列を消す（マーカー段落のテキストを削除）
-            page.evaluate(f"""
-                () => {{
-                    const pm = document.querySelector('.ProseMirror');
-                    if (!pm) return;
-                    for (const child of pm.children) {{
-                        if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
-                            // テキストを空にする
-                            child.textContent = '';
-                            return;
-                        }}
-                    }}
-                }}
-            """)
-            _wait(0.5)
-            print("[note] 境界マーカー置換成功（マウス移動 + メニュー）")
+            print("[note] 境界マーカー置換成功（クリック+マウス+メニュー）")
         except Exception as e:
             print(f"[note] +メニュー失敗: {e}")
 
