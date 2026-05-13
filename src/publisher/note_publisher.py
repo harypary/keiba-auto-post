@@ -346,74 +346,72 @@ class NotePublisher:
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
-        """貼付後のエディタからマーカー行を見つけ、有料境界に置換。
-        マーカーを含む段落（要素）を特定 → その要素にホバー → +メニュー → 有料エリア指定"""
+        """貼付後のマーカー段落にマウスを物理移動 → +メニュー → 有料エリア指定"""
         try:
-            # JSでマーカーを含む段落要素を取得＋一意IDを振る
-            elem_id = page.evaluate(f"""
+            # マーカーを含む段落の bounding box を取得
+            bbox = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
                     if (!pm) return null;
                     for (const child of pm.children) {{
-                        if (child.textContent.includes({json.dumps(marker)})) {{
-                            const id = '__paid_boundary_target__';
-                            child.id = id;
-                            return id;
+                        if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
+                            // スクロールして見えるようにする
+                            child.scrollIntoView({{block: 'center'}});
+                            const r = child.getBoundingClientRect();
+                            return {{x: r.x, y: r.y, w: r.width, h: r.height}};
                         }}
                     }}
                     return null;
                 }}
             """)
-            if not elem_id:
+            if not bbox:
                 print(f"[note] マーカー段落不明")
                 return
-            _wait(0.3)
-
-            # その段落をホバー → 左端に + アイコンが出現
-            page.hover(f"#{elem_id}", timeout=3000)
             _wait(0.5)
 
-            # マーカー段落のテキスト全体を選択して削除（カーソルはその段落に残る）
+            # マウスを段落中央に物理的に移動（+ボタンが出現する条件）
+            cx = bbox["x"] + bbox["w"] / 2
+            cy = bbox["y"] + bbox["h"] / 2
+            page.mouse.move(cx, cy, steps=10)
+            _wait(0.8)
+
+            # +ボタン（メニューを開く）を探してクリック
+            menu_btn = page.locator('[aria-label="メニューを開く"]').first
+            try:
+                menu_btn.wait_for(state="visible", timeout=3000)
+            except Exception:
+                # ホバー反応しない場合は段落左端 30px 付近にマウス移動して再試行
+                page.mouse.move(bbox["x"] - 30, cy, steps=8)
+                _wait(0.6)
+                page.mouse.move(cx, cy, steps=8)
+                _wait(0.8)
+                menu_btn.wait_for(state="visible", timeout=2000)
+
+            menu_btn.click(timeout=3000, force=True)
+            _wait(0.8)
+
+            # 「有料エリア指定」メニュー項目をクリック
+            page.click('text=有料エリア指定', timeout=4000)
+            _wait(2)
+
+            # 境界が挿入された後、マーカー文字列を消す（マーカー段落のテキストを削除）
             page.evaluate(f"""
                 () => {{
-                    const el = document.getElementById('{elem_id}');
-                    if (!el) return false;
-                    const range = document.createRange();
-                    range.selectNodeContents(el);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    return true;
+                    const pm = document.querySelector('.ProseMirror');
+                    if (!pm) return;
+                    for (const child of pm.children) {{
+                        if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
+                            // テキストを空にする
+                            child.textContent = '';
+                            return;
+                        }}
+                    }}
                 }}
             """)
-            _wait(0.3)
-            page.keyboard.press("Delete")
-            _wait(0.3)
-
-            # +ボタン（メニューを開く）を見つけてクリック
-            menu_btn = page.locator('[aria-label="メニューを開く"], button[aria-label*="メニュー"]').first
-            menu_btn.click(timeout=3000, force=True)
-            _wait(0.7)
-            page.click('text=有料エリア指定', timeout=3000)
-            _wait(1.5)
-            print("[note] 境界マーカー置換成功（段落 + メニュー）")
-
-            # フォールバック: 境界が見えなければスラッシュコマンドも試す
+            _wait(0.5)
+            print("[note] 境界マーカー置換成功（マウス移動 + メニュー）")
         except Exception as e:
-            print(f"[note] +メニュー失敗: {e} → スラッシュ試行")
-            try:
-                # マーカーを再選択して削除（既に消えてる場合はスキップ）
-                page.keyboard.press("Home")
-                _wait(0.3)
-                page.keyboard.type("/")
-                _wait(1.0)
-                page.keyboard.type("有料")
-                _wait(0.7)
-                page.keyboard.press("Enter")
-                _wait(1.5)
-                print("[note] スラッシュフォールバック完了")
-            except Exception as e2:
-                print(f"[note] スラッシュも失敗: {e2}")
+            print(f"[note] +メニュー失敗: {e}")
 
     def _paste_chunked(self, page, text: str, chunk_size: int = 1500):
         """長文を行単位で小さく分割し keyboard.type() で確実に挿入"""
