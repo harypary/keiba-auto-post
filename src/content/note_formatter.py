@@ -85,20 +85,19 @@ PAID_MARKER = "👇 ここから有料公開部分"
 # ============================================================
 
 def format_race_note_v2(race, scores, plan, context, target_date: date, race_index: int) -> dict:
-    grade_emoji = GRADE_EMOJI.get(race.grade, "📌")
-    top_horse = scores[0] if scores else None
-    honmei_name = top_horse.horse_name if top_horse else "本命馬"
+    # タイトル：シンプルかつ訴求力のある短い形に
+    date_str = target_date.strftime("%m/%d")
+    grade_emoji = GRADE_EMOJI.get(race.grade, "")
+    is_g = race.grade in ("G1", "G2", "G3")
+    # 重賞は「【日付】レース名｜本命公開」、通常戦は「【日付】場所N R｜予想」
+    if is_g or race.grade == "OP":
+        title = f"【{date_str}】{race.race_name}｜本命公開"
+    else:
+        title = f"【{date_str}】{race.venue}{race.race_no}R｜本命と買い目"
 
-    # タイトル：グレードに応じて訴求ワードを変える
-    title_suffix = _title_hook(race, scores)
-    title = (
-        f"【{target_date.strftime('%m/%d')}】{grade_emoji}"
-        f"{race.venue}{race.race_no}R {race.race_name}"
-        f"｜{title_suffix}"
-    )
     body = _build_full_body(race, scores, plan, context, target_date)
     tags = _build_tags(race, target_date)
-    price = 500 if race.grade in ("G1", "G2", "G3") else 300
+    price = 500 if is_g else 300
     return {"title": title, "body": body, "tags": tags, "is_paid": True, "price": price}
 
 
@@ -433,10 +432,9 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
 
 
 def _opening_hook(race, scores, plan, target_date) -> str:
-    """記事冒頭の引き込み：実績アピール + 今日の予想エッセンス"""
+    """記事冒頭の引き込み：実績 + 今日の予想エッセンス（ボールドは本命にのみ）"""
     parts = []
     track_record = _get_track_record()
-    grade_emoji = GRADE_EMOJI.get(race.grade, "🐎")
     honmei_name = ""
     if plan.honmei and scores:
         for s in scores:
@@ -444,22 +442,20 @@ def _opening_hook(race, scores, plan, target_date) -> str:
                 honmei_name = s.horse_name
                 break
 
-    # === 視覚的に強いオープニング ===
-    parts.append(f"## {grade_emoji} {race.race_name} ・ 本命公開\n\n")
+    parts.append(f"## {race.race_name}\n\n")
 
     if track_record:
-        parts.append(f"> ✨ **{track_record}**\n\n")
+        parts.append(f"> {track_record}\n\n")
 
-    # 強い導入文（フック）
     if race.grade == "G1":
         parts.append(
             "G1の舞台、ここで外すと一年待つことになる。\n"
-            "そういうレースだからこそ、自分の中で **「これしかない」** という本命を持って勝負したい。\n\n"
+            "そういうレースだからこそ、自分の中で「これしかない」という本命を持って勝負したい。\n\n"
         )
     elif race.grade in ("G2", "G3"):
         parts.append(
             "重賞は配当の振れ幅が大きい。\n"
-            "**1点の的中で月のプラスマイナスがひっくり返る**のがここの面白さ。\n\n"
+            "1点の的中で月のプラスマイナスがひっくり返るのがここの面白さ。\n\n"
         )
     else:
         parts.append(

@@ -320,7 +320,6 @@ class NotePublisher:
         page.keyboard.type(title)
 
     def _fill_body(self, page, teaser: str, paid: str):
-        # 本文エリアをクリック
         body_el = None
         for sel in [".ProseMirror", '[role="textbox"]', '[contenteditable="true"]']:
             try:
@@ -334,21 +333,46 @@ class NotePublisher:
             body_el.click()
         _wait(0.5)
 
-        # 無料部分（クリップボード経由）
-        page.evaluate(f"navigator.clipboard.writeText({json.dumps(teaser)})")
-        _wait(0.3)
-        page.keyboard.press("Control+v")
-        _wait(0.5)
+        # 無料部分を分割して貼り付け（長文の貼付失敗を防ぐ）
+        self._paste_chunked(page, teaser)
+        _wait(1)
 
-        # 有料区切り挿入
         if paid:
             self._insert_paid_boundary(page)
             _wait(1)
-            # 有料部分
-            page.evaluate(f"navigator.clipboard.writeText({json.dumps(paid)})")
-            _wait(0.5)
-            page.keyboard.press("Control+v")
+            self._paste_chunked(page, paid)
             _wait(2)
+
+    def _paste_chunked(self, page, text: str, chunk_size: int = 4000):
+        """長文を分割してクリップボード経由で貼付。Markdown構造を保つため改行で区切る"""
+        if not text:
+            return
+        if len(text) <= chunk_size:
+            self._paste_one(page, text)
+            return
+        # 改行ベースで分割
+        chunks = []
+        cur = ""
+        for line in text.split("\n"):
+            if len(cur) + len(line) + 1 > chunk_size:
+                chunks.append(cur)
+                cur = line
+            else:
+                cur = (cur + "\n" + line) if cur else line
+        if cur:
+            chunks.append(cur)
+        for i, ch in enumerate(chunks):
+            self._paste_one(page, ch if i == 0 else "\n" + ch)
+            _wait(0.5)
+
+    def _paste_one(self, page, text: str):
+        try:
+            page.evaluate(f"navigator.clipboard.writeText({json.dumps(text)})")
+            _wait(0.2)
+            page.keyboard.press("Control+v")
+            _wait(0.4)
+        except Exception as e:
+            print(f"[note] paste chunk失敗: {e}")
 
     def _insert_paid_boundary(self, page):
         """有料エリア境界線を挿入（複数戦略でフォールバック）"""
