@@ -8,7 +8,7 @@
 import os, sys, io, json, subprocess, time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-MAX_YEARS = 10
+MAX_YEARS = 5    # 5年データ（約6000レース）まで蓄積
 WEEKS_PER_YEAR = 52
 PROGRESS = "data/backtest/_progress.json"
 LOG_DIR = "data/backtest"

@@ -760,7 +760,7 @@ def _section_full_ranking(scores, race) -> str:
             parts.append(f"騎手×馬: 過去{aff_obj.total}戦{aff_obj.wins}勝・複勝率{aff_obj.place_rate*100:.0f}%\n")
         parts.append("\n")
 
-    # === 6位以下のクイック評価（1行ずつ）===
+    # === 6位以下のクイック評価（一言コメント付き）===
     if len(sorted_scores) > 5:
         parts.append("### その他の馬（簡易評価）\n\n")
         for rank, s in enumerate(sorted_scores[5:], 6):
@@ -768,10 +768,37 @@ def _section_full_ranking(scores, race) -> str:
             final = getattr(s, "final_score", 0)
             odds  = getattr(s, "odds", 0) or 0
             odds_str = f"{odds:.1f}倍" if odds else "-"
-            role = _role_text(rank, race.num_horses, odds)
-            parts.append(f"- {mark} {s.horse_no}番 {s.horse_name}（評点{final:.1f}・{odds_str}）— {role}\n")
+            comment = _short_negative_comment(s, race)
+            parts.append(f"- {mark} {s.horse_no}番 {s.horse_name}（評点{final:.1f}・{odds_str}）— {comment}\n")
         parts.append("\n")
     return "".join(parts)
+
+
+def _short_negative_comment(s, race) -> str:
+    """6位以下の馬になぜ評価が低いかを一言で"""
+    rs = getattr(s, "raw_stat", None)
+    odds = getattr(s, "odds", 0) or 0
+    pr = getattr(s, "place_rate", 0) or 0
+    wr = getattr(s, "win_rate", 0) or 0
+    races = getattr(s, "total_races", 0) or 0
+    form = getattr(s, "form_score", 0) or 0
+
+    reasons = []
+    if rs:
+        if rs.surface_score < 50: reasons.append(f"{race.surface}実績乏しい")
+        if rs.distance_score < 50: reasons.append(f"{race.distance}m未経験気味")
+        if rs.venue_score < 50: reasons.append(f"{race.venue}コースで結果なし")
+        if rs.condition_score < 50: reasons.append(f"{race.condition}馬場は不向き")
+        if rs.grade_score < 50: reasons.append("クラスの壁")
+    if pr < 0.2 and races >= 5: reasons.append(f"複勝率{pr*100:.0f}%と低調")
+    if form < 50: reasons.append("近走の調子が下降")
+    if races <= 2: reasons.append(f"通算{races}戦と経験不足")
+    if odds and odds >= 50: reasons.append(f"オッズ{odds:.0f}倍と評価薄")
+
+    if not reasons:
+        # ポジティブ要素弱いタイプ
+        return "致命的な穴はないが、上位陣に比べて決め手不足。押さえまで"
+    return "／".join(reasons[:2]) + "。見送り対象"
 
 
 def _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap):

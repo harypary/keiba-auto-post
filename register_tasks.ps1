@@ -11,8 +11,8 @@ $friTr = "$ghQ workflow run auto_post.yml --repo $repo -f mode=saturday"
 $satTr = "$ghQ workflow run auto_post.yml --repo $repo -f mode=sunday"
 $monTr = "$ghQ workflow run auto_post.yml --repo $repo -f mode=review"
 
-& schtasks /create /tn keiba_friday_post   /tr $friTr /sc WEEKLY /d FRI /st 09:00 /f
-& schtasks /create /tn keiba_saturday_post /tr $satTr /sc WEEKLY /d SAT /st 09:00 /f
+& schtasks /create /tn keiba_friday_post   /tr $friTr /sc WEEKLY /d FRI /st 21:00 /f
+& schtasks /create /tn keiba_saturday_post /tr $satTr /sc WEEKLY /d SAT /st 21:00 /f
 & schtasks /create /tn keiba_monday_review /tr $monTr /sc WEEKLY /d MON /st 07:00 /f
 
 Write-Host ""

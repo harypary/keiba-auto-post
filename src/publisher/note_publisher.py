@@ -346,20 +346,21 @@ class NotePublisher:
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
-        """貼付後のエディタからマーカー行を見つけ、有料境界に置換"""
+        """貼付後のエディタからマーカー行を見つけ、有料境界に置換。
+        重要: 境界挿入は「現在のカーソル位置」で行う必要がある。
+        +メニュー方式は最後の要素にホバーしてしまうため使えない。
+        → スラッシュコマンド方式で挿入する。"""
         try:
-            # JSで該当テキスト位置を選択 → DEL → 境界挿入
+            # JSでマーカーを含む段落要素を見つけ、そこにフォーカスを移す
             found = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
                     if (!pm) return false;
-                    // マーカーを含むテキストノードを見つける
                     const walker = document.createTreeWalker(pm, NodeFilter.SHOW_TEXT);
                     let node;
                     while (node = walker.nextNode()) {{
                         const idx = node.textContent.indexOf({json.dumps(marker)});
                         if (idx >= 0) {{
-                            // 選択範囲を作成
                             const range = document.createRange();
                             range.setStart(node, idx);
                             range.setEnd(node, idx + {len(marker)});
@@ -376,13 +377,22 @@ class NotePublisher:
                 print(f"[note] マーカー位置不明、有料境界スキップ")
                 return
             _wait(0.5)
-            # マーカー文字列が選択された状態 → Delete でマーカー削除
+            # 選択中のマーカーを削除（その位置にカーソルが残る）
             page.keyboard.press("Delete")
             _wait(0.5)
-            # その位置に有料境界を挿入
-            self._insert_paid_boundary(page)
+            # 段落全体を選択解除して空行を確保
+            page.keyboard.press("Home")
+            _wait(0.2)
+
+            # ★スラッシュコマンドで「有料エリア指定」を挿入
+            page.keyboard.type("/")
+            _wait(0.8)
+            page.keyboard.type("有料")
+            _wait(0.5)
+            # メニューから「有料エリア指定」を Enter で選択
+            page.keyboard.press("Enter")
             _wait(1.5)
-            print("[note] 境界マーカー置換成功")
+            print("[note] 境界マーカー置換成功（スラッシュ）")
         except Exception as e:
             print(f"[note] マーカー置換失敗: {e}")
 
