@@ -352,19 +352,24 @@ class NotePublisher:
             _wait(2)
 
     def _replace_marker_with_boundary(self, page, marker: str):
-        """マーカー段落のテキストを JS で削除 → カーソル設置 → +メニュー → 有料エリア指定"""
+        """マーカー段落を削除 → 「次の段落」（最初のpaid本文）で+メニュー → 有料エリア指定
+        ※ +メニューの「有料エリア指定」は選択段落の手前に境界を挿入する仕様"""
         try:
-            # 1. JS で マーカー段落を見つけて、テキストを完全に空にする
-            #    （DOMから直接削除すると ProseMirror が再レンダリングして座標がズレるので
-            #     textContent を空にして「空段落」状態にする）
+            # 1. マーカー段落を完全削除し、次段落のbboxを取得
             bbox = page.evaluate(f"""
                 () => {{
                     const pm = document.querySelector('.ProseMirror');
                     if (!pm) return null;
-                    for (const child of pm.children) {{
-                        if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
-                            child.scrollIntoView({{block: 'center'}});
-                            const r = child.getBoundingClientRect();
+                    const children = Array.from(pm.children);
+                    for (let i = 0; i < children.length; i++) {{
+                        if (children[i].textContent && children[i].textContent.includes({json.dumps(marker)})) {{
+                            // マーカー段落の次の段落を取得（これが「paid本文の先頭」）
+                            const next = children[i + 1];
+                            if (!next) return null;
+                            // マーカー段落を物理削除
+                            children[i].remove();
+                            next.scrollIntoView({{block: 'center'}});
+                            const r = next.getBoundingClientRect();
                             return {{x: r.x, y: r.y, w: r.width, h: r.height}};
                         }}
                     }}
@@ -372,23 +377,16 @@ class NotePublisher:
                 }}
             """)
             if not bbox:
-                print(f"[note] マーカー段落不明")
+                print(f"[note] マーカー次段落不明")
                 return
-            _wait(0.5)
+            _wait(0.8)
 
             cx = bbox["x"] + bbox["w"] / 2
             cy = bbox["y"] + bbox["h"] / 2
 
-            # 2. その段落をクリック→トリプルクリックでマーカー文字を選択→Delete
+            # 2. 「次段落」をクリック（カーソル設定）→ マウス物理移動で+ボタン発火
             page.mouse.click(cx, cy)
-            _wait(0.3)
-            # Triple-click selects the whole paragraph text
-            page.mouse.click(cx, cy, click_count=3)
-            _wait(0.3)
-            page.keyboard.press("Delete")
-            _wait(0.5)
-
-            # 3. その位置にマウス移動して + が出るのを待つ
+            _wait(0.4)
             page.mouse.move(cx, cy, steps=8)
             _wait(0.8)
 
@@ -396,7 +394,6 @@ class NotePublisher:
             try:
                 menu_btn.wait_for(state="visible", timeout=4000)
             except Exception:
-                # マウスを左右に揺らして再発火
                 page.mouse.move(bbox["x"] - 60, cy, steps=4)
                 _wait(0.3)
                 page.mouse.move(cx, cy, steps=4)
@@ -406,33 +403,33 @@ class NotePublisher:
             menu_btn.click(timeout=3000, force=True)
             _wait(1)
 
-            # 4. 「有料エリア指定」クリック
+            # 3. 「有料エリア指定」をクリック → この段落の直前に境界が入る
             page.click('text=有料エリア指定', timeout=4000)
             _wait(2.5)
 
-            # 5. 境界が挿入されたか検証（paywall関連のDOMがあるか）
+            # 4. 検証＆冗長マーカー削除
             inserted = page.evaluate("""
                 () => {
                     const html = document.querySelector('.ProseMirror').innerHTML;
-                    return /paywall|paid_area|有料/i.test(html);
+                    return /paywall|paid_area|paid-area/i.test(html);
                 }
             """)
             if inserted:
-                print("[note] 境界マーカー置換成功（クリック+マウス+メニュー）")
-                # 残ったマーカー文字列があれば JS で除去
+                print("[note] 境界挿入成功（次段落+メニュー方式）")
+                # 残ったマーカー文字列を念のため削除
                 page.evaluate(f"""
                     () => {{
                         const pm = document.querySelector('.ProseMirror');
                         if (!pm) return;
                         for (const child of pm.children) {{
                             if (child.textContent && child.textContent.includes({json.dumps(marker)})) {{
-                                child.textContent = '';
+                                child.remove();
                             }}
                         }}
                     }}
                 """)
             else:
-                print("[note] 境界挿入確認できず、リトライ未実装")
+                print("[note] 境界挿入未確認")
         except Exception as e:
             print(f"[note] +メニュー失敗: {e}")
 
