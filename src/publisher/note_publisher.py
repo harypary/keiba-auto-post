@@ -183,10 +183,14 @@ class NotePublisher:
                 self._fill_body(page, teaser, paid)
                 _wait(2)
 
+                # ★ note.com の自動保存が完了するまで十分待つ（公開フロー成功率向上）
+                print("[note] 自動保存待機 30秒...")
+                _wait(30)
+
                 # 公開設定ページへ
                 try:
                     page.click('button:has-text("公開に進む")', timeout=8000)
-                    _wait(4)
+                    _wait(6)
                 except Exception as e:
                     # スクリーンショット＋HTML保存
                     try:
