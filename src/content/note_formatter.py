@@ -85,13 +85,20 @@ PAID_MARKER = "👇 ここから有料公開部分"
 # ============================================================
 
 def format_race_note_v2(race, scores, plan, context, target_date: date, race_index: int) -> dict:
-    # タイトル：シンプルかつ訴求力のある短い形に
+    # タイトル：メインレースは強く目立たせる
     date_str = target_date.strftime("%m/%d")
-    grade_emoji = GRADE_EMOJI.get(race.grade, "")
     is_g = race.grade in ("G1", "G2", "G3")
-    # 重賞は「【日付】レース名｜本命公開」、通常戦は「【日付】場所N R｜予想」
-    if is_g or race.grade == "OP":
-        title = f"【{date_str}】{race.race_name}｜本命公開"
+
+    if race.grade == "G1":
+        title = f"🏆【{date_str} G1】{race.race_name}｜◎本命断言＋穴馬完全公開"
+    elif race.grade == "G2":
+        title = f"🥇【{date_str} G2】{race.race_name}｜重賞徹底分析＆買い目全公開"
+    elif race.grade == "G3":
+        title = f"🥈【{date_str} G3】{race.race_name}｜重賞◎本命＆💎穴馬ピック"
+    elif race.grade == "OP":
+        title = f"⭐【{date_str} OP】{race.race_name}｜本命と穴の両軸予想"
+    elif race.race_no == 11:
+        title = f"🔥【{date_str} メインレース】{race.venue}11R {race.race_name}｜本命＆買い目公開"
     else:
         title = f"【{date_str}】{race.venue}{race.race_no}R｜本命と買い目"
 
