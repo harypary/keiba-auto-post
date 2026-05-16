@@ -9,7 +9,7 @@
 参考: C:\\Users\\haryp\\game\\12.uranai\\src\\publishers\\note_publisher.py
 """
 
-import os, json, time, base64
+import os, json, time, base64, re
 from pathlib import Path
 from typing import Optional
 import sys
@@ -262,50 +262,62 @@ class NotePublisher:
                     _wait(3)
                     return page.url
 
-                # 「投稿する」ボタンが出現するまで待ち、確実にクリック
+                # URL から note ID を抽出
+                m = re.search(r"/notes/(n[a-f0-9]+)", page.url)
+                note_id = m.group(1) if m else None
+
+                # 「投稿する」を最大3周試して、毎周 公開URL 200 を検証
+                import requests
                 published = False
-                for attempt in range(6):
-                    _wait(2)
-                    for txt in ["投稿する", "公開する"]:
-                        try:
-                            btns = page.locator(f'button:has-text("{txt}")').all()
-                            for b in btns:
-                                try:
-                                    if not b.is_visible() or not b.is_enabled():
+                for round_idx in range(3):
+                    for attempt in range(4):
+                        _wait(2)
+                        for txt in ["投稿する", "公開する"]:
+                            try:
+                                btns = page.locator(f'button:has-text("{txt}")').all()
+                                for b in btns:
+                                    try:
+                                        if not b.is_visible() or not b.is_enabled():
+                                            continue
+                                        if (b.text_content() or "").strip() == txt:
+                                            b.scroll_into_view_if_needed(timeout=2000)
+                                            _wait(0.3)
+                                            b.click(timeout=4000, force=True)
+                                            _wait(8)
+                                            break
+                                    except Exception:
                                         continue
-                                    actual_text = (b.text_content() or "").strip()
-                                    # 完全一致のみ受け入れ（「投稿する前に...」みたいなのを除外）
-                                    if actual_text == txt:
-                                        b.scroll_into_view_if_needed(timeout=2000)
-                                        _wait(0.3)
-                                        b.click(timeout=4000, force=True)
-                                        published = True
-                                        print(f"[note] {txt}クリック (試行{attempt+1})")
-                                        _wait(10)
-                                        break
-                                except Exception:
-                                    continue
-                            if published:
+                            except Exception:
+                                continue
+                    # 公開検証
+                    if note_id:
+                        try:
+                            r = requests.get(f"https://note.com/{NOTE_USER_ID}/n/{note_id}",
+                                             headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+                            if r.status_code == 200:
+                                published = True
+                                print(f"[note] 公開確認OK ({note_id}, round {round_idx+1})")
                                 break
+                            else:
+                                print(f"[note] 公開未確認 (status {r.status_code}, round {round_idx+1}) → 再試行")
                         except Exception:
-                            continue
-                    if published:
-                        break
+                            pass
+                    # 再試行のために有料エリア設定ボタンから戻す
+                    try:
+                        page.click('button:has-text("有料エリア設定")', timeout=4000, force=True)
+                        _wait(4)
+                        page.click('button:has-text("このラインより先を有料にする")', timeout=4000, force=True)
+                        _wait(3)
+                    except Exception:
+                        pass
 
                 if not published:
-                    print(f"[note] 「投稿する」ボタンが見つからない／クリック失敗")
-                    return None
+                    print(f"[note] 公開未達成 ({note_id})")
+                    return {"url": page.url, "note_id": note_id, "draft": True}
 
-                url = page.url
-                # URL が /publish/ のままなら投稿失敗
-                if "/publish/" in url:
-                    # 公開URLへ遷移するか確認
-                    _wait(5)
-                    url = page.url
-                    if "/publish/" in url:
-                        print(f"[note] 投稿後もURLが/publish/のまま → 失敗の可能性")
-                print(f"[note] 投稿完了: {url}")
-                return url
+                public_url = f"https://note.com/{NOTE_USER_ID}/n/{note_id}"
+                print(f"[note] 投稿完了: {public_url}")
+                return public_url
             finally:
                 browser.close()
 
