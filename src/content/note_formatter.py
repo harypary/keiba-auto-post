@@ -316,9 +316,21 @@ def _win_probabilities(scores) -> dict:
 
 
 def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
-    """馬の期待値を計算し、Kelly基準（0.4 Kelly）で資金配分（ROI最大化）"""
+    """馬の期待値を計算し、Kelly基準（0.4 Kelly）で資金配分（ROI最大化）。
+    オッズ未取得時は final_score 順位から推定オッズを生成。"""
     p_win = _win_probabilities(scores)
     odds_of = {s.horse_no: (getattr(s, "odds", 0) or 0) for s in scores}
+
+    # オッズが取得できていない馬は推定オッズを生成（評点順位ベース）
+    real_odds_count = sum(1 for v in odds_of.values() if v > 0)
+    if real_odds_count == 0:
+        # 全頭オッズ不在 → 評点順位から推定（人気馬カーブを近似）
+        sorted_by_score = sorted(scores, key=lambda s: -getattr(s, "final_score", 0))
+        # 標準的なJRA人気馬オッズカーブ
+        estimate_curve = [3.5, 5.0, 7.0, 10.0, 14.0, 20.0, 30.0, 45.0, 60.0, 80.0, 100.0, 130.0, 170.0, 200.0, 250.0, 300.0, 350.0, 400.0]
+        for i, s in enumerate(sorted_by_score):
+            o = estimate_curve[i] if i < len(estimate_curve) else 500.0
+            odds_of[s.horse_no] = o
 
     # === 較正済みペイアウト係数を取得 ===
     try:
@@ -414,7 +426,10 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
         rows.append((label, ev, p, est, share_pct, stake, exp_return))
 
     out = ["### 📈 期待値最大化・Kelly基準配分\n\n"]
-    out.append(f"想定予算 **{total_budget:,}円**　現在のデータで期待値が最も高い買い目に **0.4 Kelly基準**で配分しています。\n\n")
+    if real_odds_count == 0:
+        out.append(f"想定予算 **{total_budget:,}円**　評点順位から推定したオッズで配分計算しています（当日確定オッズで再評価推奨）。\n\n")
+    else:
+        out.append(f"想定予算 **{total_budget:,}円**　現在のデータで期待値が最も高い買い目に **0.4 Kelly基準**で配分しています。\n\n")
     out.append("| 買い目 | 的中率 | 想定配当 | EV | 配分比 | 投資額 | 期待回収 |\n")
     out.append("|---|---|---|---|---|---|---|\n")
     sum_stake = 0
@@ -717,21 +732,33 @@ def _section_full_ranking(scores, race) -> str:
     top_score = getattr(sorted_scores[0], "final_score", 0) if sorted_scores else 0
 
     # === コンパクト順位表（全頭1行ずつ） ===
+    # オッズが取得できているか確認
+    has_odds = any((getattr(s, "odds", 0) or 0) > 0 for s in sorted_scores)
     parts.append("### 順位表\n\n")
-    parts.append("| 印 | 馬番 | 馬名 | 評点 | 騎手 | 脚質 | 勝率 | 複勝率 | オッズ |\n")
-    parts.append("|---|---|---|---|---|---|---|---|---|\n")
+    if has_odds:
+        parts.append("| 印 | 馬番 | 馬名 | 評点 | 騎手 | 脚質 | 勝率 | 複勝率 | オッズ |\n")
+        parts.append("|---|---|---|---|---|---|---|---|---|\n")
+    else:
+        parts.append("| 印 | 馬番 | 馬名 | 評点 | 騎手 | 脚質 | 勝率 | 複勝率 |\n")
+        parts.append("|---|---|---|---|---|---|---|---|\n")
     for rank, s in enumerate(sorted_scores, 1):
         mark = MARK_MAP.get(rank, "")
         final = getattr(s, "final_score", 0)
         style = getattr(s, "running_style", "")
         wr = getattr(s, "win_rate", 0) or 0
         pr = getattr(s, "place_rate", 0) or 0
-        odds = getattr(s, "odds", 0) or 0
-        odds_str = f"{odds:.1f}" if odds else "-"
-        parts.append(
-            f"| {mark} | {s.horse_no} | {s.horse_name} | {final:.1f} | {s.jockey} | {style} | "
-            f"{wr*100:.0f}% | {pr*100:.0f}% | {odds_str} |\n"
-        )
+        if has_odds:
+            odds = getattr(s, "odds", 0) or 0
+            odds_str = f"{odds:.1f}" if odds else "-"
+            parts.append(
+                f"| {mark} | {s.horse_no} | {s.horse_name} | {final:.1f} | {s.jockey} | {style} | "
+                f"{wr*100:.0f}% | {pr*100:.0f}% | {odds_str} |\n"
+            )
+        else:
+            parts.append(
+                f"| {mark} | {s.horse_no} | {s.horse_name} | {final:.1f} | {s.jockey} | {style} | "
+                f"{wr*100:.0f}% | {pr*100:.0f}% |\n"
+            )
     parts.append("\n")
 
     # === 上位5頭のみ詳細解説（過剰な情報は削減）===
@@ -740,7 +767,7 @@ def _section_full_ranking(scores, race) -> str:
         mark = MARK_MAP.get(rank, "")
         final = getattr(s, "final_score", 0)
         narrative = getattr(s, "comment", "")
-        odds  = getattr(s, "odds", 0) or 0
+        odds  = getattr(s, "odds", 0) or 0  # 内部判定用、表示はしない
         style = getattr(s, "running_style", "")
         raw = getattr(s, "raw_stat", None)
         aff_obj = getattr(s, "affinity", None)
@@ -769,9 +796,11 @@ def _section_full_ranking(scores, race) -> str:
             mark = MARK_MAP.get(rank, "")
             final = getattr(s, "final_score", 0)
             odds  = getattr(s, "odds", 0) or 0
-            odds_str = f"{odds:.1f}倍" if odds else "-"
             comment = _short_negative_comment(s, race)
-            parts.append(f"- {mark} {s.horse_no}番 {s.horse_name}（評点{final:.1f}・{odds_str}）— {comment}\n")
+            if odds > 0:
+                parts.append(f"- {mark} {s.horse_no}番 {s.horse_name}（評点{final:.1f}・{odds:.1f}倍）— {comment}\n")
+            else:
+                parts.append(f"- {mark} {s.horse_no}番 {s.horse_name}（評点{final:.1f}）— {comment}\n")
         parts.append("\n")
     return "".join(parts)
 

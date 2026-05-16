@@ -1886,3 +1886,8 @@
   [ML自動再訓練 @ 2550件]
 [ML] サンプル数: 59102 / 学習開始...
   epoch    0: loss=0.6931
+  epoch  100: loss=0.4717
+  epoch  200: loss=0.4464
+  epoch  300: loss=0.4382
+  epoch  400: loss=0.4347
+  epoch  500: loss=0.4331
