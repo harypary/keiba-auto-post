@@ -394,36 +394,47 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
             ev = p_hit * est
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
 
-    # === Kelly基準による配分（ROI最大化）===
+    # === EV 比例 + Kelly 補正による配分（常に有意な金額を割り振る）===
     KELLY_FRACTION = 0.4
     positive = [c for c in candidates if c[1] >= 1.0]
+    use_kelly = bool(positive)
     if not positive:
-        # マイナスEVしかない場合は EV上位5点を採用して配分する（見送りせず常に買い目を提示）
-        positive = sorted(candidates, key=lambda x: -x[1])[:5]
+        # マイナスEVしかない場合：EV上位8点をEV比例で配分（見送りせず常に提示）
+        positive = sorted(candidates, key=lambda x: -x[1])[:8]
     if not positive:
-        # それでも候補ゼロ（ありえない）の場合のみ簡易出力
         return "### 📈 推奨投資配分\n\nオッズデータ取得待ち。\n\n"
 
     rows = []
-    total_kelly = 0.0
-    kelly_fractions = []
-    for label, ev, p, est, kind in positive:
-        b = max(0.01, est - 1)  # decimal odds - 1
-        q = 1 - p
-        f_star = (b * p - q) / b if b > 0 else 0
-        f = max(0.0, f_star * KELLY_FRACTION)
-        kelly_fractions.append((label, ev, p, est, f, kind))
-        total_kelly += f
-
-    # Kelly比に応じて配分（合計が予算を超えないようスケール）
-    scale = min(1.0, total_budget / max(1, total_kelly * total_budget))
-    for label, ev, p, est, f, kind in sorted(kelly_fractions, key=lambda x: -x[4]):
-        share_pct = (f / max(0.001, total_kelly))
-        stake = int(round(total_budget * share_pct / 100) * 100)
-        if stake < 100:
-            continue
-        exp_return = int(stake * ev)
-        rows.append((label, ev, p, est, share_pct, stake, exp_return))
+    if use_kelly:
+        # 正のEVがあれば Kelly基準
+        kelly_fractions = []
+        total_kelly = 0.0
+        for label, ev, p, est, kind in positive:
+            b = max(0.01, est - 1)
+            q = 1 - p
+            f_star = (b * p - q) / b if b > 0 else 0
+            f = max(0.0, f_star * KELLY_FRACTION)
+            kelly_fractions.append((label, ev, p, est, f, kind))
+            total_kelly += f
+        for label, ev, p, est, f, kind in sorted(kelly_fractions, key=lambda x: -x[4]):
+            if total_kelly <= 0:
+                break
+            share_pct = (f / total_kelly)
+            stake = int(round(total_budget * share_pct / 100) * 100)
+            if stake < 100:
+                continue
+            exp_return = int(stake * ev)
+            rows.append((label, ev, p, est, share_pct, stake, exp_return))
+    else:
+        # マイナスEV域：EV比例で全額を配分
+        total_ev = sum(c[1] for c in positive) or 1.0
+        for label, ev, p, est, kind in sorted(positive, key=lambda x: -x[1]):
+            share_pct = ev / total_ev
+            stake = int(round(total_budget * share_pct / 100) * 100)
+            if stake < 100:
+                stake = 100
+            exp_return = int(stake * ev)
+            rows.append((label, ev, p, est, share_pct, stake, exp_return))
 
     out = ["### 📈 期待値最大化・Kelly基準配分\n\n"]
     if real_odds_count == 0:
