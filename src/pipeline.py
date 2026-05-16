@@ -145,20 +145,36 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         print(f"  ※ メインのみモード: 投稿対象{len(notes)}件 / {skipped}レースは予測のみ（学習データ蓄積）")
     print(f"\n[4/4] {'note.com投稿' if publish else 'ファイル保存のみ'}...")
     published = []
+    failed_notes = []  # 投稿失敗した記事を別途記録
     for note in notes:
         if save_files:
-            publisher.save_to_file(note, OUTPUT_DIR)
+            try:
+                publisher.save_to_file(note, OUTPUT_DIR)
+            except Exception as ex:
+                print(f"  [warn] ファイル保存失敗: {ex}")
         if publish:
-            result = publisher.create_paid_article(
-                title=note["title"], body=note["body"],
-                tags=note["tags"], price=note["price"],
-            )
-            if result:
-                published.append(result)
+            try:
+                result = publisher.create_paid_article(
+                    title=note["title"], body=note["body"],
+                    tags=note["tags"], price=note["price"],
+                )
+                if result:
+                    # draft フラグが付いていれば失敗扱い、それ以外は成功
+                    if isinstance(result, dict) and result.get("draft"):
+                        failed_notes.append(note)
+                        print(f"  [DRAFT] 公開未達成: {note['title'][:50]}")
+                    else:
+                        published.append(result)
+                else:
+                    failed_notes.append(note)
+                    print(f"  [FAIL] 投稿結果None: {note['title'][:50]}")
+            except Exception as ex:
+                failed_notes.append(note)
+                print(f"  [EXCEPTION] {note['title'][:50]} - {ex}")
             time.sleep(3)   # 連続投稿防止
 
     print(f"\n{'='*60}")
-    print(f"[DONE] {len(published)}件投稿 / {len(notes)}件生成")
+    print(f"[DONE] {len(published)}件公開 / {len(notes)}件生成 / 失敗{len(failed_notes)}件")
     if published:
         for p in published[:3]:
             print(f"  URL: {p.get('url', '')}")

@@ -158,6 +158,20 @@ jobs:
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python weekly_review.py
 
+      - name: 残った下書きの自動公開リトライ（インラインで即実行）
+        if: always() && steps.mode.outputs.mode != 'review'
+        env:
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: |
+          # セッション復元
+          if [ -n "$NOTE_SESSION_B64" ]; then
+            mkdir -p data
+            echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
+          fi
+          # 5分待ってから残ったdraftを公開
+          sleep 300
+          python scripts/find_and_publish_drafts.py || true
+
       - name: Save updated weights & cache
         if: always()
         uses: actions/cache/save@v4
