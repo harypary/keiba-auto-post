@@ -383,17 +383,14 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
 
     # === Kelly基準による配分（ROI最大化）===
-    # f* = (bp - q) / b  where b = decimal_odds - 1, p = prob, q = 1-p
-    # 安全のため 0.4 Kelly（理論最適の40%）を使用
     KELLY_FRACTION = 0.4
-    positive = [c for c in candidates if c[1] >= 1.0]  # 正のEVのみ採用
+    positive = [c for c in candidates if c[1] >= 1.0]
     if not positive:
-        # 全部マイナスEVなら見送り推奨
-        out = ["### 📈 期待値最大化・推奨投資配分\n\n"]
-        out.append("> ⚠️ **このレースは正の期待値となる買い目が見つかりませんでした。**\n")
-        out.append("> 機械的なROI最大化の観点からは**見送り**を推奨します。\n\n")
-        out.append("（参考：上位候補のEVがいずれも1.0未満。オッズと評点のミスマッチが解消されるレース選択を優先します）\n\n")
-        return "".join(out)
+        # マイナスEVしかない場合は EV上位5点を採用して配分する（見送りせず常に買い目を提示）
+        positive = sorted(candidates, key=lambda x: -x[1])[:5]
+    if not positive:
+        # それでも候補ゼロ（ありえない）の場合のみ簡易出力
+        return "### 📈 推奨投資配分\n\nオッズデータ取得待ち。\n\n"
 
     rows = []
     total_kelly = 0.0
@@ -416,10 +413,8 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
         exp_return = int(stake * ev)
         rows.append((label, ev, p, est, share_pct, stake, exp_return))
 
-    out = ["### 📈 期待値最大化・Kelly基準配分（ROI最大化）\n\n"]
-    out.append(f"想定予算 **{total_budget:,}円**　**0.4 Kelly基準**で各買い目に配分（長期ROI最大化の理論最適解）。\n\n")
-    out.append("> EV ≥ 1.0 のみ採用（プラス期待値の買い目のみ）。マイナス期待値は完全除外。\n")
-    out.append("> Kelly基準: f* = (bp − q) / b に0.4を乗じた保守的配分。破産リスクを抑えつつ長期最大成長を目指す。\n\n")
+    out = ["### 📈 期待値最大化・Kelly基準配分\n\n"]
+    out.append(f"想定予算 **{total_budget:,}円**　現在のデータで期待値が最も高い買い目に **0.4 Kelly基準**で配分しています。\n\n")
     out.append("| 買い目 | 的中率 | 想定配当 | EV | 配分比 | 投資額 | 期待回収 |\n")
     out.append("|---|---|---|---|---|---|---|\n")
     sum_stake = 0
