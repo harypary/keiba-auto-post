@@ -137,15 +137,7 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         notes.append(note)
         print(f"  [OK] {note['title'][:55]}...")
 
-    # 競馬場ごとの全レースパック（main_only時はスキップ）
-    if not main_only:
-        venues = {}
-        for item in race_results:
-            venues.setdefault(item["race"].venue, []).append(item)
-        for venue, items in venues.items():
-            venue_pack = format_day_summary_note(items, target_date, venue_day, venue)
-            notes.append(venue_pack)
-            print(f"  [OK] パック({venue} {len(items)}R): {venue_pack['title'][:55]}...")
+    # 競馬場別パックは廃止（個別レース記事のみ投稿）
 
     # 4. 投稿 / 保存
     if main_only:

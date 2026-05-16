@@ -234,10 +234,25 @@ class NotePublisher:
                 self._set_price(page, price)
                 _wait(1)
 
-                # 「有料エリア設定」ボタン → 投稿確認画面 → 「投稿する」表示
+                # 「有料エリア設定」ボタン → 境界選択モード → 境界確定 → 戻る
                 try:
                     page.click('button:has-text("有料エリア設定")', timeout=8000, force=True)
                     _wait(5)
+                    # 境界選択モードで「このラインより先を有料にする」をクリック
+                    # （エディタで既に境界を設定済みなので、ここでは確認のみ）
+                    try:
+                        confirm_btns = page.locator('button:has-text("このラインより先を有料にする")').all()
+                        for b in confirm_btns:
+                            try:
+                                if b.is_visible() and b.is_enabled():
+                                    b.click(timeout=3000, force=True)
+                                    print("[note] 境界確定: このラインより先を有料にする")
+                                    _wait(3)
+                                    break
+                            except Exception:
+                                continue
+                    except Exception as e:
+                        print(f"[note] 境界確認click失敗: {e}")
                 except Exception as e:
                     print(f"[note] 有料エリア設定失敗: {e}")
 
@@ -247,23 +262,48 @@ class NotePublisher:
                     _wait(3)
                     return page.url
 
-                # 「投稿する」「公開する」のいずれかをクリック
+                # 「投稿する」ボタンが出現するまで待ち、確実にクリック
                 published = False
-                for txt in ["投稿する", "公開する", "公開"]:
-                    try:
-                        btns = page.locator(f'button:has-text("{txt}"):not([disabled])').all()
-                        if btns:
-                            btns[-1].click(timeout=5000, force=True)
-                            published = True
-                            _wait(8)
-                            break
-                    except Exception:
-                        continue
+                for attempt in range(6):
+                    _wait(2)
+                    for txt in ["投稿する", "公開する"]:
+                        try:
+                            btns = page.locator(f'button:has-text("{txt}")').all()
+                            for b in btns:
+                                try:
+                                    if not b.is_visible() or not b.is_enabled():
+                                        continue
+                                    actual_text = (b.text_content() or "").strip()
+                                    # 完全一致のみ受け入れ（「投稿する前に...」みたいなのを除外）
+                                    if actual_text == txt:
+                                        b.scroll_into_view_if_needed(timeout=2000)
+                                        _wait(0.3)
+                                        b.click(timeout=4000, force=True)
+                                        published = True
+                                        print(f"[note] {txt}クリック (試行{attempt+1})")
+                                        _wait(10)
+                                        break
+                                except Exception:
+                                    continue
+                            if published:
+                                break
+                        except Exception:
+                            continue
+                    if published:
+                        break
+
                 if not published:
-                    print(f"[note] 「投稿する」相当ボタンが見つからない")
+                    print(f"[note] 「投稿する」ボタンが見つからない／クリック失敗")
                     return None
 
                 url = page.url
+                # URL が /publish/ のままなら投稿失敗
+                if "/publish/" in url:
+                    # 公開URLへ遷移するか確認
+                    _wait(5)
+                    url = page.url
+                    if "/publish/" in url:
+                        print(f"[note] 投稿後もURLが/publish/のまま → 失敗の可能性")
                 print(f"[note] 投稿完了: {url}")
                 return url
             finally:
