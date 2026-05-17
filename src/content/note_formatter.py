@@ -556,7 +556,10 @@ def _opening_hook(race, scores, plan, target_date) -> str:
         )
 
     if honmei_name:
-        parts.append(f"今回の本命は **◎ {honmei_name}**。\n選定根拠を含めて、続きで全部書いてます。\n\n")
+        parts.append(
+            "今回の本命は **◎ あの馬**。\n"
+            "選定の決め手データ・全頭の評価・買い目は、続きの有料部分で全部公開しています。\n\n"
+        )
     parts.append("---\n\n")
     return "".join(parts)
 
