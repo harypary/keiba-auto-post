@@ -556,6 +556,15 @@ def _section_free_hook(race, scores, plan) -> str:
     intro = _race_intro(race)
     parts.append(f"{intro}\n\n")
 
+    # 過去5年データから抽出した「このコースの勝ち馬傾向」
+    try:
+        from src.analyzer.deep_pattern_analyzer import get_race_insight
+        insight = get_race_insight(race.venue, race.distance, race.surface)
+        if insight:
+            parts.append(f"### 過去傾向分析\n{insight}\n\n")
+    except Exception:
+        pass
+
     # メンバー構成のさわり（自然な口調で）
     if scores:
         front_cnt = sum(1 for s in scores if getattr(s, "running_style", "") in ["逃げ", "先行"])

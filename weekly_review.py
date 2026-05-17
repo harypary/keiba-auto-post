@@ -210,6 +210,14 @@ def run_weekly_review():
         except Exception as ex:
             print(f"  [バイアス] 失敗: {ex}")
 
+        # === 深層パターン再構築（過去全データから「コース×距離×馬場」勝ち馬傾向）===
+        try:
+            from src.analyzer.deep_pattern_analyzer import build_deep_patterns
+            pat = build_deep_patterns()
+            print(f"\n[深層パターン] venue_dist {len(pat.get('venue_dist', {}))}件 / venue_overall {len(pat.get('venue_overall', {}))}件 更新")
+        except Exception as ex:
+            print(f"  [深層パターン] 失敗: {ex}")
+
         # === ML メタモデル再訓練（蓄積データが増えるたびに学習更新）===
         try:
             from src.ml.meta_model import train_and_save

@@ -1,0 +1,282 @@
+{
+  "venue_dist": {
+    "東京_マイル_芝": {
+      "samples": 1054,
+      "winner_form_avg": 65.6,
+      "winner_speed_avg": 78.6,
+      "winner_pace_avg": 59.2,
+      "winner_styles": {
+        "中団・万能型": 445,
+        "差し・追込型": 475,
+        "先行・逃げ型": 134
+      }
+    },
+    "東京_中長_芝": {
+      "samples": 76,
+      "winner_form_avg": 72.7,
+      "winner_speed_avg": 86.8,
+      "winner_pace_avg": 63.8,
+      "winner_styles": {
+        "差し・追込型": 38,
+        "中団・万能型": 38
+      }
+    },
+    "東京_中距離_芝": {
+      "samples": 279,
+      "winner_form_avg": 72.1,
+      "winner_speed_avg": 87.8,
+      "winner_pace_avg": 65.2,
+      "winner_styles": {
+        "中団・万能型": 133,
+        "差し・追込型": 144,
+        "先行・逃げ型": 2
+      }
+    },
+    "京都_マイル_芝": {
+      "samples": 22,
+      "winner_form_avg": 75.0,
+      "winner_speed_avg": 87.9,
+      "winner_pace_avg": 57.9,
+      "winner_styles": {
+        "差し・追込型": 10,
+        "中団・万能型": 6,
+        "先行・逃げ型": 6
+      }
+    },
+    "東京_長距離_芝": {
+      "samples": 10,
+      "winner_form_avg": 73.8,
+      "winner_speed_avg": 80.6,
+      "winner_pace_avg": 67.5,
+      "winner_styles": {
+        "中団・万能型": 4,
+        "差し・追込型": 6
+      }
+    },
+    "福島_短距離_芝": {
+      "samples": 66,
+      "winner_form_avg": 54.6,
+      "winner_speed_avg": 74.6,
+      "winner_pace_avg": 62.0,
+      "winner_styles": {
+        "中団・万能型": 34,
+        "差し・追込型": 31,
+        "先行・逃げ型": 1
+      }
+    },
+    "福島_マイル_芝": {
+      "samples": 124,
+      "winner_form_avg": 55.7,
+      "winner_speed_avg": 66.0,
+      "winner_pace_avg": 56.0,
+      "winner_styles": {
+        "中団・万能型": 32,
+        "差し・追込型": 56,
+        "先行・逃げ型": 36
+      }
+    },
+    "福島_中距離_芝": {
+      "samples": 86,
+      "winner_form_avg": 66.8,
+      "winner_speed_avg": 85.5,
+      "winner_pace_avg": 63.1,
+      "winner_styles": {
+        "中団・万能型": 43,
+        "差し・追込型": 42,
+        "先行・逃げ型": 1
+      }
+    },
+    "福島_長距離_芝": {
+      "samples": 12,
+      "winner_form_avg": 76.5,
+      "winner_speed_avg": 88.8,
+      "winner_pace_avg": 63.2,
+      "winner_styles": {
+        "差し・追込型": 6,
+        "中団・万能型": 6
+      }
+    },
+    "新潟_マイル_芝": {
+      "samples": 282,
+      "winner_form_avg": 61.9,
+      "winner_speed_avg": 73.2,
+      "winner_pace_avg": 61.1,
+      "winner_styles": {
+        "中団・万能型": 95,
+        "差し・追込型": 148,
+        "先行・逃げ型": 39
+      }
+    },
+    "新潟_中距離_芝": {
+      "samples": 87,
+      "winner_form_avg": 67.7,
+      "winner_speed_avg": 85.5,
+      "winner_pace_avg": 62.6,
+      "winner_styles": {
+        "中団・万能型": 49,
+        "差し・追込型": 37,
+        "先行・逃げ型": 1
+      }
+    },
+    "新潟_短距離_芝": {
+      "samples": 38,
+      "winner_form_avg": 47.6,
+      "winner_speed_avg": 70.4,
+      "winner_pace_avg": 55.2,
+      "winner_styles": {
+        "中団・万能型": 31,
+        "差し・追込型": 6,
+        "先行・逃げ型": 1
+      }
+    },
+    "新潟_中長_芝": {
+      "samples": 25,
+      "winner_form_avg": 70.8,
+      "winner_speed_avg": 85.1,
+      "winner_pace_avg": 61.9,
+      "winner_styles": {
+        "中団・万能型": 13,
+        "差し・追込型": 11,
+        "先行・逃げ型": 1
+      }
+    },
+    "中山_マイル_芝": {
+      "samples": 881,
+      "winner_form_avg": 65.2,
+      "winner_speed_avg": 77.1,
+      "winner_pace_avg": 60.3,
+      "winner_styles": {
+        "差し・追込型": 473,
+        "先行・逃げ型": 153,
+        "中団・万能型": 255
+      }
+    },
+    "中山_短距離_芝": {
+      "samples": 93,
+      "winner_form_avg": 62.2,
+      "winner_speed_avg": 81.9,
+      "winner_pace_avg": 65.6,
+      "winner_styles": {
+        "差し・追込型": 52,
+        "中団・万能型": 40,
+        "先行・逃げ型": 1
+      }
+    },
+    "中山_中距離_芝": {
+      "samples": 214,
+      "winner_form_avg": 70.7,
+      "winner_speed_avg": 87.3,
+      "winner_pace_avg": 65.2,
+      "winner_styles": {
+        "中団・万能型": 88,
+        "差し・追込型": 124,
+        "先行・逃げ型": 2
+      }
+    },
+    "中山_長距離_芝": {
+      "samples": 32,
+      "winner_form_avg": 73.1,
+      "winner_speed_avg": 95.1,
+      "winner_pace_avg": 59.8,
+      "winner_styles": {
+        "中団・万能型": 22,
+        "差し・追込型": 10
+      }
+    },
+    "中山_中長_芝": {
+      "samples": 43,
+      "winner_form_avg": 69.8,
+      "winner_speed_avg": 88.2,
+      "winner_pace_avg": 64.4,
+      "winner_styles": {
+        "差し・追込型": 24,
+        "中団・万能型": 17,
+        "先行・逃げ型": 2
+      }
+    },
+    "京都_中距離_芝": {
+      "samples": 5,
+      "winner_form_avg": 55.6,
+      "winner_speed_avg": 92.8,
+      "winner_pace_avg": 65.7,
+      "winner_styles": {
+        "中団・万能型": 2,
+        "差し・追込型": 3
+      }
+    },
+    "小倉_マイル_芝": {
+      "samples": 4,
+      "winner_form_avg": 85.4,
+      "winner_speed_avg": 80.2,
+      "winner_pace_avg": 56.8,
+      "winner_styles": {
+        "先行・逃げ型": 2,
+        "差し・追込型": 2
+      }
+    },
+    "小倉_短距離_芝": {
+      "samples": 3,
+      "winner_form_avg": 70.7,
+      "winner_speed_avg": 76.3,
+      "winner_pace_avg": 66.4,
+      "winner_styles": {
+        "差し・追込型": 2,
+        "中団・万能型": 1
+      }
+    },
+    "小倉_中距離_芝": {
+      "samples": 4,
+      "winner_form_avg": 91.8,
+      "winner_speed_avg": 85.8,
+      "winner_pace_avg": 69.3,
+      "winner_styles": {
+        "差し・追込型": 3,
+        "中団・万能型": 1
+      }
+    }
+  },
+  "venue_overall": {
+    "東京_芝": {
+      "races": 1419,
+      "front_winrate": 9.6,
+      "back_winrate": 46.7,
+      "winner_avg_speed": 80.9,
+      "winner_avg_form": 67.3
+    },
+    "京都_芝": {
+      "races": 30,
+      "front_winrate": 20.0,
+      "back_winrate": 53.3,
+      "winner_avg_speed": 86.6,
+      "winner_avg_form": 69.8
+    },
+    "福島_芝": {
+      "races": 288,
+      "front_winrate": 13.2,
+      "back_winrate": 46.9,
+      "winner_avg_speed": 74.8,
+      "winner_avg_form": 59.6
+    },
+    "新潟_芝": {
+      "races": 432,
+      "front_winrate": 9.7,
+      "back_winrate": 46.8,
+      "winner_avg_speed": 76.1,
+      "winner_avg_form": 62.3
+    },
+    "中山_芝": {
+      "races": 1263,
+      "front_winrate": 12.5,
+      "back_winrate": 54.1,
+      "winner_avg_speed": 80.0,
+      "winner_avg_form": 66.3
+    },
+    "小倉_芝": {
+      "races": 11,
+      "front_winrate": 18.2,
+      "back_winrate": 63.6,
+      "winner_avg_speed": 81.2,
+      "winner_avg_form": 83.7
+    }
+  }
+}
