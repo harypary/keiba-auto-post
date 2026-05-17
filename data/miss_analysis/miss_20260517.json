@@ -1,0 +1,58 @@
+{
+  "analyzed_at": "2026-05-17T00:49:27.411395",
+  "total_races": 2590,
+  "miss_count": 1634,
+  "hit_rate": 36.9,
+  "underweighted_factors": {
+    "recent_form": {
+      "avg_deficit": 12.54,
+      "frequency": 0.223,
+      "impact": 2.802
+    },
+    "surface": {
+      "avg_deficit": 7.65,
+      "frequency": 0.378,
+      "impact": 2.894
+    },
+    "distance": {
+      "avg_deficit": 10.3,
+      "frequency": 0.465,
+      "impact": 4.785
+    },
+    "speed_index": {
+      "avg_deficit": 11.94,
+      "frequency": 0.236,
+      "impact": 2.812
+    },
+    "venue": {
+      "avg_deficit": 13.8,
+      "frequency": 0.69,
+      "impact": 9.516
+    },
+    "condition": {
+      "avg_deficit": 11.55,
+      "frequency": 0.461,
+      "impact": 5.321
+    },
+    "weight_stab": {
+      "avg_deficit": 9.01,
+      "frequency": 0.455,
+      "impact": 4.104
+    },
+    "class_change": {
+      "avg_deficit": 11.36,
+      "frequency": 0.385,
+      "impact": 4.374
+    },
+    "rest": {
+      "avg_deficit": 16.53,
+      "frequency": 0.269,
+      "impact": 4.451
+    },
+    "pace": {
+      "avg_deficit": 19.31,
+      "frequency": 0.284,
+      "impact": 5.485
+    }
+  }
+}

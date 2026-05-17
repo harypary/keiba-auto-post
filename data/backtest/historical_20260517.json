@@ -1,0 +1,44 @@
+{
+  "run_date": "2026-05-17",
+  "total_races": 2590,
+  "wins": 956,
+  "honmei_win_rate": 36.9,
+  "honmei_place_rate": 68.8,
+  "exacta_hit_rate": 50.3,
+  "avg_winner_rank": 3.44,
+  "top_defeat_reasons": [
+    [
+      "コース適性",
+      359
+    ],
+    [
+      "上がり適性",
+      226
+    ],
+    [
+      "休養間隔",
+      182
+    ],
+    [
+      "馬体重安定",
+      148
+    ],
+    [
+      "距離適性",
+      126
+    ]
+  ],
+  "optimized_weights": {
+    "recent_form": 0.1886,
+    "surface": 0.1016,
+    "distance": 0.1196,
+    "speed_index": 0.091,
+    "class_change": 0.0861,
+    "venue": 0.1313,
+    "condition": 0.0808,
+    "rest": 0.0677,
+    "pace": 0.0894,
+    "weight_stab": 0.0439
+  },
+  "optimization_passes": 2
+}

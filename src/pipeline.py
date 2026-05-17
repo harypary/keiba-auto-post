@@ -146,6 +146,44 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
     print(f"\n[4/4] {'note.com投稿' if publish else 'ファイル保存のみ'}...")
     published = []
     failed_notes = []  # 投稿失敗した記事を別途記録
+
+    # === レース単位の重複防止: 自分の note 既存記事タイトル取得 ===
+    existing_titles = set()
+    if publish:
+        try:
+            import requests
+            r = requests.get(f"https://note.com/_almanddd?status=published",
+                             headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+            # ページ取得失敗でも続行（重複は許容）
+            if r.status_code == 200:
+                # タイトル抜粋（粗い）
+                import re
+                for m in re.finditer(r'"name":"([^"]{8,120})"', r.text):
+                    existing_titles.add(m.group(1))
+                print(f"  既存記事タイトル: {len(existing_titles)}件をスキャン済")
+        except Exception:
+            pass
+
+    def _is_duplicate(title: str) -> bool:
+        """タイトルからレース識別子（日付+場+R）を抽出して同一を判定"""
+        import re
+        m = re.search(r"【(\d+/\d+)[^】]*】[^｜]*?([東京京都新潟中山阪神中京福島小倉札幌函館]+)\s*(\d+)R", title)
+        if not m:
+            # メインレース（場+R じゃないパターン）はレース名で判定
+            mm = re.search(r"【(\d+/\d+)[^】]*】([^｜]+)", title)
+            if not mm:
+                return False
+            key = mm.group(1) + "_" + mm.group(2).strip()
+        else:
+            key = f"{m.group(1)}_{m.group(2)}_{m.group(3)}R"
+        for t in existing_titles:
+            mm2 = re.search(r"【(\d+/\d+)[^】]*】[^｜]*?([東京京都新潟中山阪神中京福島小倉札幌函館]+)\s*(\d+)R", t)
+            if mm2:
+                existing_key = f"{mm2.group(1)}_{mm2.group(2)}_{mm2.group(3)}R"
+                if existing_key == key:
+                    return True
+        return False
+
     for note in notes:
         if save_files:
             try:
@@ -153,6 +191,10 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
             except Exception as ex:
                 print(f"  [warn] ファイル保存失敗: {ex}")
         if publish:
+            # 重複チェック：同レースの記事が既に存在ならスキップ
+            if _is_duplicate(note["title"]):
+                print(f"  [SKIP重複] {note['title'][:50]}")
+                continue
             try:
                 result = publisher.create_paid_article(
                     title=note["title"], body=note["body"],

@@ -1920,3 +1920,182 @@
     東京3R 3歳未勝利: 1着=11番(予想1位) ◎
     東京4R 3歳未勝利: 1着=10番(予想6位) △ 敗因:休養間隔
     東京5R 3歳未勝利: 1着=11番(予想4位) × 敗因:休養間隔
+    東京6R 3歳1勝クラス: 1着=11番(予想10位) △ 敗因:馬体重安定
+    東京7R 4歳以上1勝クラス: 1着=6番(予想8位) × 敗因:距離適性
+    東京8R 4歳以上2勝クラス: 1着=3番(予想4位) △ 敗因:コース適性
+    東京9R 新緑賞: 1着=9番(予想2位) × 敗因:pedigree
+    東京10R 湘南S: 1着=16番(予想7位) × 敗因:pedigree
+    東京11R オアシスS: 1着=16番(予想13位) × 敗因:馬場状態
+    東京12R 4歳以上2勝クラス: 1着=12番(予想4位) × 敗因:馬場状態
+
+--- 2024-04-21 ---
+  12レース処理中...
+    東京1R 3歳未勝利: 1着=12番(予想6位) △ 敗因:コース適性
+    東京2R 3歳未勝利: 1着=14番(予想7位) △
+    東京3R 3歳未勝利: 1着=4番(予想3位) △ 敗因:距離適性
+    東京4R 3歳未勝利: 1着=1番(予想2位) △ 敗因:馬体重安定
+    東京5R 3歳未勝利: 1着=10番(予想2位) △ 敗因:pedigree
+    東京6R 3歳1勝クラス: 1着=15番(予想2位) △ 敗因:pedigree
+    東京7R 4歳以上1勝クラス: 1着=5番(予想1位) ◎
+    東京8R 4歳以上1勝クラス: 1着=9番(予想1位) ◎
+    東京9R 石和特別: 1着=7番(予想2位) × 敗因:コース適性
+    東京10R 鎌倉S: 1着=11番(予想5位) △
+    東京11R フローラS: 1着=8番(予想3位) △ 敗因:上がり適性
+    東京12R 4歳以上2勝クラス: 1着=13番(予想1位) ◎
+
+--- 2024-04-27 ---
+  12レース処理中...
+    東京1R 3歳未勝利: 1着=6番(予想2位) × 敗因:馬場状態
+    東京2R 3歳未勝利: 1着=9番(予想2位) △ 敗因:距離適性
+    東京3R 3歳未勝利: 1着=12番(予想2位) △ 敗因:クラス実績
+    東京4R 3歳未勝利: 1着=9番(予想4位) △ 敗因:直近フォーム
+    東京5R 3歳未勝利: 1着=12番(予想1位) ◎
+    東京6R 3歳1勝クラス: 1着=1番(予想1位) ◎
+    東京7R 4歳以上1勝クラス: 1着=7番(予想1位) ◎
+    東京8R 4歳以上1勝クラス: 1着=11番(予想2位) × 敗因:スピード指数
+    東京9R 是政S: 1着=13番(予想1位) ◎
+    東京10R 府中市市制施行70周年記: 1着=8番(予想4位) △ 敗因:休養間隔
+    東京11R 青葉賞: 1着=7番(予想1位) ◎
+    東京12R 4歳以上2勝クラス: 1着=4番(予想1位) ◎
+
+--- 2024-04-28 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240428 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240428
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240428 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240428
+  12レース処理中...
+[scraper] https://race.netkeiba.com/race/shutuba.html?race_id=202404010201 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/shutuba.html?race_id=202404010201
+[scraper] https://race.netkeiba.com/race/shutuba.html?race_id=202404010201 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/shutuba.html?race_id=202404010201
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010202 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010202
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010202 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010202
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010203 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010203
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010203 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010203
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010204 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010204
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010204 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010204
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010205 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010205
+[scraper] https://db.netkeiba.com/horse/result/2021106771/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/horse/result/2021106771/
+[scraper] https://db.netkeiba.com/horse/result/2021100253/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/horse/result/2021100253/
+[scraper] https://db.netkeiba.com/horse/result/2021103237/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/horse/result/2021103237/
+    新潟5R 3歳未勝利: 1着=14番(予想2位) × 敗因:コース適性
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010206 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010206
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010206 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010206
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010207 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010207
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010207 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010207
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010208 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010208
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010208 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010208
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010209 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010209
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010209 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010209
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010210 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010210
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010210 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010210
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010211 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010211
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010211 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010211
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010212 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010212
+[scraper] https://race.netkeiba.com/race/result.html?race_id=202404010212 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/race/result.html?race_id=202404010212
+[scraper] https://db.netkeiba.com/race/202404010212/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/202404010212/
+[scraper] https://db.netkeiba.com/race/202404010212/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/202404010212/
+
+--- 2024-05-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240504 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240504
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240504 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240504
+[scraper] https://db.netkeiba.com/race/list/20240504/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20240504/
+[scraper] https://db.netkeiba.com/race/list/20240504/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20240504/
+  開催なし
+
+--- 2024-05-05 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240505 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240505
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240505 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20240505
+[scraper] https://db.netkeiba.com/race/list/20240505/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20240505/
+[scraper] https://db.netkeiba.com/race/list/20240505/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20240505/
+  開催なし
+
+収集完了: 2599レース
+
+============================================================
+[結果] 2599レース
+============================================================
+  ◎本命 勝率:   37.0%  (目標20%以上)
+  ◎本命 複勝率: 68.8%  (目標40%以上)
+  馬連 的中率:  50.4%  (目標15%以上)
+  3連複 的中率: 32.3%
+  勝ち馬平均予想順位: 3.4位
+
+[外れの主因 TOP5]
+  → コース適性: 360件 (22%)
+  → 上がり適性: 226件 (14%)
+  → 休養間隔: 183件 (11%)
+  → 馬体重安定: 148件 (9%)
+  → 距離適性: 126件 (8%)
+
+[クラス別 ◎勝率]
+  OP   : 32% (236R)
+  未勝利  : 36% (2090R)
+  新馬   : 50% (273R)
+
+[馬場別 ◎勝率]
+  芝: 37% (2599R)
+
+生データ保存: data/backtest/historical_raw_20260517.json
+
+============================================================
+フェーズ2: 多段階重み最適化（収束まで反復）
+============================================================
+
+[イテレーション 1/10]
+
+[miss analysis] 外れ分析: 1637/2599レース外れ
+
+[weight] 重み自動調整 (lr=0.0400, 2599レース, 外れ率=63.0%):
+  ↑ recent_form    : 0.2057 → 0.2076 (+0.0019)
+  ↑ surface        : 0.1076 → 0.1094 (+0.0018)
+  ↑ distance       : 0.1224 → 0.1255 (+0.0031)
+  ↑ speed_index    : 0.0951 → 0.0970 (+0.0019)
+  ↑ venue          : 0.1211 → 0.1277 (+0.0066)
+  ↑ condition      : 0.0767 → 0.0802 (+0.0035)
+  ↑ weight_stab    : 0.0389 → 0.0415 (+0.0026)
+  ↑ class_change   : 0.0853 → 0.0882 (+0.0029)
+  ↑ rest           : 0.0632 → 0.0664 (+0.0032)
+  ↑ pace           : 0.0840 → 0.0881 (+0.0041)
+
+[weight] 新しい重み保存: C:\Users\haryp\game\21.kiba\src\validator\..\..\data\model_weights.json
+  次イテレーション用に分析継続...
+
+[イテレーション 2/10]
+
+[miss analysis] 外れ分析: 1637/2599レース外れ
+
+[weight] 重み自動調整 (lr=0.0400, 2599レース, 外れ率=63.0%):
+  ↑ recent_form    : 0.2012 → 0.2031 (+0.0019)
+  ↑ surface        : 0.1060 → 0.1078 (+0.0018)
+  ↑ distance       : 0.1217 → 0.1248 (+0.0031)
+  ↑ speed_index    : 0.0940 → 0.0959 (+0.0019)
+  ↑ venue          : 0.1238 → 0.1304 (+0.0066)
+  ↑ condition      : 0.0777 → 0.0812 (+0.0035)
+  ↑ weight_stab    : 0.0402 → 0.0428 (+0.0026)
+  ↑ class_change   : 0.0855 → 0.0884 (+0.0029)
+  ↑ rest           : 0.0644 → 0.0676 (+0.0032)
+  ↑ pace           : 0.0854 → 0.0895 (+0.0041)
+
+[weight] 新しい重み保存: C:\Users\haryp\game\21.kiba\src\validator\..\..\data\model_weights.json
+  重み最大変化量: 0.00430
+  → 収束しました（イテレーション 2）
+
+============================================================
+フェーズ3: 最終最適化重みサマリー
+============================================================
+
+[現在のモデル重み]
+  recent_form    : 0.1969  ███████████████████
+  venue          : 0.1264  ████████████
+  distance       : 0.1210  ████████████
+  surface        : 0.1045  ██████████
+  speed_index    : 0.0930  █████████
+  pace           : 0.0868  ████████
+  class_change   : 0.0857  ████████
+  condition      : 0.0787  ███████
+  rest           : 0.0655  ██████
+  weight_stab    : 0.0415  ████
+
+最適化完了（2パス）。重みを保存しました。
+結果: data/backtest/historical_20260517.json
+
+最初の投稿から最適化済み重みが自動適用されます。
+◎本命勝率(最適化前): 37.0%
+（次回の実際の予想では改善が見込まれます）

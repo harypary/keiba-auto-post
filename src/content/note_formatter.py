@@ -772,33 +772,102 @@ def _section_full_ranking(scores, race) -> str:
             )
     parts.append("\n")
 
-    # === 上位5頭のみ詳細解説（過剰な情報は削減）===
+    # === 上位5頭のみ詳細解説（しっかり読ませる長さに）===
     parts.append("### 注目馬の詳細解説\n\n")
     for rank, s in enumerate(sorted_scores[:5], 1):
         mark = MARK_MAP.get(rank, "")
         final = getattr(s, "final_score", 0)
         narrative = getattr(s, "comment", "")
-        odds  = getattr(s, "odds", 0) or 0  # 内部判定用、表示はしない
+        odds  = getattr(s, "odds", 0) or 0
         style = getattr(s, "running_style", "")
         raw = getattr(s, "raw_stat", None)
         aff_obj = getattr(s, "affinity", None)
         gap = top_score - final
+        wr = getattr(s, "win_rate", 0) or 0
+        pr = getattr(s, "place_rate", 0) or 0
+        races_n = getattr(s, "total_races", 0) or 0
+        spd = getattr(s, "speed_index", 0) or 0
+        form_score = getattr(s, "form_score", 0) or 0
 
-        # シンプルな見出し
-        parts.append(f"#### {mark} {s.horse_no}番 {s.horse_name}（評点 {final:.1f}）\n")
-        # ナラティブだけで読ませる
-        parts.append(f"{narrative}\n\n")
+        # 役割ラベル
+        role = {1: "本命（◎）", 2: "対抗（○）", 3: "単穴（▲）", 4: "連下（△）", 5: "連下（△）"}.get(rank, "押さえ")
+        parts.append(f"#### {mark} {s.horse_no}番 {s.horse_name} — {role}（評点 {final:.1f}）\n\n")
 
-        # 強み・懸念は1行リスト（簡潔）
+        # ナラティブ（既存）
+        if narrative:
+            parts.append(f"{narrative}\n\n")
+
+        # 詳細解説パート1: 実績ベース
+        parts.append("**実績と地力**\n\n")
+        parts.append(
+            f"通算 {races_n}戦で勝率 {wr*100:.0f}% / 複勝率 {pr*100:.0f}%。"
+            f"スピード指数は {spd:.0f} で、{('メンバー上位の絶対値を持つ' if spd >= 80 else ('平均水準' if spd >= 60 else '今回相手にスピードでは見劣る可能性'))}。"
+        )
+        if form_score >= 70:
+            parts.append("近走フォームは上昇傾向で、調子の良さが結果に現れている。")
+        elif form_score >= 50:
+            parts.append("近走の内容は安定しており、大きな崩れは見られない。")
+        else:
+            parts.append("近走は伸び悩み気味で、立て直しが必要な状況。")
+        parts.append("\n\n")
+
+        # 詳細解説パート2: 適性
+        if raw:
+            parts.append("**今回条件への適性**\n\n")
+            aps = []
+            if raw.surface_score >= 70:
+                aps.append(f"{race.surface}での好走実績が豊富で、馬場適性は高い")
+            elif raw.surface_score < 50:
+                aps.append(f"{race.surface}での実績はやや薄く、馬場が合うかが鍵")
+            if raw.distance_score >= 70:
+                aps.append(f"{race.distance}m前後で連対実績があり、距離はベスト圏内")
+            elif raw.distance_score < 50:
+                aps.append(f"{race.distance}mは経験値不足で、未知数の部分が残る")
+            if raw.venue_score >= 70:
+                aps.append(f"{race.venue}コースは好相性で、過去にも結果を出している")
+            elif raw.venue_score < 50:
+                aps.append(f"{race.venue}は初出走または苦手傾向で、コース替わりがどう出るか")
+            if raw.condition_score >= 65:
+                aps.append(f"{race.condition}馬場でも力を出せるタイプ")
+            if raw.grade_score >= 70:
+                aps.append("クラス慣れしており、今回のレベルでも互角以上の戦いが可能")
+            elif raw.grade_score < 50:
+                aps.append("クラスの壁を超える試金石となるレース")
+            if aps:
+                parts.append("、".join(aps) + "。")
+            parts.append("\n\n")
+
+        # 詳細解説パート3: 脚質×展開
+        if style:
+            pace_label = getattr(race, "pace_label", "") or "想定ペース"
+            parts.append("**脚質と展開**\n\n")
+            parts.append(
+                f"脚質は{style}。"
+                f"{'前で運べる積極策が取れ、展開利を受けやすい' if style in ('逃げ','先行') else '後方から差し脚を伸ばすタイプで、ペースが流れた時に持ち味が活きる'}。"
+            )
+            parts.append("\n\n")
+
+        # 強み・懸念は箇条書きで詳細に
         strengths, concerns = _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap)
         if strengths:
-            parts.append("プラス材料: " + " / ".join(strengths[:3]) + "\n")
+            parts.append("**プラス材料**\n\n")
+            for x in strengths[:4]:
+                parts.append(f"- {x}\n")
+            parts.append("\n")
         if concerns:
-            parts.append("懸念: " + " / ".join(concerns[:2]) + "\n")
-        # 騎手相性（簡潔）
+            parts.append("**懸念点**\n\n")
+            for x in concerns[:3]:
+                parts.append(f"- {x}\n")
+            parts.append("\n")
+
+        # 騎手相性
         if aff_obj and aff_obj.total >= 2:
-            parts.append(f"騎手×馬: 過去{aff_obj.total}戦{aff_obj.wins}勝・複勝率{aff_obj.place_rate*100:.0f}%\n")
-        parts.append("\n")
+            parts.append(
+                f"**騎手×馬の相性**: 過去{aff_obj.total}戦{aff_obj.wins}勝、複勝率{aff_obj.place_rate*100:.0f}%。"
+                f"{'手の合った騎乗が期待でき、心強い継続コンビ' if aff_obj.place_rate >= 0.4 else '相性面では特筆事項なし'}。\n\n"
+            )
+
+        parts.append("---\n\n")
 
     # === 6位以下のクイック評価（一言コメント付き）===
     if len(sorted_scores) > 5:

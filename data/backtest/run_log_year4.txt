@@ -1,0 +1,833 @@
+[起動] 00:19:04 バックテストスクリプト開始
+============================================================
+全過去データ 大規模バックテスト＆多段階重み最適化
+最大26週（約半年）のデータで徹底的に最適化します
+============================================================
+対象期間: 2022-05-21 〜 2023-05-14（104日間）
+
+============================================================
+フェーズ1: 全過去データ収集
+============================================================
+  [resume] 既処理 2590 レースをスキップ
+
+--- 2022-05-21 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220521 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220521
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220521 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220521
+[scraper] https://db.netkeiba.com/race/list/20220521/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220521/
+[scraper] https://db.netkeiba.com/race/list/20220521/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220521/
+  開催なし
+
+--- 2022-05-22 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220522 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220522
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220522 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220522
+[scraper] https://db.netkeiba.com/race/list/20220522/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220522/
+[scraper] https://db.netkeiba.com/race/list/20220522/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220522/
+  開催なし
+
+--- 2022-05-28 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220528 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220528
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220528 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220528
+[scraper] https://db.netkeiba.com/race/list/20220528/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220528/
+[scraper] https://db.netkeiba.com/race/list/20220528/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220528/
+  開催なし
+
+--- 2022-05-29 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220529 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220529
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220529 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220529
+[scraper] https://db.netkeiba.com/race/list/20220529/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220529/
+[scraper] https://db.netkeiba.com/race/list/20220529/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220529/
+  開催なし
+
+--- 2022-06-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220604 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220604
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220604 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220604
+[scraper] https://db.netkeiba.com/race/list/20220604/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220604/
+[scraper] https://db.netkeiba.com/race/list/20220604/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220604/
+  開催なし
+
+--- 2022-06-05 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220605 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220605
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220605 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220605
+[scraper] https://db.netkeiba.com/race/list/20220605/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220605/
+[scraper] https://db.netkeiba.com/race/list/20220605/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220605/
+  開催なし
+
+--- 2022-06-11 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220611 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220611
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220611 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220611
+[scraper] https://db.netkeiba.com/race/list/20220611/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220611/
+[scraper] https://db.netkeiba.com/race/list/20220611/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220611/
+  開催なし
+
+--- 2022-06-12 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220612 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220612
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220612 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220612
+[scraper] https://db.netkeiba.com/race/list/20220612/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220612/
+[scraper] https://db.netkeiba.com/race/list/20220612/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220612/
+  開催なし
+
+--- 2022-06-18 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220618 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220618
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220618 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220618
+[scraper] https://db.netkeiba.com/race/list/20220618/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220618/
+[scraper] https://db.netkeiba.com/race/list/20220618/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220618/
+  開催なし
+
+--- 2022-06-19 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220619 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220619
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220619 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220619
+[scraper] https://db.netkeiba.com/race/list/20220619/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220619/
+[scraper] https://db.netkeiba.com/race/list/20220619/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220619/
+  開催なし
+
+--- 2022-06-25 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220625 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220625
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220625 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220625
+[scraper] https://db.netkeiba.com/race/list/20220625/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220625/
+[scraper] https://db.netkeiba.com/race/list/20220625/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220625/
+  開催なし
+
+--- 2022-06-26 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220626 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220626
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220626 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220626
+[scraper] https://db.netkeiba.com/race/list/20220626/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220626/
+[scraper] https://db.netkeiba.com/race/list/20220626/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220626/
+  開催なし
+
+--- 2022-07-02 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220702 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220702
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220702 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220702
+[scraper] https://db.netkeiba.com/race/list/20220702/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220702/
+[scraper] https://db.netkeiba.com/race/list/20220702/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220702/
+  開催なし
+
+--- 2022-07-03 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220703 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220703
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220703 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220703
+[scraper] https://db.netkeiba.com/race/list/20220703/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220703/
+[scraper] https://db.netkeiba.com/race/list/20220703/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220703/
+  開催なし
+
+--- 2022-07-09 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220709 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220709
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220709 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220709
+[scraper] https://db.netkeiba.com/race/list/20220709/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220709/
+[scraper] https://db.netkeiba.com/race/list/20220709/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220709/
+  開催なし
+
+--- 2022-07-10 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220710 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220710
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220710 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220710
+[scraper] https://db.netkeiba.com/race/list/20220710/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220710/
+[scraper] https://db.netkeiba.com/race/list/20220710/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220710/
+  開催なし
+
+--- 2022-07-16 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220716 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220716
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220716 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220716
+[scraper] https://db.netkeiba.com/race/list/20220716/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220716/
+[scraper] https://db.netkeiba.com/race/list/20220716/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220716/
+  開催なし
+
+--- 2022-07-17 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220717 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220717
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220717 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220717
+[scraper] https://db.netkeiba.com/race/list/20220717/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220717/
+[scraper] https://db.netkeiba.com/race/list/20220717/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220717/
+  開催なし
+
+--- 2022-07-23 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220723 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220723
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220723 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220723
+[scraper] https://db.netkeiba.com/race/list/20220723/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220723/
+[scraper] https://db.netkeiba.com/race/list/20220723/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220723/
+  開催なし
+
+--- 2022-07-24 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220724 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220724
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220724 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220724
+[scraper] https://db.netkeiba.com/race/list/20220724/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220724/
+[scraper] https://db.netkeiba.com/race/list/20220724/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220724/
+  開催なし
+
+--- 2022-07-30 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220730 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220730
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220730 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220730
+[scraper] https://db.netkeiba.com/race/list/20220730/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220730/
+[scraper] https://db.netkeiba.com/race/list/20220730/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220730/
+  開催なし
+
+--- 2022-07-31 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220731 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220731
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220731 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220731
+[scraper] https://db.netkeiba.com/race/list/20220731/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220731/
+[scraper] https://db.netkeiba.com/race/list/20220731/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220731/
+  開催なし
+
+--- 2022-08-06 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220806 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220806
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220806 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220806
+[scraper] https://db.netkeiba.com/race/list/20220806/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220806/
+[scraper] https://db.netkeiba.com/race/list/20220806/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220806/
+  開催なし
+
+--- 2022-08-07 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220807 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220807
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220807 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220807
+[scraper] https://db.netkeiba.com/race/list/20220807/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220807/
+[scraper] https://db.netkeiba.com/race/list/20220807/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220807/
+  開催なし
+
+--- 2022-08-13 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220813 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220813
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220813 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220813
+[scraper] https://db.netkeiba.com/race/list/20220813/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220813/
+[scraper] https://db.netkeiba.com/race/list/20220813/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220813/
+  開催なし
+
+--- 2022-08-14 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220814 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220814
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220814 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220814
+[scraper] https://db.netkeiba.com/race/list/20220814/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220814/
+[scraper] https://db.netkeiba.com/race/list/20220814/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220814/
+  開催なし
+
+--- 2022-08-20 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220820 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220820
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220820 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220820
+[scraper] https://db.netkeiba.com/race/list/20220820/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220820/
+[scraper] https://db.netkeiba.com/race/list/20220820/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220820/
+  開催なし
+
+--- 2022-08-21 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220821 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220821
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220821 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220821
+[scraper] https://db.netkeiba.com/race/list/20220821/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220821/
+[scraper] https://db.netkeiba.com/race/list/20220821/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220821/
+  開催なし
+
+--- 2022-08-27 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220827 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220827
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220827 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220827
+[scraper] https://db.netkeiba.com/race/list/20220827/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220827/
+[scraper] https://db.netkeiba.com/race/list/20220827/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220827/
+  開催なし
+
+--- 2022-08-28 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220828 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220828
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220828 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220828
+[scraper] https://db.netkeiba.com/race/list/20220828/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220828/
+[scraper] https://db.netkeiba.com/race/list/20220828/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220828/
+  開催なし
+
+--- 2022-09-03 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220903 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220903
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220903 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220903
+[scraper] https://db.netkeiba.com/race/list/20220903/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220903/
+[scraper] https://db.netkeiba.com/race/list/20220903/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220903/
+  開催なし
+
+--- 2022-09-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220904 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220904
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220904 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220904
+[scraper] https://db.netkeiba.com/race/list/20220904/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220904/
+[scraper] https://db.netkeiba.com/race/list/20220904/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220904/
+  開催なし
+
+--- 2022-09-10 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220910 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220910
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220910 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220910
+[scraper] https://db.netkeiba.com/race/list/20220910/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220910/
+[scraper] https://db.netkeiba.com/race/list/20220910/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220910/
+  開催なし
+
+--- 2022-09-11 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220911 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220911
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220911 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220911
+[scraper] https://db.netkeiba.com/race/list/20220911/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220911/
+[scraper] https://db.netkeiba.com/race/list/20220911/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220911/
+  開催なし
+
+--- 2022-09-17 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220917 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220917
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220917 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220917
+[scraper] https://db.netkeiba.com/race/list/20220917/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220917/
+[scraper] https://db.netkeiba.com/race/list/20220917/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220917/
+  開催なし
+
+--- 2022-09-18 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220918 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220918
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220918 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220918
+[scraper] https://db.netkeiba.com/race/list/20220918/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220918/
+[scraper] https://db.netkeiba.com/race/list/20220918/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220918/
+  開催なし
+
+--- 2022-09-24 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220924 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220924
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220924 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220924
+[scraper] https://db.netkeiba.com/race/list/20220924/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220924/
+[scraper] https://db.netkeiba.com/race/list/20220924/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220924/
+  開催なし
+
+--- 2022-09-25 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220925 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220925
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220925 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20220925
+[scraper] https://db.netkeiba.com/race/list/20220925/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220925/
+[scraper] https://db.netkeiba.com/race/list/20220925/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20220925/
+  開催なし
+
+--- 2022-10-01 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221001 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221001
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221001 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221001
+[scraper] https://db.netkeiba.com/race/list/20221001/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221001/
+[scraper] https://db.netkeiba.com/race/list/20221001/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221001/
+  開催なし
+
+--- 2022-10-02 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221002 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221002
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221002 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221002
+[scraper] https://db.netkeiba.com/race/list/20221002/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221002/
+[scraper] https://db.netkeiba.com/race/list/20221002/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221002/
+  開催なし
+
+--- 2022-10-08 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221008 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221008
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221008 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221008
+[scraper] https://db.netkeiba.com/race/list/20221008/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221008/
+[scraper] https://db.netkeiba.com/race/list/20221008/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221008/
+  開催なし
+
+--- 2022-10-09 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221009 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221009
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221009 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221009
+[scraper] https://db.netkeiba.com/race/list/20221009/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221009/
+[scraper] https://db.netkeiba.com/race/list/20221009/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221009/
+  開催なし
+
+--- 2022-10-15 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221015 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221015
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221015 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221015
+[scraper] https://db.netkeiba.com/race/list/20221015/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221015/
+[scraper] https://db.netkeiba.com/race/list/20221015/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221015/
+  開催なし
+
+--- 2022-10-16 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221016 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221016
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221016 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221016
+[scraper] https://db.netkeiba.com/race/list/20221016/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221016/
+[scraper] https://db.netkeiba.com/race/list/20221016/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221016/
+  開催なし
+
+--- 2022-10-22 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221022 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221022
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221022 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221022
+[scraper] https://db.netkeiba.com/race/list/20221022/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221022/
+[scraper] https://db.netkeiba.com/race/list/20221022/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221022/
+  開催なし
+
+--- 2022-10-23 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221023 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221023
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221023 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221023
+[scraper] https://db.netkeiba.com/race/list/20221023/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221023/
+[scraper] https://db.netkeiba.com/race/list/20221023/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221023/
+  開催なし
+
+--- 2022-10-29 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221029 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221029
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221029 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221029
+[scraper] https://db.netkeiba.com/race/list/20221029/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221029/
+[scraper] https://db.netkeiba.com/race/list/20221029/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221029/
+  開催なし
+
+--- 2022-10-30 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221030 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221030
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221030 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221030
+[scraper] https://db.netkeiba.com/race/list/20221030/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221030/
+[scraper] https://db.netkeiba.com/race/list/20221030/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221030/
+  開催なし
+
+--- 2022-11-05 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221105 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221105
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221105 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221105
+[scraper] https://db.netkeiba.com/race/list/20221105/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221105/
+[scraper] https://db.netkeiba.com/race/list/20221105/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221105/
+  開催なし
+
+--- 2022-11-06 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221106 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221106
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221106 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221106
+[scraper] https://db.netkeiba.com/race/list/20221106/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221106/
+[scraper] https://db.netkeiba.com/race/list/20221106/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221106/
+  開催なし
+
+--- 2022-11-12 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221112 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221112
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221112 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221112
+[scraper] https://db.netkeiba.com/race/list/20221112/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221112/
+[scraper] https://db.netkeiba.com/race/list/20221112/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221112/
+  開催なし
+
+--- 2022-11-13 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221113 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221113
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221113 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221113
+[scraper] https://db.netkeiba.com/race/list/20221113/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221113/
+[scraper] https://db.netkeiba.com/race/list/20221113/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221113/
+  開催なし
+
+--- 2022-11-19 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221119 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221119
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221119 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221119
+[scraper] https://db.netkeiba.com/race/list/20221119/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221119/
+[scraper] https://db.netkeiba.com/race/list/20221119/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221119/
+  開催なし
+
+--- 2022-11-20 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221120 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221120
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221120 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221120
+[scraper] https://db.netkeiba.com/race/list/20221120/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221120/
+[scraper] https://db.netkeiba.com/race/list/20221120/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221120/
+  開催なし
+
+--- 2022-11-26 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221126 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221126
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221126 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221126
+[scraper] https://db.netkeiba.com/race/list/20221126/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221126/
+[scraper] https://db.netkeiba.com/race/list/20221126/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221126/
+  開催なし
+
+--- 2022-11-27 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221127 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221127
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221127 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221127
+[scraper] https://db.netkeiba.com/race/list/20221127/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221127/
+[scraper] https://db.netkeiba.com/race/list/20221127/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221127/
+  開催なし
+
+--- 2022-12-03 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221203 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221203
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221203 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221203
+[scraper] https://db.netkeiba.com/race/list/20221203/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221203/
+[scraper] https://db.netkeiba.com/race/list/20221203/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221203/
+  開催なし
+
+--- 2022-12-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221204 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221204
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221204 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221204
+[scraper] https://db.netkeiba.com/race/list/20221204/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221204/
+[scraper] https://db.netkeiba.com/race/list/20221204/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221204/
+  開催なし
+
+--- 2022-12-10 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221210 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221210
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221210 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221210
+[scraper] https://db.netkeiba.com/race/list/20221210/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221210/
+[scraper] https://db.netkeiba.com/race/list/20221210/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221210/
+  開催なし
+
+--- 2022-12-11 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221211 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221211
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221211 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221211
+[scraper] https://db.netkeiba.com/race/list/20221211/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221211/
+[scraper] https://db.netkeiba.com/race/list/20221211/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221211/
+  開催なし
+
+--- 2022-12-17 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221217 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221217
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221217 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221217
+[scraper] https://db.netkeiba.com/race/list/20221217/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221217/
+[scraper] https://db.netkeiba.com/race/list/20221217/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221217/
+  開催なし
+
+--- 2022-12-18 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221218 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221218
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221218 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221218
+[scraper] https://db.netkeiba.com/race/list/20221218/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221218/
+[scraper] https://db.netkeiba.com/race/list/20221218/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221218/
+  開催なし
+
+--- 2022-12-24 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221224 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221224
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221224 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221224
+[scraper] https://db.netkeiba.com/race/list/20221224/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221224/
+[scraper] https://db.netkeiba.com/race/list/20221224/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221224/
+  開催なし
+
+--- 2022-12-25 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221225 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221225
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221225 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221225
+[scraper] https://db.netkeiba.com/race/list/20221225/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221225/
+[scraper] https://db.netkeiba.com/race/list/20221225/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221225/
+  開催なし
+
+--- 2022-12-31 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221231 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221231
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221231 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20221231
+[scraper] https://db.netkeiba.com/race/list/20221231/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221231/
+[scraper] https://db.netkeiba.com/race/list/20221231/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20221231/
+  開催なし
+
+--- 2023-01-01 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230101 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230101
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230101 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230101
+[scraper] https://db.netkeiba.com/race/list/20230101/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230101/
+[scraper] https://db.netkeiba.com/race/list/20230101/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230101/
+  開催なし
+
+--- 2023-01-07 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230107 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230107
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230107 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230107
+[scraper] https://db.netkeiba.com/race/list/20230107/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230107/
+[scraper] https://db.netkeiba.com/race/list/20230107/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230107/
+  開催なし
+
+--- 2023-01-08 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230108 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230108
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230108 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230108
+[scraper] https://db.netkeiba.com/race/list/20230108/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230108/
+[scraper] https://db.netkeiba.com/race/list/20230108/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230108/
+  開催なし
+
+--- 2023-01-14 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230114 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230114
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230114 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230114
+[scraper] https://db.netkeiba.com/race/list/20230114/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230114/
+[scraper] https://db.netkeiba.com/race/list/20230114/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230114/
+  開催なし
+
+--- 2023-01-15 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230115 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230115
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230115 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230115
+[scraper] https://db.netkeiba.com/race/list/20230115/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230115/
+[scraper] https://db.netkeiba.com/race/list/20230115/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230115/
+  開催なし
+
+--- 2023-01-21 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230121 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230121
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230121 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230121
+[scraper] https://db.netkeiba.com/race/list/20230121/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230121/
+[scraper] https://db.netkeiba.com/race/list/20230121/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230121/
+  開催なし
+
+--- 2023-01-22 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230122 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230122
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230122 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230122
+[scraper] https://db.netkeiba.com/race/list/20230122/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230122/
+[scraper] https://db.netkeiba.com/race/list/20230122/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230122/
+  開催なし
+
+--- 2023-01-28 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230128 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230128
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230128 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230128
+[scraper] https://db.netkeiba.com/race/list/20230128/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230128/
+[scraper] https://db.netkeiba.com/race/list/20230128/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230128/
+  開催なし
+
+--- 2023-01-29 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230129 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230129
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230129 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230129
+[scraper] https://db.netkeiba.com/race/list/20230129/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230129/
+[scraper] https://db.netkeiba.com/race/list/20230129/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230129/
+  開催なし
+
+--- 2023-02-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230204 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230204
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230204 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230204
+[scraper] https://db.netkeiba.com/race/list/20230204/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230204/
+[scraper] https://db.netkeiba.com/race/list/20230204/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230204/
+  開催なし
+
+--- 2023-02-05 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230205 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230205
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230205 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230205
+[scraper] https://db.netkeiba.com/race/list/20230205/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230205/
+[scraper] https://db.netkeiba.com/race/list/20230205/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230205/
+  開催なし
+
+--- 2023-02-11 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230211 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230211
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230211 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230211
+[scraper] https://db.netkeiba.com/race/list/20230211/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230211/
+[scraper] https://db.netkeiba.com/race/list/20230211/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230211/
+  開催なし
+
+--- 2023-02-12 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230212 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230212
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230212 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230212
+[scraper] https://db.netkeiba.com/race/list/20230212/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230212/
+[scraper] https://db.netkeiba.com/race/list/20230212/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230212/
+  開催なし
+
+--- 2023-02-18 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230218 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230218
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230218 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230218
+[scraper] https://db.netkeiba.com/race/list/20230218/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230218/
+[scraper] https://db.netkeiba.com/race/list/20230218/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230218/
+  開催なし
+
+--- 2023-02-19 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230219 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230219
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230219 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230219
+[scraper] https://db.netkeiba.com/race/list/20230219/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230219/
+[scraper] https://db.netkeiba.com/race/list/20230219/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230219/
+  開催なし
+
+--- 2023-02-25 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230225 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230225
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230225 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230225
+[scraper] https://db.netkeiba.com/race/list/20230225/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230225/
+[scraper] https://db.netkeiba.com/race/list/20230225/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230225/
+  開催なし
+
+--- 2023-02-26 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230226 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230226
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230226 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230226
+[scraper] https://db.netkeiba.com/race/list/20230226/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230226/
+[scraper] https://db.netkeiba.com/race/list/20230226/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230226/
+  開催なし
+
+--- 2023-03-04 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230304 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230304
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230304 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230304
+[scraper] https://db.netkeiba.com/race/list/20230304/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230304/
+[scraper] https://db.netkeiba.com/race/list/20230304/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230304/
+  開催なし
+
+--- 2023-03-05 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230305 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230305
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230305 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230305
+[scraper] https://db.netkeiba.com/race/list/20230305/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230305/
+[scraper] https://db.netkeiba.com/race/list/20230305/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230305/
+  開催なし
+
+--- 2023-03-11 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230311 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230311
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230311 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230311
+[scraper] https://db.netkeiba.com/race/list/20230311/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230311/
+[scraper] https://db.netkeiba.com/race/list/20230311/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230311/
+  開催なし
+
+--- 2023-03-12 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230312 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230312
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230312 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230312
+[scraper] https://db.netkeiba.com/race/list/20230312/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230312/
+[scraper] https://db.netkeiba.com/race/list/20230312/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230312/
+  開催なし
+
+--- 2023-03-18 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230318 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230318
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230318 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230318
+[scraper] https://db.netkeiba.com/race/list/20230318/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230318/
+[scraper] https://db.netkeiba.com/race/list/20230318/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230318/
+  開催なし
+
+--- 2023-03-19 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230319 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230319
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230319 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230319
+[scraper] https://db.netkeiba.com/race/list/20230319/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230319/
+[scraper] https://db.netkeiba.com/race/list/20230319/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230319/
+  開催なし
+
+--- 2023-03-25 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230325 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230325
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230325 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230325
+[scraper] https://db.netkeiba.com/race/list/20230325/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230325/
+[scraper] https://db.netkeiba.com/race/list/20230325/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230325/
+  開催なし
+
+--- 2023-03-26 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230326 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230326
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230326 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230326
+[scraper] https://db.netkeiba.com/race/list/20230326/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230326/
+[scraper] https://db.netkeiba.com/race/list/20230326/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230326/
+  開催なし
+
+--- 2023-04-01 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230401 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230401
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230401 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230401
+[scraper] https://db.netkeiba.com/race/list/20230401/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230401/
+[scraper] https://db.netkeiba.com/race/list/20230401/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230401/
+  開催なし
+
+--- 2023-04-02 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230402 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230402
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230402 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230402
+[scraper] https://db.netkeiba.com/race/list/20230402/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230402/
+[scraper] https://db.netkeiba.com/race/list/20230402/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230402/
+  開催なし
+
+--- 2023-04-08 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230408 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230408
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230408 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230408
+[scraper] https://db.netkeiba.com/race/list/20230408/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230408/
+[scraper] https://db.netkeiba.com/race/list/20230408/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230408/
+  開催なし
+
+--- 2023-04-09 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230409 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230409
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230409 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230409
+[scraper] https://db.netkeiba.com/race/list/20230409/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230409/
+[scraper] https://db.netkeiba.com/race/list/20230409/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230409/
+  開催なし
+
+--- 2023-04-15 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230415 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230415
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230415 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230415
+[scraper] https://db.netkeiba.com/race/list/20230415/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230415/
+[scraper] https://db.netkeiba.com/race/list/20230415/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230415/
+  開催なし
+
+--- 2023-04-16 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230416 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230416
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230416 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230416
+[scraper] https://db.netkeiba.com/race/list/20230416/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230416/
+[scraper] https://db.netkeiba.com/race/list/20230416/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230416/
+  開催なし
+
+--- 2023-04-22 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230422 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230422
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230422 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230422
+[scraper] https://db.netkeiba.com/race/list/20230422/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230422/
+[scraper] https://db.netkeiba.com/race/list/20230422/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230422/
+  開催なし
+
+--- 2023-04-23 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230423 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230423
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230423 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230423
+[scraper] https://db.netkeiba.com/race/list/20230423/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230423/
+[scraper] https://db.netkeiba.com/race/list/20230423/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230423/
+  開催なし
+
+--- 2023-04-29 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230429 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230429
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230429 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230429
+[scraper] https://db.netkeiba.com/race/list/20230429/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230429/
+[scraper] https://db.netkeiba.com/race/list/20230429/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230429/
+  開催なし
+
+--- 2023-04-30 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230430 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230430
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230430 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230430
+[scraper] https://db.netkeiba.com/race/list/20230430/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230430/
+[scraper] https://db.netkeiba.com/race/list/20230430/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230430/
+  開催なし
+
+--- 2023-05-06 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230506 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230506
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230506 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230506
+[scraper] https://db.netkeiba.com/race/list/20230506/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230506/
+[scraper] https://db.netkeiba.com/race/list/20230506/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230506/
+  開催なし
+
+--- 2023-05-07 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230507 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230507
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230507 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230507
+[scraper] https://db.netkeiba.com/race/list/20230507/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230507/
+[scraper] https://db.netkeiba.com/race/list/20230507/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230507/
+  開催なし
+
+--- 2023-05-13 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230513 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230513
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230513 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230513
+[scraper] https://db.netkeiba.com/race/list/20230513/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230513/
+[scraper] https://db.netkeiba.com/race/list/20230513/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230513/
+  開催なし
+
+--- 2023-05-14 ---
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230514 attempt 1 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230514
+[scraper] https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230514 attempt 2 failed: 400 Client Error: Bad Request for url: https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=20230514
+[scraper] https://db.netkeiba.com/race/list/20230514/ attempt 1 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230514/
+[scraper] https://db.netkeiba.com/race/list/20230514/ attempt 2 failed: 400 Client Error: Bad Request for url: https://db.netkeiba.com/race/list/20230514/
+  開催なし
+
+収集完了: 2590レース
+
+============================================================
+[結果] 2590レース
+============================================================
+  ◎本命 勝率:   36.9%  (目標20%以上)
+  ◎本命 複勝率: 68.8%  (目標40%以上)
+  馬連 的中率:  50.3%  (目標15%以上)
+  3連複 的中率: 32.3%
+  勝ち馬平均予想順位: 3.4位
+
+[外れの主因 TOP5]
+  → コース適性: 359件 (22%)
+  → 上がり適性: 226件 (14%)
+  → 休養間隔: 182件 (11%)
+  → 馬体重安定: 148件 (9%)
+  → 距離適性: 126件 (8%)
+
+[クラス別 ◎勝率]
+  OP   : 32% (235R)
+  未勝利  : 36% (2082R)
+  新馬   : 50% (273R)
+
+[馬場別 ◎勝率]
+  芝: 37% (2590R)
+
+生データ保存: data/backtest/historical_raw_20260517.json
+
+============================================================
+フェーズ2: 多段階重み最適化（収束まで反復）
+============================================================
+
+[イテレーション 1/10]
+
+[miss analysis] 外れ分析: 1634/2590レース外れ
+
+[weight] 重み自動調整 (lr=0.0400, 2590レース, 外れ率=63.1%):
+  ↑ recent_form    : 0.1969 → 0.1988 (+0.0019)
+  ↑ surface        : 0.1045 → 0.1063 (+0.0018)
+  ↑ distance       : 0.1210 → 0.1241 (+0.0031)
+  ↑ speed_index    : 0.0930 → 0.0949 (+0.0019)
+  ↑ venue          : 0.1264 → 0.1330 (+0.0066)
+  ↑ condition      : 0.0787 → 0.0823 (+0.0036)
+  ↑ weight_stab    : 0.0415 → 0.0441 (+0.0026)
+  ↑ class_change   : 0.0857 → 0.0886 (+0.0029)
+  ↑ rest           : 0.0655 → 0.0687 (+0.0032)
+  ↑ pace           : 0.0868 → 0.0909 (+0.0041)
+
+[weight] 新しい重み保存: C:\Users\haryp\game\21.kiba\src\validator\..\..\data\model_weights.json
+  次イテレーション用に分析継続...
+
+[イテレーション 2/10]
+
+[miss analysis] 外れ分析: 1634/2590レース外れ
+
+[weight] 重み自動調整 (lr=0.0400, 2590レース, 外れ率=63.1%):
+  ↑ recent_form    : 0.1927 → 0.1946 (+0.0019)
+  ↑ surface        : 0.1030 → 0.1048 (+0.0018)
+  ↑ distance       : 0.1203 → 0.1234 (+0.0031)
+  ↑ speed_index    : 0.0920 → 0.0939 (+0.0019)
+  ↑ venue          : 0.1289 → 0.1355 (+0.0066)
+  ↑ condition      : 0.0798 → 0.0834 (+0.0036)
+  ↑ weight_stab    : 0.0427 → 0.0453 (+0.0026)
+  ↑ class_change   : 0.0859 → 0.0888 (+0.0029)
+  ↑ rest           : 0.0666 → 0.0698 (+0.0032)
+  ↑ pace           : 0.0881 → 0.0922 (+0.0041)
+
+[weight] 新しい重み保存: C:\Users\haryp\game\21.kiba\src\validator\..\..\data\model_weights.json
+  重み最大変化量: 0.00410
+  → 収束しました（イテレーション 2）
+
+============================================================
+フェーズ3: 最終最適化重みサマリー
+============================================================
+
+[現在のモデル重み]
+  recent_form    : 0.1886  ██████████████████
+  venue          : 0.1313  █████████████
+  distance       : 0.1196  ███████████
+  surface        : 0.1016  ██████████
+  speed_index    : 0.0910  █████████
+  pace           : 0.0894  ████████
+  class_change   : 0.0861  ████████
+  condition      : 0.0808  ████████
+  rest           : 0.0677  ██████
+  weight_stab    : 0.0439  ████
+
+最適化完了（2パス）。重みを保存しました。
+結果: data/backtest/historical_20260517.json
+
+最初の投稿から最適化済み重みが自動適用されます。
+◎本命勝率(最適化前): 36.9%
+（次回の実際の予想では改善が見込まれます）
