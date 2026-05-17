@@ -90,27 +90,60 @@ class ResultsFetcher(BaseScraper):
                     continue
                 order = int(m.group())
                 if order > 20:
-                    continue  # 中止・失格は除外
+                    continue
 
-                # 馬番はセル[2]（db.netkeibaでは[1]の場合もある）
+                horse_no = 0
                 for ci in [2, 1]:
                     if len(cells) > ci:
                         hm = re.search(r"\d+", cells[ci].get_text(strip=True))
                         if hm:
                             horse_no = int(hm.group())
                             break
-                else:
+                if horse_no == 0:
                     continue
 
                 horse_link = cells[3].select_one("a") if len(cells) > 3 else None
                 horse_name = horse_link.get_text(strip=True) if horse_link else ""
 
-                if horse_no > 0:
-                    order_list.append({
-                        "order": order,
-                        "horse_no": horse_no,
-                        "horse_name": horse_name,
-                    })
+                # 最終単勝オッズ + 人気を抽出（cells後方から）
+                final_odds = None
+                popularity = None
+                for ci_o in [10, 9, 11, 12]:
+                    if ci_o < len(cells):
+                        txt = cells[ci_o].get_text(strip=True)
+                        mo = re.search(r"(\d+\.\d+)", txt)
+                        if mo and not final_odds:
+                            v = float(mo.group(1))
+                            if 1.0 <= v <= 999.9:
+                                final_odds = v
+                        mp = re.search(r"^(\d+)$", txt)
+                        if mp and not popularity:
+                            p = int(mp.group(1))
+                            if 1 <= p <= 30:
+                                popularity = p
+
+                # タイム、上がり3F
+                finish_time = None
+                last_3f = None
+                for ci_t in [7, 6, 8]:
+                    if ci_t < len(cells):
+                        ttxt = cells[ci_t].get_text(strip=True)
+                        mt = re.search(r"(\d+):(\d+)\.(\d+)", ttxt)
+                        if mt and not finish_time:
+                            finish_time = f"{mt.group(1)}:{mt.group(2)}.{mt.group(3)}"
+                m3 = re.search(r"(\d+)\.(\d+)\s*$", " ".join(c.get_text(strip=True) for c in cells))
+                if m3:
+                    last_3f = f"{m3.group(1)}.{m3.group(2)}"
+
+                order_list.append({
+                    "order": order,
+                    "horse_no": horse_no,
+                    "horse_name": horse_name,
+                    "final_odds": final_odds,
+                    "popularity": popularity,
+                    "finish_time": finish_time,
+                    "last_3f": last_3f,
+                })
             except Exception:
                 continue
 

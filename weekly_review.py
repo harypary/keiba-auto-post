@@ -218,6 +218,34 @@ def run_weekly_review():
         except Exception as ex:
             print(f"  [深層パターン] 失敗: {ex}")
 
+        # === レース別徹底振り返り（最終オッズ・人気・勝因タグ・配当全部分析）===
+        try:
+            from src.validator.race_retrospective import build_retro_record, save_retro_batch, get_recent_retro_summary
+            retro_records = []
+            for r in bt_records:
+                pred = {
+                    "race_name": r.get("race_name", ""),
+                    "venue":     r.get("venue"),
+                    "surface":   r.get("surface"),
+                    "distance":  r.get("distance"),
+                    "condition": r.get("condition"),
+                    "honmei_no": r.get("honmei_no"),
+                    "winner_factors": r.get("winner_factors", {}),
+                    "honmei_factors": r.get("honmei_factors", {}),
+                }
+                race_id = r.get("race_id")
+                if not race_id: continue
+                res = fetcher.get_race_result(race_id)
+                if not res: continue
+                rec = build_retro_record(race_id, pred, res)
+                if rec:
+                    retro_records.append(rec)
+            added = save_retro_batch(retro_records)
+            summary = get_recent_retro_summary(30)
+            print(f"\n[徹底振り返り] {added}件新規保存 / 直近30R傾向: {summary}")
+        except Exception as ex:
+            print(f"  [徹底振り返り] 失敗: {ex}")
+
         # === ML メタモデル再訓練（蓄積データが増えるたびに学習更新）===
         try:
             from src.ml.meta_model import train_and_save
