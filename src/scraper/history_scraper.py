@@ -57,14 +57,23 @@ class FullHorseHistory:
 
 class HistoryScraper(BaseScraper):
     def get_full_history(self, horse_id: str) -> Optional[FullHorseHistory]:
-        # プロフィール取得
+        """プロフィール+成績を取得。プロフィール失敗でも成績だけ取得を試みる"""
+        # プロフィール取得（失敗しても続行）
         prof_soup = self.get(f"{NETKEIBA_DB}/horse/{horse_id}/")
-        if not prof_soup:
-            return None
-
-        name_el = prof_soup.select_one(".horse_title h1")
-        horse_name = name_el.get_text(strip=True) if name_el else "不明"
-        prof = self._parse_profile(prof_soup)
+        horse_name = "不明"
+        prof = {}
+        if prof_soup:
+            name_el = prof_soup.select_one(".horse_title h1")
+            if name_el:
+                horse_name = name_el.get_text(strip=True)
+            prof = self._parse_profile(prof_soup)
+            # 性齢補完
+            if not prof.get("sex"):
+                text = prof_soup.get_text()
+                for sx in ["牡", "牝", "セ", "騸"]:
+                    if sx in text:
+                        prof["sex"] = sx
+                        break
 
         # 父馬が取れなければ血統ページから
         if not prof.get("sire"):
@@ -74,19 +83,20 @@ class HistoryScraper(BaseScraper):
                 if sire:
                     prof["sire"] = sire
 
-        # 性齢が取れなければプロフィールテキストから
-        if not prof.get("sex"):
-            text = prof_soup.get_text()
-            for sx in ["牡", "牝", "セ", "騸"]:
-                if sx in text:
-                    prof["sex"] = sx
-                    break
-
-        # 成績取得（専用URL）
-        result_soup = self.get(f"{NETKEIBA_DB}/horse/result/{horse_id}/")
+        # 成績取得（最重要：プロフィール失敗時もこれだけは取得試行）
         records = []
+        result_soup = self.get(f"{NETKEIBA_DB}/horse/result/{horse_id}/")
         if result_soup:
             records = self._parse_result_table(result_soup)
+            # 成績ページから馬名を取れることも
+            if horse_name == "不明":
+                title = result_soup.select_one("h1, title")
+                if title:
+                    horse_name = title.get_text(strip=True)[:30]
+
+        # プロフィール&成績の両方失敗ならNone返却
+        if not prof and not records:
+            return None
 
         history = FullHorseHistory(
             horse_id=horse_id,
@@ -96,7 +106,7 @@ class HistoryScraper(BaseScraper):
             sex=prof.get("sex", "牡"),
             records=records,
         )
-        history.stats = build_stats(history)
+        history.stats = build_stats(history) if records else {}
         return history
 
     def _parse_sire_from_ped(self, soup) -> str:

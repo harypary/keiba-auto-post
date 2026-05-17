@@ -21,7 +21,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "output")
 
 # スクレイピング設定
 REQUEST_DELAY = float(os.getenv("REQUEST_DELAY", "2.5"))   # 秒（大きいほどPC負荷低）
-MAX_RETRIES = 2
+MAX_RETRIES = 4   # Bot検知対策で多めに再試行
 
 # JRA開催場コード
 JRA_VENUES = {
