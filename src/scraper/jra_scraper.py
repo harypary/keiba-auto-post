@@ -229,9 +229,31 @@ class JRAScraper(BaseScraper):
             trainer_raw = cells[7].get_text(strip=True) if len(cells) > 7 else "不明"
             trainer = re.sub(r"^(美浦|栗東)", "", trainer_raw).strip()
 
+            # オッズ抽出（netkeiba shutuba table: 通常 cells[9] 付近 / span.Popular_Num など）
+            odds_val = None
+            # 1. 専用class
+            for sel in ['span.Popular_Num', 'span.Odds_Num', 'td.Odds_Ninki span', 'td.Popular span']:
+                el = row.select_one(sel)
+                if el:
+                    m = re.search(r'(\d+\.\d+)', el.get_text(strip=True))
+                    if m:
+                        odds_val = float(m.group(1))
+                        break
+            # 2. fallback: 後方のセルから数値パターン
+            if odds_val is None and len(cells) >= 10:
+                for idx in [9, 8, 10]:
+                    if idx < len(cells):
+                        text = cells[idx].get_text(strip=True)
+                        m = re.search(r'(\d+\.\d+)', text)
+                        if m:
+                            v = float(m.group(1))
+                            if 1.0 <= v <= 999.9:
+                                odds_val = v
+                                break
+
             # 馬番が0なら row id="tr_{no}" から取得
             if horse_no == 0:
-                row_id = row.get("id", "")   # e.g. "tr_2"
+                row_id = row.get("id", "")
                 horse_no = _safe_int(row_id)
 
             return HorseEntry(
@@ -242,6 +264,7 @@ class JRAScraper(BaseScraper):
                 jockey=jockey,
                 trainer=trainer,
                 weight_carry=weight_carry,
+                odds=odds_val,
             )
         except Exception as e:
             print(f"[jra] horse row parse error: {e}")
