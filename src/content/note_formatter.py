@@ -958,6 +958,13 @@ def _section_full_ranking(scores, race) -> str:
                 parts.append("\n\n")
             if ml.get("context"):
                 parts.append(f"**前走メンバーレベル**: {ml['context']}\n\n")
+            # 多次元シグナル（季節・距離・斤量・末脚・馬体重等）
+            sig_reasons = hctx.get("signal_reasons", [])
+            if sig_reasons:
+                parts.append("**この馬の強み（過去データから）**\n\n")
+                for r in sig_reasons:
+                    parts.append(f"- {r}\n")
+                parts.append("\n")
 
         parts.append("---\n\n")
 

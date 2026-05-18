@@ -365,6 +365,30 @@ def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
             if venue_sc >= 70:
                 adjust += w.get("venue_fit_bonus", 1.0)
 
+        # === 多次元シグナル（馬体重/季節/斤量耐性/末脚一貫性等）===
+        try:
+            from src.analyzer.comprehensive_factor_analyzer import (
+                derive_comprehensive_signals_from_records, score_horse_with_signals,
+            )
+            from datetime import datetime
+            if hist and hist.records:
+                signals = derive_comprehensive_signals_from_records(hist.records)
+                race_info = {
+                    "venue":     getattr(race, "venue", ""),
+                    "distance":  getattr(race, "distance", 0),
+                    "surface":   getattr(race, "surface", ""),
+                    "condition": getattr(race, "condition", ""),
+                    "weight_carry": getattr(e, "weight_carry", 0),
+                    "month": datetime.now().month,
+                }
+                sig_result = score_horse_with_signals(signals, race_info)
+                adjust += sig_result.get("adjust", 0)
+                # コンテキストに保存（note表示用）
+                ctx["signal_reasons"] = sig_result.get("reasons", [])
+                ctx["signals"] = signals
+        except Exception:
+            pass
+
         s.final_score = round(s.final_score + adjust, 2)
         s.horse_context = ctx
 
