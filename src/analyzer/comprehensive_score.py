@@ -319,12 +319,13 @@ def _apply_grade_overlay(scores: list, race) -> None:
 
 
 def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
-    """馬コンテキスト分析の結果をスコアに反映＋s.horse_context にぶら下げる"""
+    """馬コンテキスト分析の結果をスコアに反映。重みは過去データから学習済み。"""
     try:
         from src.analyzer.horse_context_analyzer import build_horse_context
+        from src.analyzer.context_calibrator import load_weights
     except Exception:
         return
-    # entry/history を horse_no で引けるよう辞書化
+    w = load_weights()
     entry_by_no = {getattr(e, "horse_no", -1): e for e in entries}
     for s in scores:
         e = entry_by_no.get(s.horse_no)
@@ -332,17 +333,23 @@ def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
             continue
         hist = histories.get(getattr(e, "horse_id", "") or "") if histories else None
         ctx = build_horse_context(e, hist, race)
-        # スコアブースト：枠番有利+1〜2点 / 内容良+1点 / 内容悪-1点
-        adjust = float(ctx.get("frame_bias", {}).get("adjust", 0))
+        adjust = 0.0
+        # 枠番（学習済み）
+        fb = ctx.get("frame_bias", {})
+        if fb.get("label") == "有利":
+            adjust += w.get("frame_inner_bonus", 1.0)
+        elif fb.get("label") == "不利":
+            adjust += w.get("frame_outer_penalty", -0.8)
+        # 負け方（学習済み）
         lq = ctx.get("loss_quality", {})
         if lq.get("quality") == "好内容・上向き":
-            adjust += 1.0
+            adjust += w.get("good_loss_bonus", 1.0)
         elif lq.get("quality") == "内容悪い・割引":
-            adjust -= 1.5
+            adjust += w.get("bad_loss_penalty", -1.5)
+        # メンバーレベル（学習済み）
         if ctx.get("member_level", {}).get("level") in ("高", "中〜高"):
-            adjust += 0.5
+            adjust += w.get("grade_exp_bonus", 0.5)
         s.final_score = round(s.final_score + adjust, 2)
-        # コンテキスト情報を保持
         s.horse_context = ctx
 
 

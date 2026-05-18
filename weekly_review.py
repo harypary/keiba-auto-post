@@ -218,6 +218,16 @@ def run_weekly_review():
         except Exception as ex:
             print(f"  [深層パターン] 失敗: {ex}")
 
+        # === コンテキスト加点の学習更新（枠番/負け方/メンバーレベルの最適重み） ===
+        try:
+            from src.analyzer.context_calibrator import calibrate_from_training
+            cw = calibrate_from_training()
+            print(f"\n[コンテキスト学習] 重み更新:")
+            for k, v in cw.items():
+                print(f"  {k:25s}: {v:+.2f}")
+        except Exception as ex:
+            print(f"  [コンテキスト学習] 失敗: {ex}")
+
         # === レース別徹底振り返り（最終オッズ・人気・勝因タグ・配当全部分析）===
         try:
             from src.validator.race_retrospective import build_retro_record, save_retro_batch, get_recent_retro_summary

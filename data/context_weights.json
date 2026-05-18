@@ -1,0 +1,33 @@
+{
+  "weights": {
+    "frame_inner_bonus": -0.09,
+    "frame_outer_penalty": 0.61,
+    "good_loss_bonus": 2.51,
+    "bad_loss_penalty": -3.0,
+    "grade_exp_bonus": 2.86
+  },
+  "base_win_rate": 0.0703,
+  "samples": 49026,
+  "bucket_stats": {
+    "good_loss": {
+      "n": 17751,
+      "win_rate": 0.0954
+    },
+    "grade_exp": {
+      "n": 15455,
+      "win_rate": 0.0989
+    },
+    "frame_inner": {
+      "n": 12685,
+      "win_rate": 0.0694
+    },
+    "frame_outer": {
+      "n": 16129,
+      "win_rate": 0.0764
+    },
+    "bad_loss": {
+      "n": 13971,
+      "win_rate": 0.0274
+    }
+  }
+}
