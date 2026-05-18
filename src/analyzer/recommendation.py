@@ -191,6 +191,14 @@ class BettingPlan:
     total_combinations: int = 0
     estimated_cost: int = 0
 
+    # 深度EV分析: 可変投票額（Kellyベース）とレースグレード
+    race_grade: str = "B"          # S/A/B/C/D
+    grade_reason: str = ""
+    skip_recommended: bool = False  # Grade D は見送り推奨
+    stake_map: dict = field(default_factory=dict)   # {bet_key: yen}
+    max_edge: float = 0.0
+    max_ev: float = 0.0
+
 
 def build_betting_plan_from_stat(race_id: str, race_name: str, scores, num_horses: int) -> BettingPlan:
     return build_betting_plan(race_id, race_name, scores, num_horses)
@@ -314,6 +322,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     trio_bets = [(honmei_no, a, b) for a in trio_heads for b in trio_heads if a != b][:8] if honmei_no else []
 
     # === 深度EV分析優先：アンサンブル確率×Plackett-Luce×Kelly+エッジフィルタ ===
+    deep_plan = None
     try:
         from src.analyzer.deep_ev_analyzer import find_optimal_bets_deep
         deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.05)
@@ -387,12 +396,72 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
                 trifecta_bets.append(triplet)
                 if len(trifecta_bets) >= 4: break
 
+    # === レースグレード & Kelly 配分でステーク決定 ===
+    race_grade = "B"
+    grade_reason = ""
+    skip_recommended = False
+    max_edge = 0.0
+    max_ev = 0.0
+    stake_map = {}
+
+    if deep_plan:
+        gi = deep_plan.get("race_grade", {})
+        race_grade = gi.get("grade", "B")
+        grade_reason = gi.get("reason", "")
+        max_edge = float(gi.get("max_edge", 0))
+        max_ev = float(gi.get("max_ev", 0))
+
+    # Grade D → 全買い目クリア（見送り）
+    if race_grade == "D":
+        skip_recommended = True
+        win_bets, place_bets, exacta_bets, quinella_bets, trifecta_bets, trio_bets = [], [], [], [], [], []
+
+    # Grade ごとのレース総予算（円）
+    GRADE_BUDGET = {"S": 3000, "A": 2000, "B": 1200, "C": 600, "D": 0}
+    race_budget = GRADE_BUDGET.get(race_grade, 1000)
+
+    # 各買い目を EV 比例 + Kelly で配分（100円単位、最小100円）
+    def _allocate(bets, ev_map, kind_key):
+        if not bets or race_budget == 0:
+            return {}
+        # EV-1 を edge proxy として配分重み
+        weights = []
+        for b in bets:
+            key = b if isinstance(b, tuple) else (b,)
+            ev = ev_map.get(b if isinstance(b, tuple) else b, 1.0)
+            weights.append(max(0.05, ev - 0.95))
+        wsum = sum(weights) or 1.0
+        # 各券種への予算割当：単勝25% / 馬連30% / ワイド15% / 3連複30%
+        kind_share = {"win": 0.25, "uren": 0.30, "wide": 0.15, "fuku3": 0.30, "fuku": 0.10}
+        share = kind_share.get(kind_key, 0.2)
+        kind_budget = race_budget * share
+        result = {}
+        for b, w in zip(bets, weights):
+            yen = int(round(kind_budget * (w / wsum) / 100)) * 100
+            if yen >= 100:
+                result[b] = yen
+        return result
+
+    if deep_plan and not skip_recommended:
+        stake_map["win"] = _allocate(win_bets, deep_plan.get("win_evs", {}), "win")
+        stake_map["exacta"] = _allocate(exacta_bets, deep_plan.get("exacta_evs", {}), "uren")
+        stake_map["quinella"] = _allocate(quinella_bets, deep_plan.get("quinella_evs", {}), "wide")
+        stake_map["trifecta"] = _allocate(trifecta_bets, deep_plan.get("trifecta_evs", {}), "fuku3")
+        # 複勝はEVで均等
+        if place_bets:
+            per = max(100, int(race_budget * 0.10 / max(1, len(place_bets)) / 100) * 100)
+            stake_map["place"] = {no: per for no in place_bets}
+
     total_combinations = (
         len(win_bets) + len(place_bets) +
         len(exacta_bets) + len(quinella_bets) +
         len(trifecta_bets) + len(trio_bets)
     )
-    estimated_cost = total_combinations * 100
+    # ステーク合計（Kelly反映）。stake_mapが空なら100円フラットにフォールバック
+    if stake_map:
+        estimated_cost = sum(sum(d.values()) for d in stake_map.values() if d)
+    else:
+        estimated_cost = total_combinations * 100
 
     return BettingPlan(
         race_id=race_id,
@@ -411,6 +480,12 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         value_horse=value_horse,
         total_combinations=total_combinations,
         estimated_cost=estimated_cost,
+        race_grade=race_grade,
+        grade_reason=grade_reason,
+        skip_recommended=skip_recommended,
+        stake_map=stake_map,
+        max_edge=max_edge,
+        max_ev=max_ev,
     )
 
 
