@@ -28,9 +28,8 @@ class ResultsFetcher(BaseScraper):
         return None
 
     def _parse_payouts(self, soup) -> dict:
-        """払戻表を解析。{"単勝": 240, "複勝": [120,180], "馬連": 1240, "ワイド": [...], "3連複": 4520, ...}"""
+        """払戻表を解析（払戻額のみ抽出：馬番ではなく100円以上の金額）"""
         payouts = {}
-        # 払戻テーブル（複数候補のセレクタ）
         tables = soup.select("table.Payout_Detail_Table, table.pay_table_01, dl.payback_block table")
         if not tables:
             return payouts
@@ -40,20 +39,32 @@ class ResultsFetcher(BaseScraper):
                 if len(cells) < 2:
                     continue
                 kind = cells[0].strip()
-                # 払戻金額を抽出
                 amount_text = " ".join(cells[1:])
+                # 「円」が付くか、カンマ含み3桁以上の数字を払戻と判定
                 amounts = []
-                for m in re.finditer(r"([\d,]+)\s*円?", amount_text):
+                # まず "円" が付いた数値を優先
+                for m in re.finditer(r"([\d,]{3,})\s*円", amount_text):
                     try:
-                        amounts.append(int(m.group(1).replace(",", "")))
+                        v = int(m.group(1).replace(",", ""))
+                        if v >= 100:
+                            amounts.append(v)
                     except Exception:
                         pass
+                # 「円」が付かない場合、カンマ含み or 3桁以上の数字を抽出
+                if not amounts:
+                    for m in re.finditer(r"(\d{1,3}(?:,\d{3})+|\d{3,})", amount_text):
+                        try:
+                            v = int(m.group(1).replace(",", ""))
+                            if 100 <= v <= 9999999:
+                                amounts.append(v)
+                        except Exception:
+                            pass
                 if amounts:
                     if kind in ("単勝", "Win"):                         payouts["単勝"] = amounts[0]
                     elif kind in ("複勝", "Place"):                     payouts["複勝"] = amounts[:3]
-                    elif kind in ("枠連",):                              payouts["枠連"] = amounts[0]
+                    elif kind == "枠連":                                payouts["枠連"] = amounts[0]
                     elif kind in ("馬連", "Quinella"):                   payouts["馬連"] = amounts[0]
-                    elif kind in ("ワイド", "Wide", "枠連"):              payouts["ワイド"] = amounts[:3]
+                    elif kind in ("ワイド", "Wide"):                     payouts["ワイド"] = amounts[:3]
                     elif kind in ("馬単", "Exacta"):                     payouts["馬単"] = amounts[0]
                     elif kind in ("3連複", "三連複", "Trio"):             payouts["3連複"] = amounts[0]
                     elif kind in ("3連単", "三連単", "Trifecta"):         payouts["3連単"] = amounts[0]

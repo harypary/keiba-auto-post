@@ -151,6 +151,9 @@ class ComprehensiveAnalyzer:
         # === 改善6: 穴馬（過去にオッズ↑で好走した馬）にスコアブースト ===
         _apply_value_horse_boost(scores)
 
+        # === 改善7: 馬コンテキスト（枠番バイアス、負け方の質、メンバーレベル）===
+        _apply_horse_context(scores, entries, histories, race)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -313,6 +316,34 @@ def _apply_grade_overlay(scores: list, race) -> None:
         elif g in ("新馬", "未勝利"):
             # 新馬は血統と過去ない分、騎手・調教師が重要
             s.final_score = round(s.final_score + ped * 0.5, 2)
+
+
+def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
+    """馬コンテキスト分析の結果をスコアに反映＋s.horse_context にぶら下げる"""
+    try:
+        from src.analyzer.horse_context_analyzer import build_horse_context
+    except Exception:
+        return
+    # entry/history を horse_no で引けるよう辞書化
+    entry_by_no = {getattr(e, "horse_no", -1): e for e in entries}
+    for s in scores:
+        e = entry_by_no.get(s.horse_no)
+        if not e:
+            continue
+        hist = histories.get(getattr(e, "horse_id", "") or "") if histories else None
+        ctx = build_horse_context(e, hist, race)
+        # スコアブースト：枠番有利+1〜2点 / 内容良+1点 / 内容悪-1点
+        adjust = float(ctx.get("frame_bias", {}).get("adjust", 0))
+        lq = ctx.get("loss_quality", {})
+        if lq.get("quality") == "好内容・上向き":
+            adjust += 1.0
+        elif lq.get("quality") == "内容悪い・割引":
+            adjust -= 1.5
+        if ctx.get("member_level", {}).get("level") in ("高", "中〜高"):
+            adjust += 0.5
+        s.final_score = round(s.final_score + adjust, 2)
+        # コンテキスト情報を保持
+        s.horse_context = ctx
 
 
 def _apply_value_horse_boost(scores: list) -> None:

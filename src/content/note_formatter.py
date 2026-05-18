@@ -943,6 +943,22 @@ def _section_full_ranking(scores, race) -> str:
                 f"{'手の合った騎乗が期待でき、心強い継続コンビ' if aff_obj.place_rate >= 0.4 else '相性面では特筆事項なし'}。\n\n"
             )
 
+        # 多角分析（枠番バイアス、負け方、メンバーレベル）
+        hctx = getattr(s, "horse_context", {})
+        if hctx:
+            fb = hctx.get("frame_bias", {})
+            lq = hctx.get("loss_quality", {})
+            ml = hctx.get("member_level", {})
+            if fb.get("reason"):
+                parts.append(f"**枠順分析**: {fb['label']}枠 — {fb['reason']}\n\n")
+            if lq.get("quality") and lq.get("quality") != "unknown":
+                parts.append(f"**近走の負け方**: {lq['quality']}")
+                if lq.get("details"):
+                    parts.append(" — " + " / ".join(lq["details"][:3]))
+                parts.append("\n\n")
+            if ml.get("context"):
+                parts.append(f"**前走メンバーレベル**: {ml['context']}\n\n")
+
         parts.append("---\n\n")
 
     # === 6位以下のクイック評価（一言コメント付き）===
