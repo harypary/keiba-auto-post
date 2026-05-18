@@ -19,8 +19,19 @@ HIGHLIGHT_FILE = os.path.join(PERF_DIR, "last_week_highlights.json")
 # ============================================================
 
 def save_prediction(race_id: str, race_name: str, scores, plan):
-    """投稿時に予想内容をJSONで保存（オッズも記録して後でROI計算）"""
+    """投稿時に予想内容をJSONで保存（オッズ・モデル確率・エッジも記録してキャリブレーション/ROI計算）"""
     os.makedirs(PRED_DIR, exist_ok=True)
+
+    # === 予測時点のアンサンブル確率・エッジを計算して保存 ===
+    ens_p, ml_p, score_p, market_p = {}, {}, {}, {}
+    edges = {}
+    try:
+        from src.analyzer.deep_ev_analyzer import ensemble_probabilities, compute_edges
+        ens_p, ml_p, score_p, market_p = ensemble_probabilities(scores)
+        edges = compute_edges(ens_p, market_p)
+    except Exception:
+        pass
+
     data = {
         "race_id": race_id,
         "race_name": race_name,
@@ -36,6 +47,11 @@ def save_prediction(race_id: str, race_name: str, scores, plan):
                 "horse_name": s.horse_name,
                 "final_score": round(s.final_score, 2),
                 "odds": s.odds,
+                "ensemble_p": round(ens_p.get(s.horse_no, 0), 4),
+                "ml_p": round(ml_p.get(s.horse_no, 0), 4),
+                "score_p": round(score_p.get(s.horse_no, 0), 4),
+                "market_p": round(market_p.get(s.horse_no, 0), 4),
+                "edge": round(edges.get(s.horse_no, 0), 4),
             }
             for s in sorted(scores, key=lambda x: x.recommendation_rank)
         ],
@@ -44,6 +60,10 @@ def save_prediction(race_id: str, race_name: str, scores, plan):
         "honmei_odds": next(
             (s.odds for s in scores if s.horse_no in plan.honmei), None
         ),
+        "race_grade": getattr(plan, "race_grade", "B"),
+        "max_edge":   getattr(plan, "max_edge", 0),
+        "max_ev":     getattr(plan, "max_ev", 0),
+        "stake_map":  getattr(plan, "stake_map", {}),
     }
     path = os.path.join(PRED_DIR, f"{race_id}.json")
     with open(path, "w", encoding="utf-8") as f:

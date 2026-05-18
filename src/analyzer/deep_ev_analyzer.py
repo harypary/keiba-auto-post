@@ -75,6 +75,12 @@ def ensemble_probabilities(scores, w_ml: float = 0.45, w_score: float = 0.35, w_
         ens[no] = p
     z2 = sum(ens.values()) or 1.0
     ens = {no: p / z2 for no, p in ens.items()}
+    # === キャリブレーション適用（実勝率データから学習済みのカーブで補正）===
+    try:
+        from src.ml.probability_calibrator import calibrate_prob_dict
+        ens = calibrate_prob_dict(ens)
+    except Exception:
+        pass
     return ens, ml_p, score_p, market_p
 
 

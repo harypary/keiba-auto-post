@@ -256,6 +256,21 @@ def run_weekly_review():
         except Exception as ex:
             print(f"  [徹底振り返り] 失敗: {ex}")
 
+        # === 確率キャリブレーション（予測確率→実勝率の補正カーブ学習）===
+        try:
+            from src.ml.probability_calibrator import build_calibration
+            cal = build_calibration()
+            print(f"\n[確率キャリブレーション] サンプル {cal.get('n_total', 0)}件で再構築")
+            non_empty = [b for b in cal.get("bins", []) if b.get("n", 0) > 0]
+            for b in non_empty[:6]:
+                print(f"  [{b['lo']:.2f}-{b['hi']:.2f}] n={b['n']:4d} "
+                      f"pred={b['predicted_avg']:.3f} → 実{b['actual_rate']:.3f} "
+                      f"(補正後{b['calibrated_rate']:.3f})")
+            if cal.get("n_total", 0) < 100:
+                print(f"  → サンプル不足（<100）、補正は無効状態。蓄積で自動有効化")
+        except Exception as ex:
+            print(f"  [確率キャリブレーション] 失敗: {ex}")
+
         # === ML メタモデル再訓練（蓄積データが増えるたびに学習更新）===
         try:
             from src.ml.meta_model import train_and_save

@@ -1,0 +1,86 @@
+{
+  "bins": [
+    {
+      "lo": 0.0,
+      "hi": 0.02,
+      "predicted_avg": 0.01,
+      "actual_rate": 0.01,
+      "n": 0,
+      "calibrated_rate": 0.01
+    },
+    {
+      "lo": 0.02,
+      "hi": 0.05,
+      "predicted_avg": 0.035,
+      "actual_rate": 0.035,
+      "n": 0,
+      "calibrated_rate": 0.035
+    },
+    {
+      "lo": 0.05,
+      "hi": 0.08,
+      "predicted_avg": 0.065,
+      "actual_rate": 0.065,
+      "n": 0,
+      "calibrated_rate": 0.065
+    },
+    {
+      "lo": 0.08,
+      "hi": 0.12,
+      "predicted_avg": 0.1,
+      "actual_rate": 0.1,
+      "n": 0,
+      "calibrated_rate": 0.1
+    },
+    {
+      "lo": 0.12,
+      "hi": 0.18,
+      "predicted_avg": 0.15,
+      "actual_rate": 0.15,
+      "n": 0,
+      "calibrated_rate": 0.15
+    },
+    {
+      "lo": 0.18,
+      "hi": 0.25,
+      "predicted_avg": 0.215,
+      "actual_rate": 0.215,
+      "n": 0,
+      "calibrated_rate": 0.215
+    },
+    {
+      "lo": 0.25,
+      "hi": 0.35,
+      "predicted_avg": 0.3,
+      "actual_rate": 0.3,
+      "n": 0,
+      "calibrated_rate": 0.3
+    },
+    {
+      "lo": 0.35,
+      "hi": 0.5,
+      "predicted_avg": 0.425,
+      "actual_rate": 0.425,
+      "n": 0,
+      "calibrated_rate": 0.425
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.7,
+      "predicted_avg": 0.6,
+      "actual_rate": 0.6,
+      "n": 0,
+      "calibrated_rate": 0.6
+    },
+    {
+      "lo": 0.7,
+      "hi": 1.01,
+      "predicted_avg": 0.855,
+      "actual_rate": 0.855,
+      "n": 0,
+      "calibrated_rate": 0.855
+    }
+  ],
+  "n_total": 0,
+  "version": 1
+}
