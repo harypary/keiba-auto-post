@@ -389,6 +389,41 @@ def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
         except Exception:
             pass
 
+        # === 高度要因（騎手×コース/重賞経験/休養間隔/馬体変動/対戦履歴）===
+        try:
+            from src.analyzer.advanced_factors_analyzer import (
+                derive_advanced_signals, score_horse_with_advanced,
+            )
+            from datetime import datetime as _dt
+            if hist and hist.records:
+                adv_sig = derive_advanced_signals(hist.records, e)
+                adv_sig["_my_records"] = hist.records
+                # rival records 構築
+                rival_recs = {}
+                for other in entries:
+                    if getattr(other, "horse_no", -1) == s.horse_no:
+                        continue
+                    oh = histories.get(getattr(other, "horse_id", "") or "") if histories else None
+                    if oh and oh.records:
+                        rival_recs[getattr(other, "horse_name", "") or "?"] = oh.records
+                adv_race_info = {
+                    "venue":      getattr(race, "venue", ""),
+                    "grade":      getattr(race, "grade", ""),
+                    "today_date": _dt.now().strftime("%Y-%m-%d"),
+                }
+                adv_result = score_horse_with_advanced(adv_sig, e, adv_race_info, rival_recs)
+                adjust += adv_result.get("adjust", 0)
+                prev = ctx.get("signal_reasons", []) or []
+                ctx["signal_reasons"] = prev + adv_result.get("reasons", [])
+                ctx["advanced_signals"] = {
+                    "jockey_venue_hits_count": len(adv_sig.get("jockey_venue_hits", {})),
+                    "graded_experience": adv_sig.get("graded_experience", 0),
+                    "graded_wins": adv_sig.get("graded_wins", 0),
+                    "rest_buckets": {k: f"{v[0]}/{v[1]}" for k, v in adv_sig.get("rest_buckets", {}).items()},
+                }
+        except Exception:
+            pass
+
         s.final_score = round(s.final_score + adjust, 2)
         s.horse_context = ctx
 
