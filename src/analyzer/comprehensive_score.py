@@ -349,6 +349,22 @@ def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
         # メンバーレベル（学習済み）
         if ctx.get("member_level", {}).get("level") in ("高", "中〜高"):
             adjust += w.get("grade_exp_bonus", 0.5)
+
+        # === 馬場状態×馬の適性（学習済み）===
+        rs = getattr(s, "raw_stat", None)
+        if rs:
+            cond_sc = getattr(rs, "condition_score", 50)
+            if cond_sc >= 65:
+                adjust += w.get("condition_fit_bonus", 1.0)
+            elif cond_sc <= 40:
+                adjust += w.get("condition_mismatch_penalty", -1.0)
+            surf_sc = getattr(rs, "surface_score", 50)
+            if surf_sc >= 70:
+                adjust += w.get("surface_fit_bonus", 1.0)
+            venue_sc = getattr(rs, "venue_score", 50)
+            if venue_sc >= 70:
+                adjust += w.get("venue_fit_bonus", 1.0)
+
         s.final_score = round(s.final_score + adjust, 2)
         s.horse_context = ctx
 

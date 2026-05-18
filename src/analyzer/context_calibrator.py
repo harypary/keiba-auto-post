@@ -23,6 +23,10 @@ DEFAULT_WEIGHTS = {
     "good_loss_bonus": 1.0,
     "bad_loss_penalty": -1.5,
     "grade_exp_bonus": 0.5,
+    "condition_fit_bonus": 1.0,
+    "condition_mismatch_penalty": -1.0,
+    "surface_fit_bonus": 1.0,
+    "venue_fit_bonus": 1.0,
 }
 
 
@@ -75,6 +79,27 @@ def calibrate_from_training() -> dict:
                     bucket_stats["grade_exp"]["n"] += 1
                     if won: bucket_stats["grade_exp"]["win"] += 1
 
+                # === 馬場状態適性（condition score）===
+                cond_sc = factors.get("condition", 50)
+                if cond_sc >= 65:
+                    bucket_stats["condition_fit"]["n"] += 1
+                    if won: bucket_stats["condition_fit"]["win"] += 1
+                elif cond_sc <= 40:
+                    bucket_stats["condition_mismatch"]["n"] += 1
+                    if won: bucket_stats["condition_mismatch"]["win"] += 1
+
+                # === 馬場種別（芝/ダート）適性 ===
+                surf_sc = factors.get("surface", 50)
+                if surf_sc >= 70:
+                    bucket_stats["surface_fit"]["n"] += 1
+                    if won: bucket_stats["surface_fit"]["win"] += 1
+
+                # === コース適性 ===
+                venue_sc = factors.get("venue", 50)
+                if venue_sc >= 70:
+                    bucket_stats["venue_fit"]["n"] += 1
+                    if won: bucket_stats["venue_fit"]["win"] += 1
+
                 # 枠番情報は all_horses_training に明示的に無いため frame は別途
                 # （horse_no の前半半分を内枠と仮定する近似）
                 hn = h.get("horse_no", 0) or 0
@@ -98,14 +123,18 @@ def calibrate_from_training() -> dict:
         rate = stats["win"] / stats["n"]
         delta = rate - base_rate          # +0.02 など
         boost = round(delta * 100 * 1.0, 2)  # 勝率差1%でスコア+1点
-        # クリッピング
-        boost = max(-3.0, min(3.0, boost))
+        # クリッピング（強力シグナルを生かすためレンジ拡大）
+        boost = max(-8.0, min(8.0, boost))
         mapping = {
-            "good_loss":   "good_loss_bonus",
-            "bad_loss":    "bad_loss_penalty",
-            "grade_exp":   "grade_exp_bonus",
-            "frame_inner": "frame_inner_bonus",
-            "frame_outer": "frame_outer_penalty",
+            "good_loss":          "good_loss_bonus",
+            "bad_loss":           "bad_loss_penalty",
+            "grade_exp":          "grade_exp_bonus",
+            "frame_inner":        "frame_inner_bonus",
+            "frame_outer":        "frame_outer_penalty",
+            "condition_fit":      "condition_fit_bonus",
+            "condition_mismatch": "condition_mismatch_penalty",
+            "surface_fit":        "surface_fit_bonus",
+            "venue_fit":          "venue_fit_bonus",
         }
         if key in mapping:
             weights[mapping[key]] = boost

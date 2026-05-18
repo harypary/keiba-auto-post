@@ -3,8 +3,12 @@
     "frame_inner_bonus": -0.09,
     "frame_outer_penalty": 0.61,
     "good_loss_bonus": 2.51,
-    "bad_loss_penalty": -3.0,
-    "grade_exp_bonus": 2.86
+    "bad_loss_penalty": -4.29,
+    "grade_exp_bonus": 2.86,
+    "condition_fit_bonus": 8.0,
+    "condition_mismatch_penalty": -5.53,
+    "surface_fit_bonus": 8.0,
+    "venue_fit_bonus": 8.0
   },
   "base_win_rate": 0.0703,
   "samples": 49026,
@@ -28,6 +32,22 @@
     "bad_loss": {
       "n": 13971,
       "win_rate": 0.0274
+    },
+    "condition_mismatch": {
+      "n": 13021,
+      "win_rate": 0.015
+    },
+    "condition_fit": {
+      "n": 3898,
+      "win_rate": 0.2417
+    },
+    "venue_fit": {
+      "n": 1779,
+      "win_rate": 0.43
+    },
+    "surface_fit": {
+      "n": 1131,
+      "win_rate": 0.3714
     }
   }
 }
