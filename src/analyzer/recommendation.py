@@ -313,23 +313,31 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     trio_heads = [n for n in top_nos[:5] if n != honmei_no][:4] if honmei_no else []
     trio_bets = [(honmei_no, a, b) for a in trio_heads for b in trio_heads if a != b][:8] if honmei_no else []
 
-    # === 全頭EVスキャン：ML予測勝率 × オッズ で全組合せから最良を選定 ===
-    # 既存のヒューリスティック買い目をEV最適なものに置換（ML可用時のみ）
+    # === 深度EV分析優先：アンサンブル確率×Plackett-Luce×Kelly+エッジフィルタ ===
     try:
-        ev_plan = find_ev_optimal_bets(scores, max_per_kind=8, ev_threshold=1.0)
-        if ev_plan["exacta_bets"]:
-            exacta_bets = ev_plan["exacta_bets"]
-        if ev_plan["quinella_bets"]:
-            quinella_bets = ev_plan["quinella_bets"]
-        if ev_plan["trifecta_bets"]:
-            trifecta_bets = ev_plan["trifecta_bets"]
-        if ev_plan["win_bets"]:
-            win_bets = ev_plan["win_bets"][:1]   # 単勝は最大EV1頭のみ
-        if ev_plan["place_bets"]:
-            place_bets = ev_plan["place_bets"][:3]
-    except Exception as ex:
-        # スキャン失敗時は従来のヒューリスティック買い目を使う
-        pass
+        from src.analyzer.deep_ev_analyzer import find_optimal_bets_deep
+        deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.05)
+        if deep_plan["exacta_bets"]:
+            exacta_bets = deep_plan["exacta_bets"]
+        if deep_plan["quinella_bets"]:
+            quinella_bets = deep_plan["quinella_bets"]
+        if deep_plan["trifecta_bets"]:
+            trifecta_bets = deep_plan["trifecta_bets"]
+        if deep_plan["win_bets"]:
+            win_bets = deep_plan["win_bets"][:1]
+        if deep_plan["place_bets"]:
+            place_bets = deep_plan["place_bets"][:3]
+    except Exception:
+        # フォールバック：従来のEV最適化
+        try:
+            ev_plan = find_ev_optimal_bets(scores, max_per_kind=8, ev_threshold=1.0)
+            if ev_plan["exacta_bets"]:    exacta_bets = ev_plan["exacta_bets"]
+            if ev_plan["quinella_bets"]:  quinella_bets = ev_plan["quinella_bets"]
+            if ev_plan["trifecta_bets"]:  trifecta_bets = ev_plan["trifecta_bets"]
+            if ev_plan["win_bets"]:       win_bets = ev_plan["win_bets"][:1]
+            if ev_plan["place_bets"]:     place_bets = ev_plan["place_bets"][:3]
+        except Exception:
+            pass
 
     # === EV閾値フィルタ：期待値<0.7の買い目をリストから除外（マイナス期待値を排除）===
     odds_map = {s.horse_no: getattr(s, "odds", 0) or 0 for s in scores}
