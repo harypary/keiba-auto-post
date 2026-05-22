@@ -58,15 +58,20 @@ class BaseScraper:
         self.session.headers["User-Agent"] = random.choice(UA_POOL)
 
     def get(self, url: str, params: dict = None) -> BeautifulSoup | None:
-        global _NETKEIBA_BLOCKED, _NETKEIBA_403_COUNT
+        global _NETKEIBA_BLOCKED, _NETKEIBA_403_COUNT, _BLOCKED_DOMAINS
 
-        # サーキットブレーカー: netkeiba がブロック中なら即時 None
-        is_netkeiba = "netkeiba" in url
-        if is_netkeiba and _NETKEIBA_BLOCKED:
+        # サーキットブレーカーは「db.netkeiba.com」(馬個別ページ) のみに限定。
+        # race.netkeiba.com (出馬表) は別ドメイン扱いで止めない。
+        is_db_netkeiba = "db.netkeiba.com" in url
+        if is_db_netkeiba and _NETKEIBA_BLOCKED:
+            return None
+        # その他ドメインも個別にブロック管理
+        domain = url.split("/")[2] if "://" in url else ""
+        if domain and domain in _BLOCKED_DOMAINS:
             return None
 
-        # 403 が出た時は最大2回までしかリトライしない（同一IPでUA変えても無駄）
         max_attempts = MAX_RETRIES
+        domain_403_count = 0
         for attempt in range(max_attempts):
             try:
                 if attempt > 0:
@@ -75,23 +80,23 @@ class BaseScraper:
                 resp = self.session.get(url, params=params, timeout=20)
                 resp.raise_for_status()
                 resp.encoding = resp.apparent_encoding
-                # 成功したら 403 カウンタリセット
-                if is_netkeiba:
+                # 成功したら db.netkeiba 403 カウンタリセット
+                if is_db_netkeiba:
                     _NETKEIBA_403_COUNT = 0
                 return BeautifulSoup(resp.text, "lxml")
             except requests.RequestException as e:
                 msg = str(e)
                 if "403" in msg:
                     print(f"[scraper] {url} 403 (bot block) attempt {attempt+1}")
-                    if is_netkeiba:
+                    if is_db_netkeiba:
                         _NETKEIBA_403_COUNT += 1
-                        # 閾値を超えたらブレーカー作動 → 以降は即時諦め
                         if _NETKEIBA_403_COUNT >= _NETKEIBA_403_THRESHOLD:
                             if not _NETKEIBA_BLOCKED:
-                                print(f"[scraper] ⚠️ netkeiba ブロック検知（403が{_NETKEIBA_403_COUNT}回連続）→ サーキットブレーカー作動。以降の netkeiba 呼び出しはスキップしてキャッシュにフォールバック")
+                                print(f"[scraper] ⚠️ db.netkeiba ブロック検知（403が{_NETKEIBA_403_COUNT}回連続）→ 以降キャッシュにフォールバック")
                             _NETKEIBA_BLOCKED = True
                             return None
-                    # 403 では最大2回まで、長く待たない（同IPで時間置いても無駄）
+                    elif domain:
+                        domain_403_count += 1
                     if attempt >= 1:
                         return None
                     self._rotate_ua()
