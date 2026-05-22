@@ -497,30 +497,24 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
             ev = p_hit * est
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
 
-    # === 二段フィルタ: 個別EV>=1.0 (負け馬券除外) + ポートフォリオEV>=1.10 保証 ===
+    # === 二段フィルタ: 個別EV>=1.0 + ポートフォリオEV>=1.10 保証 ===
+    # 妙味が無いレースでは本セクションは出さない（空文字を返して上位で抑制）
     KELLY_FRACTION = 0.4
-    EV_FLOOR = 1.00          # 個別買い目のEV最低基準
-    PORTFOLIO_TARGET = 1.10  # 加重平均EVの目標
+    EV_FLOOR = 1.00
+    PORTFOLIO_TARGET = 1.10
     positive = [c for c in candidates if c[1] >= EV_FLOOR]
-    # ポートフォリオの加重EVが目標未満なら低EV側から間引く
     def _weighted_ev(items):
         if not items: return 0
         ws = [max(0.01, ev - 0.95) for _, ev, *_ in items]
         wsum = sum(ws) or 1.0
         return sum(ev * w for (_, ev, *_), w in zip(items, ws)) / wsum
     while positive and _weighted_ev(positive) < PORTFOLIO_TARGET and len(positive) > 1:
-        positive.sort(key=lambda x: x[1])  # EV昇順
+        positive.sort(key=lambda x: x[1])
         positive.pop(0)
     use_kelly = bool(positive)
     if not positive:
-        # プラス期待値が完全にゼロ: 投資配分は出さず、評点だけで記事成立
-        return ("### 📈 推奨投資配分\n\n"
-                "**今回は妙味の高い券種が見つかりませんでした。**\n\n"
-                "本命予想（◎○▲△）は次セクションで詳細に解説しています。\n"
-                "オッズが直前で動く可能性があるため、当日のオッズで EV>=1.00 の券種が出てきた場合のみ"
-                "上記評点上位馬を軸に少額勝負を推奨します。\n\n"
-                "_当noteの方針: ポートフォリオ全体で期待回収率110%以上の買い目だけを推奨。"
-                "投資額より回収が下回る賭けは出しません。_\n\n")
+        # 妙味の高い券種が無い → Kelly配分セクション自体を出さない
+        return ""
 
     rows = []
     if use_kelly:
@@ -658,14 +652,14 @@ def _paid_bridge(race, plan, scores, has_bets: bool = True) -> str:
         parts.append(f"- 💎 **今回いちばん推したい穴馬1頭**（オッズ的妙味あり）\n")
     if has_bets:
         parts.append(
-            f"- 単勝 / 馬連 / ワイド / 3連複 / 3連単 の買い目\n"
-            f"- **Kelly基準で資金配分**（10,000円換算の投資配分表・期待回収率付き）\n\n"
+            f"- 単勝 / 馬連 / ワイド / 3連複 / 3連単 の **推奨買い目**\n"
+            f"- 妙味のあるレースは **Kelly基準の資金配分表（期待回収率付き）** も同梱\n\n"
         )
     else:
         parts.append(
-            f"- ⚠️ **今回は買い目なし**（期待値1.10未満のため負け馬券を出しません）\n"
+            f"- ⚠️ **今回は買い目なし**（ポートフォリオで期待回収率110%を満たせず、推奨買い目は出しません）\n"
             f"- 代わりに **全馬診断・評点・展開予測** をフルで公開\n"
-            f"- 当日オッズが動いたら自力で EV>=1.10 を狙える評点上位馬リスト\n\n"
+            f"- 当日オッズが動いた場合に自力で狙える評点上位馬リスト\n\n"
         )
     parts.append(_free_closing(race))
     return "".join(parts)
@@ -1238,7 +1232,10 @@ def _section_betting(scores, plan, has_bets: bool = True) -> str:
             parts.append(f"- {a}番→{b}番→{c}番\n")
         parts.append("\n")
     parts.append(f"**概算購入費**: {plan.estimated_cost}円（各100円時）\n\n")
-    parts.append(_ev_allocation_block(scores, plan))
+    # Kelly配分セクションは妙味あるレースでのみ自動表示（空文字なら追加されない）
+    alloc = _ev_allocation_block(scores, plan)
+    if alloc:
+        parts.append(alloc)
     return "".join(parts)
 
 
