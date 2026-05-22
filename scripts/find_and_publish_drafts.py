@@ -32,10 +32,19 @@ def get_all_article_ids(page):
 
 
 def is_published(note_id):
+    """厳格な公開確認: 200 + 記事本文の存在を確認"""
     try:
         r = requests.get(f"https://note.com/{USER}/n/{note_id}",
-                         headers={"User-Agent": "Mozilla/5.0"}, timeout=8)
-        return r.status_code == 200
+                         headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        if r.status_code != 200:
+            return False
+        # 公開記事には og:type=article か note-body のいずれかが必ず含まれる
+        body = r.text or ""
+        if 'property="og:type" content="article"' in body:
+            return True
+        if '"isLimited"' in body and '"name":' in body:
+            return True
+        return False
     except Exception:
         return False
 
@@ -88,35 +97,63 @@ def main():
         print(f"うち下書き(404): {len(drafts)}件")
 
         success = 0
-        for round_idx in range(3):
+        for round_idx in range(6):   # 3→6 ラウンドに増やして公開達成率向上
             if not drafts:
                 break
-            print(f"\n=== ラウンド {round_idx+1} ===")
+            print(f"\n=== ラウンド {round_idx+1}/6 ===")
             remaining = []
             for i, nid in enumerate(drafts, 1):
                 try:
                     publish(page, nid)
+                    # 公開反映には数秒のラグがある場合があるので再確認
                     ok = is_published(nid)
+                    if not ok:
+                        time.sleep(5)
+                        ok = is_published(nid)
                 except Exception as e:
                     print(f"  err: {e}")
                     ok = False
                 if ok:
                     success += 1
                     mark = "✓"
+                    # 永続ログを後追い記録（タイトル取得を試みる）
+                    try:
+                        sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+                        from src.publisher.article_log import record_post
+                        # 公開ページからタイトル取得
+                        rr = requests.get(f"https://note.com/{USER}/n/{nid}",
+                                          headers={"User-Agent": "Mozilla/5.0"}, timeout=8)
+                        import re as _re
+                        tm = _re.search(r'<meta property="og:title" content="([^"]+)"', rr.text or "")
+                        title = tm.group(1) if tm else f"draft_{nid}"
+                        record_post(title, "", nid, f"https://note.com/{USER}/n/{nid}", verified=True)
+                    except Exception:
+                        pass
                 else:
                     remaining.append(nid)
                     mark = "✗"
                 print(f"[R{round_idx+1} {i:3d}/{len(drafts)}] {mark} {nid}", flush=True)
                 time.sleep(2)
             drafts = remaining
+            # ラウンド間で待機（note.com側のクールダウン）
+            if drafts and round_idx < 5:
+                time.sleep(15)
 
         print(f"\n=== 完了 ===")
         print(f"成功: {success}")
         print(f"残り未公開: {len(drafts)}件")
+        # 未解決はファイルに保存（次runで優先処理対象）
         if drafts:
             json.dump(drafts, open("data/draft_unresolved.json", "w", encoding="utf-8"),
                       ensure_ascii=False, indent=2)
+        else:
+            # 全て解決したらクリア
+            unresolved_path = "data/draft_unresolved.json"
+            if os.path.exists(unresolved_path):
+                os.remove(unresolved_path)
         browser.close()
+        # 残り0件なら exit 0、残ってたら exit 1（上位がエスカレ判定）
+        sys.exit(0 if not drafts else 1)
 
 
 if __name__ == "__main__":

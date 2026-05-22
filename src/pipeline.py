@@ -134,6 +134,8 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
             plan=item["plan"], context=item["context"],
             target_date=target_date, race_index=i,
         )
+        # race_id をnoteに紐付け（後の永続ログ記録に必要）
+        note["_race_id"] = getattr(item["race"], "race_id", "")
         notes.append(note)
         print(f"  [OK] {note['title'][:55]}...")
 
@@ -147,41 +149,51 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
     published = []
     failed_notes = []  # 投稿失敗した記事を別途記録
 
-    # === レース単位の重複防止: 自分の note 既存記事タイトル取得 ===
+    # === レース単位の重複防止: 公開済み + 下書き + 永続ログ三重チェック ===
     existing_titles = set()
+    existing_keys = set()
+    from src.publisher.article_log import (
+        load_log as load_article_log, title_to_race_key,
+        record_post as record_article, is_already_posted,
+    )
+
+    # (1) 永続ローカルログを最優先
+    log = load_article_log()
+    existing_keys.update(log.get("by_race_key", {}).keys())
+    print(f"  ローカル投稿ログ: {len(existing_keys)}件をロード")
+
     if publish:
         try:
             import requests
+            # (2) 公開済み記事
             r = requests.get(f"https://note.com/_almanddd?status=published",
                              headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
-            # ページ取得失敗でも続行（重複は許容）
             if r.status_code == 200:
-                # タイトル抜粋（粗い）
                 import re
                 for m in re.finditer(r'"name":"([^"]{8,120})"', r.text):
                     existing_titles.add(m.group(1))
-                print(f"  既存記事タイトル: {len(existing_titles)}件をスキャン済")
-        except Exception:
-            pass
+                    existing_keys.add(title_to_race_key(m.group(1)))
+            # (3) 下書き含む全記事（管理ページから取得を試みる）
+            #     APIアクセスは認証必要なので公開プロフィールページのみで補完
+            r2 = requests.get(f"https://note.com/_almanddd",
+                              headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+            if r2.status_code == 200:
+                import re
+                for m in re.finditer(r'"name":"([^"]{8,120})"', r2.text):
+                    existing_titles.add(m.group(1))
+                    existing_keys.add(title_to_race_key(m.group(1)))
+            print(f"  既存記事タイトル: {len(existing_titles)}件 / race_key {len(existing_keys)}件")
+        except Exception as ex:
+            print(f"  [warn] 既存記事スキャン失敗: {ex}（ローカルログで判定）")
 
     def _is_duplicate(title: str) -> bool:
-        """タイトルからレース識別子（日付+場+R）を抽出して同一を判定"""
-        import re
-        m = re.search(r"【(\d+/\d+)[^】]*】[^｜]*?([東京京都新潟中山阪神中京福島小倉札幌函館]+)\s*(\d+)R", title)
-        if not m:
-            # メインレース（場+R じゃないパターン）はレース名で判定
-            mm = re.search(r"【(\d+/\d+)[^】]*】([^｜]+)", title)
-            if not mm:
-                return False
-            key = mm.group(1) + "_" + mm.group(2).strip()
-        else:
-            key = f"{m.group(1)}_{m.group(2)}_{m.group(3)}R"
-        for t in existing_titles:
-            mm2 = re.search(r"【(\d+/\d+)[^】]*】[^｜]*?([東京京都新潟中山阪神中京福島小倉札幌函館]+)\s*(\d+)R", t)
-            if mm2:
-                existing_key = f"{mm2.group(1)}_{mm2.group(2)}_{mm2.group(3)}R"
-                if existing_key == key:
-                    return True
+        """ローカルログ + リモートタイトル両方で重複判定"""
+        key = title_to_race_key(title)
+        if key in existing_keys:
+            return True
+        # タイトル完全一致もチェック
+        if title in existing_titles:
+            return True
         return False
 
     for note in notes:
@@ -204,9 +216,29 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
                     # draft フラグが付いていれば失敗扱い、それ以外は成功
                     if isinstance(result, dict) and result.get("draft"):
                         failed_notes.append(note)
+                        # 下書きも一応キーを覚えておく（次のリトライrunで重複新規生成しない）
+                        try:
+                            existing_keys.add(title_to_race_key(note["title"]))
+                        except Exception:
+                            pass
                         print(f"  [DRAFT] 公開未達成: {note['title'][:50]}")
                     else:
                         published.append(result)
+                        # === 永続ログに記録（race_id ベースで二重投稿を完全防止）===
+                        try:
+                            url = result if isinstance(result, str) else result.get("url", "")
+                            note_id = ""
+                            if isinstance(result, dict):
+                                note_id = result.get("note_id", "")
+                            elif isinstance(result, str):
+                                import re
+                                mm = re.search(r"/n/(n[a-f0-9]+)", result)
+                                if mm: note_id = mm.group(1)
+                            race_id = note.get("_race_id", "")
+                            record_article(note["title"], race_id, note_id, url, verified=True)
+                            existing_keys.add(title_to_race_key(note["title"]))
+                        except Exception as ex:
+                            print(f"  [warn] 永続ログ記録失敗: {ex}")
                 else:
                     failed_notes.append(note)
                     print(f"  [FAIL] 投稿結果None: {note['title'][:50]}")
