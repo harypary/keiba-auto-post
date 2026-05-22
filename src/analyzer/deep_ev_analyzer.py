@@ -188,7 +188,7 @@ def race_betting_grade(edges: dict, model_p: dict, odds_map: dict) -> dict:
 
 
 # === 強化EV計算（buybudget配分付き） ===
-def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.10) -> dict:
+def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.00) -> dict:
     """深度の深いEV分析で最適買い目を生成
 
     - Plackett-Luce で正確な複合確率
@@ -222,7 +222,7 @@ def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.10) -> dic
     if n < 4:
         return out
 
-    EDGE_MIN = 0.08  # 8% 以上の過小評価を狙う（モデル誤差を吸収）
+    EDGE_MIN = 0.03  # エッジ閾値は3%に緩和（買い目をできる限り拾う）
 
     # --- 単勝 ---
     win_cands = []

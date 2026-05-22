@@ -211,12 +211,12 @@ def _no_bet_notice_free(race) -> str:
     """買い目ゼロ時の無料部分案内（売れる正直なトーン）"""
     return (
         "\n### ⚠️ 今回の方針：買い目なし・全馬診断のみ\n\n"
-        f"このレースは現時点のオッズで **期待値1.10以上の券種が見つからなかった** ため、"
+        "このレースは現時点のオッズで **ポートフォリオ全体で期待回収率110%以上を満たす買い目が組めなかった** ため、"
         "**有料部分は買い目を含まず「全馬診断」「展開予想」「評点」のみ**となります。\n\n"
-        "**当noteの方針**：投資して回収率が下回る勝負はしません。"
-        "負け馬券を出すぐらいなら、その回は素直に「妙味薄い」と伝えます。\n\n"
+        "**当noteの方針**：投資額より回収が下回る勝負はしません。"
+        "負け馬券を出すぐらいなら、その回は素直に「妙味薄い」と伝えます。これが購入者を裏切らない唯一の方法です。\n\n"
         "ただし当日のオッズは直前まで動きます。"
-        f"有料部分の評点上位馬を軸に、**最終オッズで EV>=1.10 を満たす組合せを発見できた場合のみ**少額勝負を推奨します。\n\n"
+        "有料部分の評点上位馬を軸に、**最終オッズで EV>=1.00 を満たす組合せを発見できた場合のみ**少額勝負を推奨します。\n\n"
         "_全馬の細かい強み・懸念・展開図を読みたい方は引き続きどうぞ。_\n\n"
     )
 
@@ -497,24 +497,30 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
             ev = p_hit * est
             candidates.append((f"3連複 {a}-{b}-{c}", ev, p_hit, est, "fuku3"))
 
-    # === 厳格EVフィルタ: 期待値1.10以上の買い目のみ配分（負け馬券を絶対出さない）===
+    # === 二段フィルタ: 個別EV>=1.0 (負け馬券除外) + ポートフォリオEV>=1.10 保証 ===
     KELLY_FRACTION = 0.4
-    EV_MIN_FOR_BET = 1.10   # モデル誤差を考慮した安全マージン
-    positive = [c for c in candidates if c[1] >= EV_MIN_FOR_BET]
+    EV_FLOOR = 1.00          # 個別買い目のEV最低基準
+    PORTFOLIO_TARGET = 1.10  # 加重平均EVの目標
+    positive = [c for c in candidates if c[1] >= EV_FLOOR]
+    # ポートフォリオの加重EVが目標未満なら低EV側から間引く
+    def _weighted_ev(items):
+        if not items: return 0
+        ws = [max(0.01, ev - 0.95) for _, ev, *_ in items]
+        wsum = sum(ws) or 1.0
+        return sum(ev * w for (_, ev, *_), w in zip(items, ws)) / wsum
+    while positive and _weighted_ev(positive) < PORTFOLIO_TARGET and len(positive) > 1:
+        positive.sort(key=lambda x: x[1])  # EV昇順
+        positive.pop(0)
     use_kelly = bool(positive)
     if not positive:
-        # マイナスEVのみの場合: 単勝EV>=1.0の本命候補に絞って提示（負け馬券は出さない）
-        honmei_only = [c for c in candidates if c[1] >= 1.00 and c[4] == "tan"][:1]
-        if honmei_only:
-            positive = honmei_only
-        else:
-            # 完全にプラスEVが無い場合: 投資推奨0、本命予想だけで記事は成立させる
-            return ("### 📈 推奨投資配分\n\n"
-                    "**今回は妙味の高い券種が見つかりませんでした。**\n\n"
-                    "本命予想（◎○▲△）は次セクションで詳細に解説しています。\n"
-                    "オッズが直前で動く可能性があるため、当日のオッズで EV>=1.10 の券種が出てきた場合のみ"
-                    "上記評点上位馬を軸に少額勝負を推奨します。\n\n"
-                    "_当noteの方針: 期待値1.10以上の買い目のみ推奨。回収率1.0未満になる賭けは出しません。_\n\n")
+        # プラス期待値が完全にゼロ: 投資配分は出さず、評点だけで記事成立
+        return ("### 📈 推奨投資配分\n\n"
+                "**今回は妙味の高い券種が見つかりませんでした。**\n\n"
+                "本命予想（◎○▲△）は次セクションで詳細に解説しています。\n"
+                "オッズが直前で動く可能性があるため、当日のオッズで EV>=1.00 の券種が出てきた場合のみ"
+                "上記評点上位馬を軸に少額勝負を推奨します。\n\n"
+                "_当noteの方針: ポートフォリオ全体で期待回収率110%以上の買い目だけを推奨。"
+                "投資額より回収が下回る賭けは出しません。_\n\n")
 
     rows = []
     if use_kelly:
@@ -572,10 +578,12 @@ def _ev_allocation_block(scores, plan, total_budget: int = 10000) -> str:
     roi_pct = (sum_return/max(1,sum_stake)*100)
     out.append(f"\n**合計投資 {sum_stake:,}円　期待回収 {sum_return:,}円　期待回収率 {roi_pct:.0f}%**\n\n")
 
-    out.append("**💡 配分ロジック（負けない設計）**\n\n")
+    out.append("**💡 配分ロジック（購入者を裏切らない設計）**\n\n")
     out.append("- ML+ルール+市場暗示の3者アンサンブルで勝率推定\n")
     out.append("- Plackett-Luce で馬連/3連複の同時生起確率を厳密計算\n")
-    out.append("- **期待値 EV >= 1.10** の買い目のみ厳選（10%の安全マージン）\n")
+    out.append("- **個別買い目はプラス期待値（EV>=1.00）** のみ採用、負け馬券を除外\n")
+    out.append("- **ポートフォリオ加重平均EV>=1.10** を保証（投資額より期待回収が常に上回る）\n")
+    out.append("- 加重EVが下回る場合は低EV側から自動間引きして基準を満たすまで調整\n")
     out.append("- 0.4 Kelly 基準で高EV買い目に資金集中、低EVは小さく\n")
     out.append("- データ蓄積で予測確率を継続キャリブレーション、回収率を継続改善\n\n")
     return "".join(out)

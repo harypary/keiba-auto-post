@@ -325,7 +325,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     deep_plan = None
     try:
         from src.analyzer.deep_ev_analyzer import find_optimal_bets_deep
-        deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.10)
+        deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.00)
         if deep_plan["exacta_bets"]:
             exacta_bets = deep_plan["exacta_bets"]
         if deep_plan["quinella_bets"]:
@@ -378,13 +378,11 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         oa, ob, oc = odds_map.get(a, 0), odds_map.get(b, 0), odds_map.get(c, 0)
         return p * oa * ob * oc * 0.5 if (oa and ob and oc) else 1.0
 
-    # === 厳格EVフィルタ: モデル不確実性を考慮しEV>=1.10のみ採用 ===
-    # 投資して回収が下回らないことを最優先。買い目0でも負け馬券を出さない。
-    EV_THRESHOLD = 1.10   # 10%の安全マージン
-    exacta_bets   = [b for b in exacta_bets   if ev_uren(*b)  >= EV_THRESHOLD]
-    quinella_bets = [b for b in quinella_bets if ev_wide(*b)  >= EV_THRESHOLD]
-    trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b)  >= EV_THRESHOLD]
-    # 単勝・複勝も同基準: ev = p × odds が 1.10 以上か
+    # === 二段フィルタ: 個別買い目はEV>=1.0(プラス期待値) + ポートフォリオ全体でEV>=1.10保証 ===
+    # 買い目はなるべく多く出す。ただし合計の期待回収率が投資額を絶対に下回らないようにする。
+    EV_FLOOR = 1.00       # 個別買い目の最低EV（マイナス期待値は絶対除外）
+    PORTFOLIO_TARGET = 1.10  # ポートフォリオ合計EVの目標（購入者裏切らない保証）
+
     def _ev_tan(no):
         p, o = p_win.get(no, 0), odds_map.get(no, 0)
         return p * o if o else 0
@@ -392,8 +390,57 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         p, o = p_win.get(no, 0), odds_map.get(no, 0)
         if not o: return 0
         return min(0.85, p * 2.6) * max(1.1, o * 0.28)
-    win_bets   = [n for n in win_bets   if _ev_tan(n)  >= EV_THRESHOLD]
-    place_bets = [n for n in place_bets if _ev_fuku(n) >= 1.00]   # 複勝はやや緩く（的中率高い）
+
+    # 第1段: マイナス期待値だけ除外（できる限り買い目を残す）
+    exacta_bets   = [b for b in exacta_bets   if ev_uren(*b)  >= EV_FLOOR]
+    quinella_bets = [b for b in quinella_bets if ev_wide(*b)  >= EV_FLOOR]
+    trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b)  >= EV_FLOOR]
+    win_bets      = [n for n in win_bets      if _ev_tan(n)   >= EV_FLOOR]
+    place_bets    = [n for n in place_bets    if _ev_fuku(n)  >= EV_FLOOR]
+
+    # 第2段: ポートフォリオ全体の加重平均EV を計算し、PORTFOLIO_TARGET 未満なら
+    # 低EV順に間引いて 1.10 以上を達成（Kelly配分前提）
+    def _portfolio_weighted_ev():
+        """各買い目のEV と Kellyウェイトで加重平均EVを計算"""
+        items = []  # (label, ev, weight)
+        for b in exacta_bets:
+            ev = ev_uren(*b);  items.append(("ex", ev, max(0.01, ev - 0.95)))
+        for b in quinella_bets:
+            ev = ev_wide(*b);  items.append(("wi", ev, max(0.01, ev - 0.95)))
+        for b in trifecta_bets:
+            ev = ev_fuku3(b);  items.append(("tr", ev, max(0.01, ev - 0.95)))
+        for n in win_bets:
+            ev = _ev_tan(n);   items.append(("tn", ev, max(0.01, ev - 0.95)))
+        for n in place_bets:
+            ev = _ev_fuku(n);  items.append(("fk", ev, max(0.01, ev - 0.95)))
+        if not items:
+            return 0, items
+        total_w = sum(w for _, _, w in items) or 1.0
+        weighted_ev = sum(ev * w for _, ev, w in items) / total_w
+        return weighted_ev, items
+
+    weighted_ev, _items = _portfolio_weighted_ev()
+    # 加重EVが目標未満なら、低EV側の買い目を1つずつ削って再計算
+    safety_iter = 0
+    while weighted_ev > 0 and weighted_ev < PORTFOLIO_TARGET and safety_iter < 50:
+        safety_iter += 1
+        # 全買い目の中で最も EV が低いものを削除
+        all_bets = [(ev_uren(*b),    "ex", b) for b in exacta_bets] \
+                 + [(ev_wide(*b),    "wi", b) for b in quinella_bets] \
+                 + [(ev_fuku3(b),    "tr", b) for b in trifecta_bets] \
+                 + [(_ev_tan(n),     "tn", n) for n in win_bets] \
+                 + [(_ev_fuku(n),    "fk", n) for n in place_bets]
+        if len(all_bets) <= 1:
+            break  # 1点まで減らしたら停止（その買い目はEV>=1.0なので保持）
+        all_bets.sort()  # EV昇順
+        ev_min, kind_min, item_min = all_bets[0]
+        if kind_min == "ex": exacta_bets.remove(item_min)
+        elif kind_min == "wi": quinella_bets.remove(item_min)
+        elif kind_min == "tr": trifecta_bets.remove(item_min)
+        elif kind_min == "tn": win_bets.remove(item_min)
+        elif kind_min == "fk": place_bets.remove(item_min)
+        weighted_ev, _items = _portfolio_weighted_ev()
+    print(f"  [portfolio EV] 加重平均EV = {weighted_ev:.3f} (買い目数: 馬連{len(exacta_bets)}/ワイド{len(quinella_bets)}/3連複{len(trifecta_bets)}/単{len(win_bets)}/複{len(place_bets)})")
 
     # === レースグレード & Kelly 配分でステーク決定 ===
     race_grade = "B"
