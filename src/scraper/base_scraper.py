@@ -60,18 +60,16 @@ class BaseScraper:
     def get(self, url: str, params: dict = None) -> BeautifulSoup | None:
         global _NETKEIBA_BLOCKED, _NETKEIBA_403_COUNT, _BLOCKED_DOMAINS
 
-        # サーキットブレーカーは「db.netkeiba.com」(馬個別ページ) のみに限定。
-        # race.netkeiba.com (出馬表) は別ドメイン扱いで止めない。
         is_db_netkeiba = "db.netkeiba.com" in url
-        if is_db_netkeiba and _NETKEIBA_BLOCKED:
-            return None
-        # その他ドメインも個別にブロック管理
         domain = url.split("/")[2] if "://" in url else ""
+
+        # db.netkeiba.com で requests がブロックされたら 即 playwright で取得
+        if is_db_netkeiba and _NETKEIBA_BLOCKED:
+            return self._fetch_with_playwright(url)
         if domain and domain in _BLOCKED_DOMAINS:
-            return None
+            return self._fetch_with_playwright(url)
 
         max_attempts = MAX_RETRIES
-        domain_403_count = 0
         for attempt in range(max_attempts):
             try:
                 if attempt > 0:
@@ -80,7 +78,6 @@ class BaseScraper:
                 resp = self.session.get(url, params=params, timeout=20)
                 resp.raise_for_status()
                 resp.encoding = resp.apparent_encoding
-                # 成功したら db.netkeiba 403 カウンタリセット
                 if is_db_netkeiba:
                     _NETKEIBA_403_COUNT = 0
                 return BeautifulSoup(resp.text, "lxml")
@@ -92,13 +89,13 @@ class BaseScraper:
                         _NETKEIBA_403_COUNT += 1
                         if _NETKEIBA_403_COUNT >= _NETKEIBA_403_THRESHOLD:
                             if not _NETKEIBA_BLOCKED:
-                                print(f"[scraper] ⚠️ db.netkeiba ブロック検知（403が{_NETKEIBA_403_COUNT}回連続）→ 以降キャッシュにフォールバック")
+                                print(f"[scraper] ⚠️ db.netkeiba ブロック検知 → playwright で取得継続")
                             _NETKEIBA_BLOCKED = True
-                            return None
-                    elif domain:
-                        domain_403_count += 1
+                            # 残りの取得は playwright に切り替え（このリクエストも playwright で再試行）
+                            return self._fetch_with_playwright(url)
                     if attempt >= 1:
-                        return None
+                        # 1回目失敗で他のドメインも playwright を試す
+                        return self._fetch_with_playwright(url)
                     self._rotate_ua()
                     time.sleep(2)
                 else:
@@ -108,6 +105,20 @@ class BaseScraper:
                 if attempt == max_attempts - 1:
                     return None
         return None
+
+    def _fetch_with_playwright(self, url: str) -> BeautifulSoup | None:
+        """playwright で確実取得（Bot 検知回避）"""
+        try:
+            from src.scraper.playwright_fetcher import fetch_soup
+            soup = fetch_soup(url)
+            if soup:
+                # 成功時、db.netkeiba 用フラグも維持（次回も playwright を継続使用）
+                # 但しブロック解除はしない（requests は引き続き失敗するため）
+                return soup
+            return None
+        except Exception as e:
+            print(f"[scraper] playwright fallback 失敗: {e}")
+            return None
 
     def get_json(self, url: str, params: dict = None, retries: int = None) -> dict | None:
         max_attempts = retries if retries is not None else MAX_RETRIES

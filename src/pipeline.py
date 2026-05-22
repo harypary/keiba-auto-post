@@ -71,22 +71,35 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         for entry in race.horses:
             entry.odds = odds_map.get(entry.horse_no)
 
-        # 全出走馬の全過去レース取得 + 統計構築（並列スクレイピングで高速化）
-        from concurrent.futures import ThreadPoolExecutor, as_completed
+        # 全出走馬の全過去レース取得 + 統計構築
+        # playwright fallback が走るケースを考慮して並列度を制限（過剰なブラウザ起動防止）
+        from src.scraper.base_scraper import is_netkeiba_blocked
         histories = {}
-        def _fetch_one(e):
-            try:
-                if e.horse_id:
-                    return e.horse_id, _cached_history(hist_scraper, e.horse_id, e.horse_name)
-            except Exception:
-                pass
-            return None, None
-        with ThreadPoolExecutor(max_workers=4) as ex:
-            futures = [ex.submit(_fetch_one, e) for e in race.horses if e.horse_id]
-            for f in as_completed(futures):
-                hid, h = f.result()
-                if hid and h and h.records:
-                    histories[hid] = h
+        if is_netkeiba_blocked():
+            # playwright モード: 直列処理（ブラウザ過負荷防止）
+            for e in race.horses:
+                if not e.horse_id: continue
+                try:
+                    h = _cached_history(hist_scraper, e.horse_id, e.horse_name)
+                    if h and h.records:
+                        histories[e.horse_id] = h
+                except Exception:
+                    pass
+        else:
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            def _fetch_one(e):
+                try:
+                    if e.horse_id:
+                        return e.horse_id, _cached_history(hist_scraper, e.horse_id, e.horse_name)
+                except Exception:
+                    pass
+                return None, None
+            with ThreadPoolExecutor(max_workers=4) as ex:
+                futures = [ex.submit(_fetch_one, e) for e in race.horses if e.horse_id]
+                for f in as_completed(futures):
+                    hid, h = f.result()
+                    if hid and h and h.records:
+                        histories[hid] = h
 
         # 展開予測（脚質×先行馬数）
         ctx = analyze_race_context(race.horses, histories, race.distance, race.surface)
