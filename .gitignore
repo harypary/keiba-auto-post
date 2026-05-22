@@ -2,6 +2,9 @@
 .env
 *.env
 config/secrets.py
+data/note_session.json
+*.session.json
+*_session.json
 
 # Python
 __pycache__/
