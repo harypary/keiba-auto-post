@@ -154,6 +154,9 @@ class ComprehensiveAnalyzer:
         # === 改善7: 馬コンテキスト（枠番バイアス、負け方の質、メンバーレベル）===
         _apply_horse_context(scores, entries, histories, race)
 
+        # === 改善8: 多要因合致ブースト（複数のシグナルが揃った馬は確度高い）===
+        _apply_convergence_boost(scores)
+
         # 最終順位付け
         scores.sort(key=lambda x: x.final_score, reverse=True)
         for i, s in enumerate(scores):
@@ -426,6 +429,54 @@ def _apply_horse_context(scores: list, entries, histories: dict, race) -> None:
 
         s.final_score = round(s.final_score + adjust, 2)
         s.horse_context = ctx
+
+
+def _apply_convergence_boost(scores: list) -> None:
+    """複数の独立シグナルが同時にプラスを示す馬は的中確度が高い → スコア加点。
+    狙い: ◎の的中率向上。当てに行く確度を高める。
+    """
+    for s in scores:
+        rs = getattr(s, "raw_stat", None)
+        if not rs:
+            continue
+        # 各シグナルの「強い」判定（独立性が比較的高いものを選定）
+        strong_signals = 0
+        if getattr(rs, "form_score", 50)      >= 70: strong_signals += 1   # 直近フォーム
+        if getattr(rs, "surface_score", 50)   >= 70: strong_signals += 1   # 馬場種別適性
+        if getattr(rs, "distance_score", 50)  >= 70: strong_signals += 1   # 距離適性
+        if getattr(s, "speed_score", 50)      >= 70: strong_signals += 1   # スピード指数
+        if getattr(rs, "venue_score", 50)     >= 65: strong_signals += 1   # コース適性
+        if getattr(rs, "condition_score", 50) >= 65: strong_signals += 1   # 馬場状態適性
+        if getattr(s, "pedigree_bonus", 0)    >= 5:  strong_signals += 1   # 血統適性
+        if getattr(rs, "weight_score", 50)    >= 75: strong_signals += 1   # 馬体重安定
+        if getattr(rs, "rest_score", 50)      >= 70: strong_signals += 1   # 間隔
+        if getattr(rs, "pace_score", 50)      >= 70: strong_signals += 1   # ペース適性
+
+        # ボーナステーブル: 揃うほど加点が非線形に伸びる（一致は強いシグナル）
+        boost = 0.0
+        if strong_signals >= 8:   boost = 6.0   # ほぼ全てのシグナル一致 → 鉄板候補
+        elif strong_signals >= 6: boost = 4.0
+        elif strong_signals >= 5: boost = 2.5
+        elif strong_signals >= 4: boost = 1.5
+        elif strong_signals >= 3: boost = 0.8
+        # 弱シグナルが2つ以下: 確度低 → 何もしない（過剰評価防止）
+
+        # ペナルティ: 主要シグナル(form/surface/distance/speed)が全て弱い場合は -2点
+        weak_core = sum([
+            getattr(rs, "form_score", 50)     < 50,
+            getattr(rs, "surface_score", 50)  < 50,
+            getattr(rs, "distance_score", 50) < 50,
+            getattr(s, "speed_score", 50)     < 50,
+        ])
+        if weak_core >= 3:
+            boost -= 2.0   # 確度低い馬は更にスコア下げ
+
+        if boost != 0:
+            s.final_score = round(s.final_score + boost, 2)
+            # コンテキストに記録（debug 用）
+            if hasattr(s, "horse_context") and isinstance(s.horse_context, dict):
+                s.horse_context["convergence_signals"] = strong_signals
+                s.horse_context["convergence_boost"] = round(boost, 2)
 
 
 def _apply_value_horse_boost(scores: list) -> None:
