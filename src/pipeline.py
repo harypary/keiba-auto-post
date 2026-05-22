@@ -264,27 +264,46 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
     cache_file = os.path.join(CACHE_DIR, f"{horse_id}_full.json")
     os.makedirs(CACHE_DIR, exist_ok=True)
 
-    # 7日以内のキャッシュを使用（週次更新で十分）
+    def _load_cache_any_age():
+        """キャッシュがあれば年齢問わずロード（ネット失敗時のフォールバック用）"""
+        if not os.path.exists(cache_file):
+            return None
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            from src.scraper.history_scraper import FullHorseHistory, RaceRecord
+            recs = [RaceRecord(**r) for r in data.get("records", [])]
+            h = FullHorseHistory(
+                horse_id=data["horse_id"],
+                horse_name=data.get("horse_name", horse_name),
+                sire=data.get("sire", ""),
+                dam=data.get("dam", ""),
+                sex=data.get("sex", "牡"),
+                records=recs,
+            )
+            h.stats = build_stats(h)
+            return h
+        except Exception:
+            return None
+
+    # 7日以内のキャッシュは新鮮として即返す
     if os.path.exists(cache_file):
         age = time.time() - os.path.getmtime(cache_file)
         if age < 86400 * 7:
-            try:
-                with open(cache_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                from src.scraper.history_scraper import FullHorseHistory, RaceRecord
-                recs = [RaceRecord(**r) for r in data.get("records", [])]
-                h = FullHorseHistory(
-                    horse_id=data["horse_id"],
-                    horse_name=data.get("horse_name", horse_name),
-                    sire=data.get("sire", ""),
-                    dam=data.get("dam", ""),
-                    sex=data.get("sex", "牡"),
-                    records=recs,
-                )
-                h.stats = build_stats(h)
-                return h
-            except Exception:
-                pass   # キャッシュ破損は再取得
+            h = _load_cache_any_age()
+            if h: return h
+
+    # netkeiba がブロック中なら新規取得を諦めて古いキャッシュを返す
+    try:
+        from src.scraper.base_scraper import is_netkeiba_blocked
+        if is_netkeiba_blocked():
+            old = _load_cache_any_age()
+            if old:
+                print(f"  [fallback] netkeiba ブロック中、{horse_name} は古いキャッシュ使用")
+                return old
+            return None
+    except Exception:
+        pass
 
     h = scraper.get_full_history(horse_id)
     if h:
@@ -294,6 +313,12 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
                 json.dump(asdict(h), f, ensure_ascii=False)
         except Exception:
             pass
+    else:
+        # 取得失敗時も古いキャッシュにフォールバック
+        old = _load_cache_any_age()
+        if old:
+            print(f"  [fallback] {horse_name} 取得失敗、古いキャッシュ使用")
+            return old
     return h
 
 

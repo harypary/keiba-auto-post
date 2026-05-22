@@ -37,7 +37,7 @@ permissions:
 jobs:
   predict-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    timeout-minutes: 180   # 6時間→3時間に短縮（netkeiba無限ブロック対策）
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -147,6 +147,7 @@ jobs:
 
       - name: Run prediction (saturday)
         id: pred_sat
+        timeout-minutes: 90
         if: steps.mode.outputs.mode == 'saturday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
@@ -158,6 +159,7 @@ jobs:
 
       - name: Run prediction (sunday)
         id: pred_sun
+        timeout-minutes: 90
         if: steps.mode.outputs.mode == 'sunday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
