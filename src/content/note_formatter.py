@@ -107,15 +107,15 @@ def format_race_note_v2(race, scores, plan, context, target_date: date, race_ind
         else:
             title = f"【{date_str}】{race.venue}{race.race_no}R｜本命と買い目"
     else:
-        # 買い目なし回: 全馬診断モードを明示（誇大表示を避けて誠実に）
+        # 金額配分なし回: 買い目候補は出すが Kelly 配分は出さない
         if race.grade == "G1":
-            title = f"🏆【{date_str} G1】{race.race_name}｜◎本命＋全馬診断（買い目見送り回）"
+            title = f"🏆【{date_str} G1】{race.race_name}｜◎本命＋買い目候補＋全馬診断"
         elif race.grade in ("G2", "G3"):
-            title = f"⭐【{date_str} {race.grade}】{race.race_name}｜◎本命＋全頭評点（妙味薄回・買い目なし）"
+            title = f"⭐【{date_str} {race.grade}】{race.race_name}｜◎本命＋買い目候補＋全頭評点"
         elif race.race_no == 11:
-            title = f"📊【{date_str} メイン】{race.venue}11R {race.race_name}｜全馬診断（買い目見送り）"
+            title = f"📊【{date_str} メイン】{race.venue}11R {race.race_name}｜◎本命＋買い目候補＋全馬診断"
         else:
-            title = f"【{date_str}】{race.venue}{race.race_no}R｜◎本命＋全馬診断（買い目なし回）"
+            title = f"【{date_str}】{race.venue}{race.race_no}R｜◎本命＋買い目候補＋全馬診断"
 
     body = _build_full_body(race, scores, plan, context, target_date)
     tags = _build_tags(race, target_date)
@@ -210,14 +210,14 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
 def _no_bet_notice_free(race) -> str:
     """買い目ゼロ時の無料部分案内（売れる正直なトーン）"""
     return (
-        "\n### ⚠️ 今回の方針：買い目なし・全馬診断のみ\n\n"
-        "このレースは現時点のオッズで **ポートフォリオ全体で期待回収率110%以上を満たす買い目が組めなかった** ため、"
-        "**有料部分は買い目を含まず「全馬診断」「展開予想」「評点」のみ**となります。\n\n"
-        "**当noteの方針**：投資額より回収が下回る勝負はしません。"
-        "負け馬券を出すぐらいなら、その回は素直に「妙味薄い」と伝えます。これが購入者を裏切らない唯一の方法です。\n\n"
-        "ただし当日のオッズは直前まで動きます。"
-        "有料部分の評点上位馬を軸に、**最終オッズで EV>=1.00 を満たす組合せを発見できた場合のみ**少額勝負を推奨します。\n\n"
-        "_全馬の細かい強み・懸念・展開図を読みたい方は引き続きどうぞ。_\n\n"
+        "\n### ⚠️ 今回の方針：金額配分なし・買い目候補は提示\n\n"
+        "このレースは現時点のオッズで **ポートフォリオ全体で期待回収率110%以上を満たす配分が組めなかった** ため、"
+        "**Kelly基準の金額配分は提示しません**。\n\n"
+        "ただし **評点上位馬から組める推奨買い目候補（単勝・馬連・ワイド・3連複）**は通常通り公開します。"
+        "買うか見送るか、いくら張るかは買い手判断でお願いします。\n\n"
+        "**当noteの方針**：投資額より回収が下回る金額配分は出しません。"
+        "ただし**買い目の選択肢自体は購入者の自由**として残します。これが購入者を裏切らない設計です。\n\n"
+        "_全馬の強み・懸念・展開図・推奨買い目候補を読みたい方は引き続きどうぞ。_\n\n"
     )
 
 
@@ -657,9 +657,9 @@ def _paid_bridge(race, plan, scores, has_bets: bool = True) -> str:
         )
     else:
         parts.append(
-            f"- ⚠️ **今回は買い目なし**（ポートフォリオで期待回収率110%を満たせず、推奨買い目は出しません）\n"
-            f"- 代わりに **全馬診断・評点・展開予測** をフルで公開\n"
-            f"- 当日オッズが動いた場合に自力で狙える評点上位馬リスト\n\n"
+            f"- **印・推奨買い目候補**（評点上位から組める単勝/馬連/ワイド/3連複）\n"
+            f"- ※ 今回はポートフォリオEV>=1.10を満たせず **金額配分は提示しません**（買うかどうかは買い手判断）\n"
+            f"- **全馬診断・評点・展開予測** はフルで公開\n\n"
         )
     parts.append(_free_closing(race))
     return "".join(parts)
@@ -1165,14 +1165,42 @@ def _role_text(rank, num_horses, odds):
     return "今回は静観推奨。買い目からは外す。"
 
 
+def _build_fallback_bets(scores, plan) -> dict:
+    """買い目が EV フィルタで全削除された時のフォールバック買い目を印順位から構築。
+    金額は出さず、組み合わせ候補のみ提示する（買い手の自由）。"""
+    top = sorted(scores, key=lambda x: x.recommendation_rank)
+    top_nos = [s.horse_no for s in top[:7]]
+    honmei = plan.honmei[0] if plan.honmei else (top_nos[0] if top_nos else None)
+    taikou = plan.taikou[0] if plan.taikou else (top_nos[1] if len(top_nos) > 1 else None)
+    out = {"win": [], "place": [], "exacta": [], "wide": [], "trifecta": []}
+    if honmei:
+        out["win"] = [honmei]
+        out["place"] = [n for n in top_nos[:3]]
+        # 馬連: ◎-○、◎-▲、◎-△x2
+        for n in top_nos[1:5]:
+            if n != honmei:
+                out["exacta"].append(tuple(sorted([honmei, n])))
+        # ワイド: 上位3頭ボックス
+        for i in range(min(3, len(top_nos))):
+            for j in range(i+1, min(3, len(top_nos))):
+                out["wide"].append(tuple(sorted([top_nos[i], top_nos[j]])))
+        # 3連複: ◎-○-(▲/△x3)
+        if taikou:
+            for n in top_nos[2:5]:
+                if n != honmei and n != taikou:
+                    out["trifecta"].append(tuple(sorted([honmei, taikou, n])))
+    return out
+
+
 def _section_betting(scores, plan, has_bets: bool = True) -> str:
-    # 買い目0ケース: 印・予想順位のみ表示し、買い目テーブルや配分は省略
+    # 買い目0ケース: 印・買い目候補は提示するが金額/配分は出さない（買い手の自由）
     if not has_bets:
-        parts = ["## 🎯 本命予想（買い目なし回・全馬診断モード）\n\n"]
+        parts = ["## 💰 推奨買い目（参考・買い手判断）\n\n"]
         parts.append(
-            "今回は当noteの厳格EV基準（**期待値1.10以上**）を満たす券種が現在のオッズで見つからなかったため、"
-            "**買い目は提示しません**。負け馬券を出すぐらいなら正直に「妙味薄い」と伝えます。\n\n"
-            "以下、印と評点は通常通り全頭分公開します。当日のオッズが動いて妙味が出たケースの参考にしてください。\n\n"
+            "今回は当noteの **ポートフォリオEV>=1.10 基準** を満たせなかったため、"
+            "**金額配分は提示しません**。負け期待値の馬券は出しません。\n\n"
+            "ただし当日のオッズで妙味が出る可能性もあるため、評点上位馬から組める**買い目候補**は以下にまとめます。"
+            "金額は買い手の判断にお任せします。\n\n"
         )
         parts.append(f"| 印 | 馬番 | 馬名 |\n|---|---|---|\n")
         for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):
@@ -1183,14 +1211,38 @@ def _section_betting(scores, plan, has_bets: bool = True) -> str:
         parts.append(f"- ◎ 本命: **{_horse_names(plan.honmei, scores)}**\n")
         parts.append(f"- ○ 対抗: **{_horse_names(plan.taikou, scores)}**\n")
         parts.append(f"- ▲ 単穴: **{_horse_names(plan.tanana, scores)}**\n")
-        parts.append(f"- △ 連下: {_horse_names(plan.renka, scores)}\n\n")
+        parts.append(f"- △ 連下: {_horse_names(plan.renka, scores)}\n")
+        if plan.value_horse:
+            parts.append(f"- 💎 穴馬注目: **{_horse_name_single(plan.value_horse, scores)}**\n")
+        parts.append("\n")
+
+        fb = _build_fallback_bets(scores, plan)
+        if fb["win"]:
+            parts.append(f"**単勝候補**: {_bet_str(fb['win'])}\n\n")
+        if fb["place"]:
+            parts.append(f"**複勝候補**: {_bet_str(fb['place'])}\n\n")
+        if fb["exacta"]:
+            parts.append("**馬連候補**\n")
+            for a, b in fb["exacta"]:
+                parts.append(f"- {a}番（{_horse_name_single(a,scores)}）ー {b}番（{_horse_name_single(b,scores)}）\n")
+            parts.append("\n")
+        if fb["wide"]:
+            parts.append("**ワイド候補（上位ボックス）**\n")
+            for a, b in fb["wide"]:
+                parts.append(f"- {a}番 ー {b}番\n")
+            parts.append("\n")
+        if fb["trifecta"]:
+            parts.append("**3連複候補**\n")
+            for combo in fb["trifecta"]:
+                parts.append(f"- {'-'.join([str(n)+'番' for n in combo])}\n")
+            parts.append("\n")
         parts.append(
-            "**自力で買うなら**：◎単勝が直前で **オッズ7倍以上** に流れた場合、または ◎-○ 馬連が **15倍以上** に膨らんだ場合、"
-            "EV>=1.10 を満たす可能性が高くなります。\n\n"
+            "_※ 上記はあくまで評点順位からの候補列挙。"
+            "当日のオッズ・最終情報を確認のうえ、買うか見送るかは買い手判断でお願いします。_\n\n"
         )
         return "".join(parts)
 
-    # 通常ケース: 印・買い目・配分すべて
+    # 通常ケース: 印・買い目・Kelly配分すべて
     parts = ["## 💰 推奨買い目\n\n"]
     parts.append(f"| 印 | 馬番 | 馬名 |\n|---|---|---|\n")
     for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):
