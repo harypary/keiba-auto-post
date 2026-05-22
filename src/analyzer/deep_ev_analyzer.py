@@ -188,7 +188,7 @@ def race_betting_grade(edges: dict, model_p: dict, odds_map: dict) -> dict:
 
 
 # === 強化EV計算（buybudget配分付き） ===
-def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.05) -> dict:
+def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.10) -> dict:
     """深度の深いEV分析で最適買い目を生成
 
     - Plackett-Luce で正確な複合確率
@@ -222,7 +222,7 @@ def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.05) -> dic
     if n < 4:
         return out
 
-    EDGE_MIN = 0.05  # 5% 以上の過小評価を狙う
+    EDGE_MIN = 0.08  # 8% 以上の過小評価を狙う（モデル誤差を吸収）
 
     # --- 単勝 ---
     win_cands = []
@@ -238,7 +238,7 @@ def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.05) -> dic
     win_cands.sort(reverse=True)
     out["win_bets"] = [no for _, no, _ in win_cands[:3]]
 
-    # --- 複勝 ---
+    # --- 複勝 (的中率高いので閾値1.0でも安全) ---
     place_cands = []
     for no in horse_nos:
         p, o = ens_p.get(no, 0), odds_map.get(no, 0)
@@ -246,7 +246,7 @@ def find_optimal_bets_deep(scores, race=None, ev_threshold: float = 1.05) -> dic
         p3 = min(0.85, p * 2.6)
         est_payout = max(1.1, o * COEF["fuku"])
         ev = p3 * est_payout
-        if ev >= ev_threshold:
+        if ev >= 1.00:   # 複勝は EV>=1.0 で OK（的中率高い）
             place_cands.append((ev, no))
     place_cands.sort(reverse=True)
     out["place_bets"] = [no for _, no in place_cands[:5]]

@@ -325,7 +325,7 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
     deep_plan = None
     try:
         from src.analyzer.deep_ev_analyzer import find_optimal_bets_deep
-        deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.05)
+        deep_plan = find_optimal_bets_deep(scores, ev_threshold=1.10)
         if deep_plan["exacta_bets"]:
             exacta_bets = deep_plan["exacta_bets"]
         if deep_plan["quinella_bets"]:
@@ -378,23 +378,22 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         oa, ob, oc = odds_map.get(a, 0), odds_map.get(b, 0), odds_map.get(c, 0)
         return p * oa * ob * oc * 0.5 if (oa and ob and oc) else 1.0
 
-    EV_THRESHOLD = 1.00   # プラス期待値（EV>=1.0）の買い目のみ採用
-    exacta_bets = [b for b in exacta_bets if ev_uren(*b) >= EV_THRESHOLD]
-    quinella_bets = [b for b in quinella_bets if ev_wide(*b) >= EV_THRESHOLD]
-    trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b) >= EV_THRESHOLD]
-    # 最低保証：少なすぎる場合は元のtop3だけは残す
-    if len(exacta_bets) < 3 and honmei_no:
-        for o in top_nos[1:5]:
-            pair = tuple(sorted([honmei_no, o]))
-            if pair not in exacta_bets:
-                exacta_bets.append(pair)
-                if len(exacta_bets) >= 4: break
-    if len(trifecta_bets) < 3 and honmei_no and taikou_no:
-        for r in top_nos[2:6]:
-            triplet = tuple(sorted([honmei_no, taikou_no, r]))
-            if triplet not in trifecta_bets and r not in (honmei_no, taikou_no):
-                trifecta_bets.append(triplet)
-                if len(trifecta_bets) >= 4: break
+    # === 厳格EVフィルタ: モデル不確実性を考慮しEV>=1.10のみ採用 ===
+    # 投資して回収が下回らないことを最優先。買い目0でも負け馬券を出さない。
+    EV_THRESHOLD = 1.10   # 10%の安全マージン
+    exacta_bets   = [b for b in exacta_bets   if ev_uren(*b)  >= EV_THRESHOLD]
+    quinella_bets = [b for b in quinella_bets if ev_wide(*b)  >= EV_THRESHOLD]
+    trifecta_bets = [b for b in trifecta_bets if ev_fuku3(b)  >= EV_THRESHOLD]
+    # 単勝・複勝も同基準: ev = p × odds が 1.10 以上か
+    def _ev_tan(no):
+        p, o = p_win.get(no, 0), odds_map.get(no, 0)
+        return p * o if o else 0
+    def _ev_fuku(no):
+        p, o = p_win.get(no, 0), odds_map.get(no, 0)
+        if not o: return 0
+        return min(0.85, p * 2.6) * max(1.1, o * 0.28)
+    win_bets   = [n for n in win_bets   if _ev_tan(n)  >= EV_THRESHOLD]
+    place_bets = [n for n in place_bets if _ev_fuku(n) >= 1.00]   # 複勝はやや緩く（的中率高い）
 
     # === レースグレード & Kelly 配分でステーク決定 ===
     race_grade = "B"
@@ -411,10 +410,15 @@ def build_betting_plan(race_id: str, race_name: str, scores, num_horses: int) ->
         max_edge = float(gi.get("max_edge", 0))
         max_ev = float(gi.get("max_ev", 0))
 
-    # Grade D → 全買い目クリア（見送り）
+    # Grade D → 妙味薄いので買い目を最小限に絞る（◎単勝のみ・EVが1.0以上なら）
     if race_grade == "D":
         skip_recommended = True
-        win_bets, place_bets, exacta_bets, quinella_bets, trifecta_bets, trio_bets = [], [], [], [], [], []
+        # ◎単勝の EV をチェック
+        if honmei_no and _ev_tan(honmei_no) >= 1.00:
+            win_bets = [honmei_no]
+        else:
+            win_bets = []
+        place_bets, exacta_bets, quinella_bets, trifecta_bets, trio_bets = [], [], [], [], []
 
     # Grade ごとのレース総予算（円）
     GRADE_BUDGET = {"S": 3000, "A": 2000, "B": 1200, "C": 600, "D": 0}
