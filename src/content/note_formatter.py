@@ -85,22 +85,37 @@ PAID_MARKER = "👇 ここから有料公開部分"
 # ============================================================
 
 def format_race_note_v2(race, scores, plan, context, target_date: date, race_index: int) -> dict:
-    # タイトル：メインレースは強く目立たせる
     date_str = target_date.strftime("%m/%d")
     is_g = race.grade in ("G1", "G2", "G3")
 
-    if race.grade == "G1":
-        title = f"🏆【{date_str} G1】{race.race_name}｜◎本命断言＋穴馬完全公開"
-    elif race.grade == "G2":
-        title = f"🥇【{date_str} G2】{race.race_name}｜重賞徹底分析＆買い目全公開"
-    elif race.grade == "G3":
-        title = f"🥈【{date_str} G3】{race.race_name}｜重賞◎本命＆💎穴馬ピック"
-    elif race.grade == "OP":
-        title = f"⭐【{date_str} OP】{race.race_name}｜本命と穴の両軸予想"
-    elif race.race_no == 11:
-        title = f"🔥【{date_str} メインレース】{race.venue}11R {race.race_name}｜本命＆買い目公開"
+    has_bets = bool(
+        plan.win_bets or plan.place_bets or plan.exacta_bets
+        or plan.quinella_bets or plan.trifecta_bets or plan.trio_bets
+    )
+
+    if has_bets:
+        if race.grade == "G1":
+            title = f"🏆【{date_str} G1】{race.race_name}｜◎本命断言＋穴馬完全公開"
+        elif race.grade == "G2":
+            title = f"🥇【{date_str} G2】{race.race_name}｜重賞徹底分析＆買い目全公開"
+        elif race.grade == "G3":
+            title = f"🥈【{date_str} G3】{race.race_name}｜重賞◎本命＆💎穴馬ピック"
+        elif race.grade == "OP":
+            title = f"⭐【{date_str} OP】{race.race_name}｜本命と穴の両軸予想"
+        elif race.race_no == 11:
+            title = f"🔥【{date_str} メインレース】{race.venue}11R {race.race_name}｜本命＆買い目公開"
+        else:
+            title = f"【{date_str}】{race.venue}{race.race_no}R｜本命と買い目"
     else:
-        title = f"【{date_str}】{race.venue}{race.race_no}R｜本命と買い目"
+        # 買い目なし回: 全馬診断モードを明示（誇大表示を避けて誠実に）
+        if race.grade == "G1":
+            title = f"🏆【{date_str} G1】{race.race_name}｜◎本命＋全馬診断（買い目見送り回）"
+        elif race.grade in ("G2", "G3"):
+            title = f"⭐【{date_str} {race.grade}】{race.race_name}｜◎本命＋全頭評点（妙味薄回・買い目なし）"
+        elif race.race_no == 11:
+            title = f"📊【{date_str} メイン】{race.venue}11R {race.race_name}｜全馬診断（買い目見送り）"
+        else:
+            title = f"【{date_str}】{race.venue}{race.race_no}R｜◎本命＋全馬診断（買い目なし回）"
 
     body = _build_full_body(race, scores, plan, context, target_date)
     tags = _build_tags(race, target_date)
@@ -148,14 +163,20 @@ def format_day_summary_note(race_list: list[dict], target_date: date, venue_day:
 def _build_full_body(race, scores, plan, context, target_date: date) -> str:
     parts = []
 
-    # ---- 無料ゾーン：視覚的に引き込むデザイン ----
-    # 1. オープニングフック（実績+今日のレース概要）
+    # 買い目の有無を判定（EV>=1.10で厳格化済み。一つも無ければ全馬診断モード）
+    has_bets = bool(
+        plan.win_bets or plan.place_bets or plan.exacta_bets
+        or plan.quinella_bets or plan.trifecta_bets or plan.trio_bets
+    )
+
+    # ---- 無料ゾーン ----
+    # 1. オープニングフック
     parts.append(_opening_hook(race, scores, plan, target_date))
 
-    # 2. レース基本情報（コンパクト・表形式）
+    # 2. レース基本情報
     parts.append(_section_header_compact(race, target_date))
 
-    # 3. このレースをどう見るか（人間味のあるイントロ）
+    # 3. レース見どころ（人間味のあるイントロ）
     parts.append(_section_free_hook(race, scores, plan))
 
     # 4. 進化中アピール
@@ -166,8 +187,12 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
     if extra:
         parts.append(extra)
 
-    # 5. 有料部分への橋渡し
-    parts.append(_paid_bridge(race, plan, scores))
+    # 5a. 買い目ゼロケース: 無料部分に明示
+    if not has_bets:
+        parts.append(_no_bet_notice_free(race))
+
+    # 5b. 有料部分への橋渡し（買い目有無で文言を切り替え）
+    parts.append(_paid_bridge(race, plan, scores, has_bets=has_bets))
 
     # ---- 有料ゾーン ----
     parts.append(f"\n---\n\n## {PAID_MARKER}\n\n")
@@ -177,9 +202,23 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
     parts.append(_section_full_ranking(scores, race))
     if race.grade in ("G1", "G2", "G3"):
         parts.append(_section_grade_payout_outlook(scores, plan))
-    parts.append(_section_betting(scores, plan))
+    parts.append(_section_betting(scores, plan, has_bets=has_bets))
     parts.append(_section_footer())
     return "".join(parts)
+
+
+def _no_bet_notice_free(race) -> str:
+    """買い目ゼロ時の無料部分案内（売れる正直なトーン）"""
+    return (
+        "\n### ⚠️ 今回の方針：買い目なし・全馬診断のみ\n\n"
+        f"このレースは現時点のオッズで **期待値1.10以上の券種が見つからなかった** ため、"
+        "**有料部分は買い目を含まず「全馬診断」「展開予想」「評点」のみ**となります。\n\n"
+        "**当noteの方針**：投資して回収率が下回る勝負はしません。"
+        "負け馬券を出すぐらいなら、その回は素直に「妙味薄い」と伝えます。\n\n"
+        "ただし当日のオッズは直前まで動きます。"
+        f"有料部分の評点上位馬を軸に、**最終オッズで EV>=1.10 を満たす組合せを発見できた場合のみ**少額勝負を推奨します。\n\n"
+        "_全馬の細かい強み・懸念・展開図を読みたい方は引き続きどうぞ。_\n\n"
+    )
 
 
 def _section_grade_overview(race, scores) -> str:
@@ -598,7 +637,7 @@ def _section_header_compact(race, target_date) -> str:
     )
 
 
-def _paid_bridge(race, plan, scores) -> str:
+def _paid_bridge(race, plan, scores, has_bets: bool = True) -> str:
     """無料→有料の橋渡し：何が手に入るかを魅力的に予告"""
     parts = ["\n### 🔑 続き（有料部分）に書いてあること\n\n"]
     parts.append(
@@ -607,14 +646,19 @@ def _paid_bridge(race, plan, scores) -> str:
         f"- {race.num_horses}頭ぜんぶの強み・懸念点・想定着順\n"
         f"- ペースと隊列の予測図\n"
     )
-    if plan.value_horse:
+    if plan.value_horse and has_bets:
         parts.append(f"- 💎 **今回いちばん推したい穴馬1頭**（オッズ的妙味あり）\n")
-    parts.append(
-        f"- 単勝 / 馬連 / ワイド / 3連複 / 3連単 の買い目\n"
-        f"- **Kelly基準で資金配分**（10,000円換算の投資配分表）\n\n"
-    )
-    # 価格と訴求
-    price = 500 if race.grade in ("G1", "G2", "G3") else 300
+    if has_bets:
+        parts.append(
+            f"- 単勝 / 馬連 / ワイド / 3連複 / 3連単 の買い目\n"
+            f"- **Kelly基準で資金配分**（10,000円換算の投資配分表・期待回収率付き）\n\n"
+        )
+    else:
+        parts.append(
+            f"- ⚠️ **今回は買い目なし**（期待値1.10未満のため負け馬券を出しません）\n"
+            f"- 代わりに **全馬診断・評点・展開予測** をフルで公開\n"
+            f"- 当日オッズが動いたら自力で EV>=1.10 を狙える評点上位馬リスト\n\n"
+        )
     parts.append(_free_closing(race))
     return "".join(parts)
 
@@ -1119,7 +1163,32 @@ def _role_text(rank, num_horses, odds):
     return "今回は静観推奨。買い目からは外す。"
 
 
-def _section_betting(scores, plan) -> str:
+def _section_betting(scores, plan, has_bets: bool = True) -> str:
+    # 買い目0ケース: 印・予想順位のみ表示し、買い目テーブルや配分は省略
+    if not has_bets:
+        parts = ["## 🎯 本命予想（買い目なし回・全馬診断モード）\n\n"]
+        parts.append(
+            "今回は当noteの厳格EV基準（**期待値1.10以上**）を満たす券種が現在のオッズで見つからなかったため、"
+            "**買い目は提示しません**。負け馬券を出すぐらいなら正直に「妙味薄い」と伝えます。\n\n"
+            "以下、印と評点は通常通り全頭分公開します。当日のオッズが動いて妙味が出たケースの参考にしてください。\n\n"
+        )
+        parts.append(f"| 印 | 馬番 | 馬名 |\n|---|---|---|\n")
+        for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):
+            mark = MARK_MAP.get(rank, "")
+            if mark:
+                parts.append(f"| {mark} | {s.horse_no} | {s.horse_name} |\n")
+        parts.append("\n")
+        parts.append(f"- ◎ 本命: **{_horse_names(plan.honmei, scores)}**\n")
+        parts.append(f"- ○ 対抗: **{_horse_names(plan.taikou, scores)}**\n")
+        parts.append(f"- ▲ 単穴: **{_horse_names(plan.tanana, scores)}**\n")
+        parts.append(f"- △ 連下: {_horse_names(plan.renka, scores)}\n\n")
+        parts.append(
+            "**自力で買うなら**：◎単勝が直前で **オッズ7倍以上** に流れた場合、または ◎-○ 馬連が **15倍以上** に膨らんだ場合、"
+            "EV>=1.10 を満たす可能性が高くなります。\n\n"
+        )
+        return "".join(parts)
+
+    # 通常ケース: 印・買い目・配分すべて
     parts = ["## 💰 推奨買い目\n\n"]
     parts.append(f"| 印 | 馬番 | 馬名 |\n|---|---|---|\n")
     for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):
