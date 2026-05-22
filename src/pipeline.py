@@ -306,19 +306,23 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
             h = _load_cache_any_age()
             if h: return h
 
-    # netkeiba がブロック中なら新規取得を諦めて古いキャッシュを返す
-    try:
-        from src.scraper.base_scraper import is_netkeiba_blocked
-        if is_netkeiba_blocked():
-            old = _load_cache_any_age()
-            if old:
-                print(f"  [fallback] netkeiba ブロック中、{horse_name} は古いキャッシュ使用")
-                return old
-            return None
-    except Exception:
-        pass
+    # netkeiba ブロック中でもキャッシュがあれば使うが、無ければ諦めず取得を試す
+    cached = _load_cache_any_age()
 
-    h = scraper.get_full_history(horse_id)
+    # 取得を試行（base_scraper側で playwright/google cache/wayback まで多段試行する）
+    h = None
+    for attempt in range(3):   # 諦めずに最大3回試行
+        try:
+            h = scraper.get_full_history(horse_id)
+            if h and h.records:
+                break
+        except Exception as ex:
+            print(f"  [retry {attempt+1}] {horse_name} 例外: {ex}")
+        # 試行間で少し待つ
+        if attempt < 2:
+            import time as _t
+            _t.sleep(3 + attempt * 2)
+
     if h:
         try:
             from dataclasses import asdict
@@ -326,13 +330,14 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
                 json.dump(asdict(h), f, ensure_ascii=False)
         except Exception:
             pass
-    else:
-        # 取得失敗時も古いキャッシュにフォールバック
-        old = _load_cache_any_age()
-        if old:
-            print(f"  [fallback] {horse_name} 取得失敗、古いキャッシュ使用")
-            return old
-    return h
+        return h
+
+    # 全試行失敗時に古いキャッシュをフォールバック
+    if cached:
+        print(f"  [fallback] {horse_name} 全試行失敗、古いキャッシュ使用 ({len(cached.records)}走)")
+        return cached
+    print(f"  [no-data] {horse_name} 取得不可・キャッシュ無し")
+    return None
 
 
 def invalidate_cache(horse_id: str = None):

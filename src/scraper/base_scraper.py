@@ -107,17 +107,13 @@ class BaseScraper:
         return None
 
     def _fetch_with_playwright(self, url: str) -> BeautifulSoup | None:
-        """playwright で確実取得（Bot 検知回避）"""
+        """諦めない多段取得（playwright + Google cache + Wayback + リトライ）"""
         try:
-            from src.scraper.playwright_fetcher import fetch_soup
-            soup = fetch_soup(url)
-            if soup:
-                # 成功時、db.netkeiba 用フラグも維持（次回も playwright を継続使用）
-                # 但しブロック解除はしない（requests は引き続き失敗するため）
-                return soup
-            return None
+            from src.scraper.robust_fetcher import robust_fetch
+            soup = robust_fetch(url, max_total_seconds=90)
+            return soup
         except Exception as e:
-            print(f"[scraper] playwright fallback 失敗: {e}")
+            print(f"[scraper] robust fetch 失敗: {e}")
             return None
 
     def get_json(self, url: str, params: dict = None, retries: int = None) -> dict | None:
