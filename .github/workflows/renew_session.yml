@@ -6,7 +6,11 @@ name: note セッション自動更新
 on:
   schedule:
     - cron: '17 18 1 * *'   # 毎月1日 03:17 JST
+    - cron: '17 18 15 * *'  # 毎月15日 03:17 JST（バックアップ更新）
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   renew:
@@ -14,12 +18,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install
         run: |
-          pip install playwright pynacl python-dotenv
+          pip install playwright pynacl python-dotenv requests
           playwright install chromium
       - name: Renew session
         env:
@@ -28,3 +34,6 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
           GITHUB_REPO: ${{ github.repository }}
         run: python scripts/renew_note_session.py
+      - name: Cleanup
+        if: always()
+        run: rm -f data/note_session.json

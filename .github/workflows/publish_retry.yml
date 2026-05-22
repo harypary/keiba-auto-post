@@ -6,7 +6,7 @@ name: 下書き自動公開リトライ
 
 on:
   schedule:
-    # 土曜 22:00, 22:30, 23:00, 23:30, 00:00, 00:30, 01:00, 01:30 JST
+    # 土曜 22:00〜翌1:30 JST
     - cron: '0 13 * * 6'
     - cron: '30 13 * * 6'
     - cron: '0 14 * * 6'
@@ -15,7 +15,7 @@ on:
     - cron: '30 15 * * 6'
     - cron: '0 16 * * 6'
     - cron: '30 16 * * 6'
-    # 日曜 22:00, 22:30, 23:00, 23:30, 00:00, 00:30, 01:00, 01:30 JST
+    # 日曜 22:00〜翌1:30 JST
     - cron: '0 13 * * 0'
     - cron: '30 13 * * 0'
     - cron: '0 14 * * 0'
@@ -26,33 +26,64 @@ on:
     - cron: '30 16 * * 0'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   retry-publish:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install
         run: |
-          pip install playwright requests
+          pip install playwright requests pynacl python-dotenv
           playwright install chromium
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
-      - name: Restore session cache
-        uses: actions/cache@v4
-        with:
-          path: data/note_session.json
-          key: keiba-session-${{ github.run_id }}
-          restore-keys: keiba-session-
+      - name: Restore session from secret
+        env:
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: |
+          mkdir -p data
+          if [ -n "$NOTE_SESSION_B64" ]; then
+            echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
+          fi
+      - name: Session pre-flight
+        id: preflight
+        continue-on-error: true
+        run: python scripts/session_preflight.py
+      - name: Auto-renew if pre-flight failed
+        if: steps.preflight.outcome == 'failure'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: |
+          echo "::notice::セッション失効を検知、再生成"
+          python scripts/renew_note_session.py || true
       - name: Publish remaining drafts
         env:
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: |
-          # B64 から セッション復元
-          if [ -n "$NOTE_SESSION_B64" ]; then
+          # Renewal で更新されていれば最新を再復元
+          if [ -n "$NOTE_SESSION_B64" ] && [ ! -s data/note_session.json ]; then
             echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
           fi
           python scripts/find_and_publish_drafts.py
+      - name: Health check
+        id: health
+        continue-on-error: true
+        env:
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: python scripts/post_healthcheck.py 1
+      - name: Cleanup session file
+        if: always()
+        run: rm -f data/note_session.json

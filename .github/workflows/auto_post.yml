@@ -29,13 +29,20 @@ on:
           - sunday_main_only
           - review
 
+# セキュリティ: 最小権限（Actions API への書き込みのみ必要）
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   predict-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 350   # GitHub Actions最大近く（6時間）
+    timeout-minutes: 350
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -55,20 +62,52 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: Restore cache
+      # セキュリティ: セッションファイルはキャッシュに含めない（Secret から毎回復元）
+      - name: Restore non-secret cache
         uses: actions/cache@v4
         with:
           path: |
             data/cache
             data/model_weights.json
-            data/note_session.json
             data/learnings.json
             data/weekly_trend.json
             data/payout_calibration.json
             data/ml_meta_model.json
+            data/prob_calibration.json
+            data/context_weights.json
           key: keiba-cache-${{ github.run_id }}
           restore-keys: |
             keiba-cache-
+
+      - name: Restore session from secret
+        env:
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: |
+          mkdir -p data
+          if [ -n "$NOTE_SESSION_B64" ]; then
+            echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
+            echo "セッションファイル復元完了"
+          else
+            echo "::warning::NOTE_SESSION_B64 が未設定"
+          fi
+
+      - name: Session pre-flight check
+        id: preflight
+        continue-on-error: true
+        run: python scripts/session_preflight.py
+
+      - name: Auto-renew session if pre-flight failed
+        if: steps.preflight.outcome == 'failure'
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: |
+          echo "::notice::セッション失効を検知、再生成を試行"
+          python scripts/renew_note_session.py || true
+          # 再生成後の Secret 反映には次回run必要なので、本runは email+password で続行
+          echo "RENEWAL_ATTEMPTED=1" >> "$GITHUB_ENV"
 
       - name: Determine mode
         id: mode
@@ -76,8 +115,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
           else
-            DOW=$(date -u +%u)   # 1=Mon ... 7=Sun
-            HOUR=$(date -u +%H)
+            DOW=$(date -u +%u)
             if [ "$DOW" = "5" ]; then echo "mode=saturday" >> "$GITHUB_OUTPUT"
             elif [ "$DOW" = "6" ]; then echo "mode=sunday" >> "$GITHUB_OUTPUT"
             else echo "mode=review" >> "$GITHUB_OUTPUT"
@@ -88,7 +126,6 @@ jobs:
         id: dedupe
         run: |
           MODE="${{ steps.mode.outputs.mode }}"
-          # 直近6時間以内に同モードで成功完了したrunがあればスキップ
           NOW=$(date -u +%s)
           RECENT=$(gh run list --workflow=auto_post.yml --repo ${{ github.repository }} \
             --status=success --limit=10 --json createdAt,conclusion,displayTitle 2>/dev/null \
@@ -109,6 +146,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Run prediction (saturday)
+        id: pred_sat
         if: steps.mode.outputs.mode == 'saturday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
@@ -119,6 +157,7 @@ jobs:
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
+        id: pred_sun
         if: steps.mode.outputs.mode == 'sunday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
@@ -158,35 +197,56 @@ jobs:
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: python weekly_review.py
 
-      - name: 残った下書きの自動公開リトライ（インラインで即実行）
+      - name: Inline retry for stuck drafts
         if: always() && steps.mode.outputs.mode != 'review'
         env:
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
         run: |
-          # セッション復元
           if [ -n "$NOTE_SESSION_B64" ]; then
-            mkdir -p data
             echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
           fi
-          # 5分待ってから残ったdraftを公開
           sleep 300
           python scripts/find_and_publish_drafts.py || true
 
-      - name: Save updated weights & cache
+      - name: Health check (note.com で実投稿確認)
+        id: health
+        if: always() && steps.mode.outputs.mode != 'review'
+        continue-on-error: true
+        env:
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: |
+          # 投稿予期本数（saturday/sunday は1本以上）
+          EXPECTED=1
+          python scripts/post_healthcheck.py $EXPECTED
+
+      - name: Escalate to publish_retry on health failure
+        if: always() && steps.mode.outputs.mode != 'review' && steps.health.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+        run: |
+          echo "::warning::投稿未達と判定、publish_retry を即トリガ"
+          gh workflow run "下書き自動公開リトライ" --repo ${{ github.repository }} || true
+
+      - name: Save non-secret cache
         if: always()
         uses: actions/cache/save@v4
         with:
           path: |
             data/cache
             data/model_weights.json
-            data/note_session.json
             data/learnings.json
             data/weekly_trend.json
             data/payout_calibration.json
             data/ml_meta_model.json
+            data/prob_calibration.json
+            data/context_weights.json
           key: keiba-cache-${{ github.run_id }}
 
-      - name: Upload artifacts
+      - name: Cleanup session file (security)
+        if: always()
+        run: rm -f data/note_session.json
+
+      - name: Upload non-sensitive artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
