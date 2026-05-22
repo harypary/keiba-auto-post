@@ -57,9 +57,16 @@ class FullHorseHistory:
 
 class HistoryScraper(BaseScraper):
     def get_full_history(self, horse_id: str) -> Optional[FullHorseHistory]:
-        """プロフィール+成績を取得。プロフィール失敗でも成績だけ取得を試みる"""
-        # プロフィール取得（失敗しても続行）
-        prof_soup = self.get(f"{NETKEIBA_DB}/horse/{horse_id}/")
+        """プロフィール+成績を取得（諦めない多段試行）"""
+        import time as _time
+        # プロフィール: 最大3回試行
+        prof_soup = None
+        for attempt in range(3):
+            prof_soup = self.get(f"{NETKEIBA_DB}/horse/{horse_id}/")
+            if prof_soup and len(str(prof_soup)) > 2000:
+                break
+            if attempt < 2:
+                _time.sleep(3 + attempt * 2)
         horse_name = "不明"
         prof = {}
         if prof_soup:
@@ -83,9 +90,15 @@ class HistoryScraper(BaseScraper):
                 if sire:
                     prof["sire"] = sire
 
-        # 成績取得（最重要：プロフィール失敗時もこれだけは取得試行）
+        # 成績取得（最重要：諦めない3回試行）
         records = []
-        result_soup = self.get(f"{NETKEIBA_DB}/horse/result/{horse_id}/")
+        result_soup = None
+        for attempt in range(3):
+            result_soup = self.get(f"{NETKEIBA_DB}/horse/result/{horse_id}/")
+            if result_soup and len(str(result_soup)) > 3000:
+                break
+            if attempt < 2:
+                _time.sleep(3 + attempt * 2)
         if result_soup:
             records = self._parse_result_table(result_soup)
             # 成績ページから馬名を取れることも

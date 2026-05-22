@@ -58,54 +58,73 @@ class HorseEntry:
 
 class JRAScraper(BaseScraper):
     def get_race_list_for_date(self, target_date: date) -> list[dict]:
-        """指定日の全レース一覧を取得（過去日程・当日両対応）"""
+        """指定日の全レース一覧を取得（諦めない多段試行）"""
+        import time as _time
         date_str = target_date.strftime("%Y%m%d")
         races = []
         seen = set()
 
-        # まず出馬表URL（当日・翌日用）
-        url1 = f"https://race.netkeiba.com/top/race_list_sub.html?kaisai_date={date_str}"
-        soup1 = self.get(url1)
-        if soup1:
-            for a in soup1.find_all("a", href=True):
-                href = a.get("href", "")
-                m = re.search(r"race_id=(\d+)", href)
-                if not m:
-                    continue
-                if "shutuba.html" not in href and "result.html" not in href:
-                    continue
-                race_id = m.group(1)
-                if race_id not in seen:
-                    seen.add(race_id)
-                    races.append({"race_id": race_id, "url": href, "label": a.get_text(strip=True)})
+        sources = [
+            f"https://race.netkeiba.com/top/race_list_sub.html?kaisai_date={date_str}",
+            f"https://race.netkeiba.com/top/race_list.html?kaisai_date={date_str}",
+            f"https://db.netkeiba.com/race/list/{date_str}/",
+        ]
 
-        # 過去レース（db.netkeibaのリストページ）
-        if not races:
-            url2 = f"https://db.netkeiba.com/race/list/{date_str}/"
-            soup2 = self.get(url2)
-            if soup2:
-                for a in soup2.find_all("a", href=True):
-                    href = a.get("href", "")
-                    m = re.search(r"/race/(\d{12})/", href)
-                    if not m:
-                        continue
-                    race_id = m.group(1)
-                    if race_id not in seen:
-                        seen.add(race_id)
-                        races.append({"race_id": race_id, "url": href, "label": a.get_text(strip=True)})
-
+        for attempt in range(3):
+            for url in sources:
+                try:
+                    soup = self.get(url)
+                    if not soup: continue
+                    for a in soup.find_all("a", href=True):
+                        href = a.get("href", "")
+                        # 当日URLパターン
+                        m = re.search(r"race_id=(\d+)", href)
+                        # 過去URLパターン
+                        if not m:
+                            m = re.search(r"/race/(\d{12})/", href)
+                        if not m: continue
+                        race_id = m.group(1)
+                        if len(race_id) >= 12 and race_id not in seen:
+                            seen.add(race_id)
+                            races.append({"race_id": race_id, "url": href, "label": a.get_text(strip=True)})
+                except Exception as ex:
+                    print(f"[race_list] {url} 例外: {ex}")
+            if races:
+                return races
+            _time.sleep(5 + attempt * 5)
+            print(f"[race_list] 全ソース失敗 → 再試行 {attempt+2}/3")
         return races
 
     def get_shutuba_table(self, race_id: str) -> Optional[RaceInfo]:
-        """出馬表または結果ページからレース情報と出走馬を取得（過去対応）"""
-        # 出馬表を試す
-        url = f"https://race.netkeiba.com/race/shutuba.html?race_id={race_id}"
-        soup = self.get(url)
-        # 出馬表がなければ結果ページにフォールバック
-        if not soup or not soup.select("tr.HorseList"):
-            url = f"https://db.netkeiba.com/race/{race_id}/"
-            soup = self.get(url)
+        """出馬表または結果ページからレース情報と出走馬を取得（諦めない多段試行）"""
+        import time as _time
+        sources = [
+            f"https://race.netkeiba.com/race/shutuba.html?race_id={race_id}",
+            f"https://race.netkeiba.com/race/result.html?race_id={race_id}",
+            f"https://db.netkeiba.com/race/{race_id}/",
+            f"https://race.sp.netkeiba.com/race/shutuba.html?race_id={race_id}",  # SP版
+        ]
+        soup = None
+        for attempt in range(3):   # 全ソースを3周まで試行
+            for url in sources:
+                try:
+                    s = self.get(url)
+                    if s and s.select("tr.HorseList"):
+                        soup = s
+                        break
+                    if s and s.select_one(".RaceName"):
+                        # 結果ページなど構造が違うが内容ある場合も採用
+                        soup = s
+                        break
+                except Exception as ex:
+                    print(f"[shutuba] {url} 例外: {ex}")
+            if soup:
+                break
+            if attempt < 2:
+                _time.sleep(5 + attempt * 5)
+                print(f"[shutuba] race_id={race_id} 全ソース失敗 → {5+attempt*5}秒待機して再試行")
         if not soup:
+            print(f"[shutuba] race_id={race_id} 全試行失敗")
             return None
 
         # ---- レース基本情報 ----

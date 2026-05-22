@@ -86,25 +86,49 @@ class NetkeibaScraper(BaseScraper):
         )
 
     def get_odds(self, race_id: str) -> dict:
-        """オッズ取得（発売前・失敗時は空dictで続行）"""
+        """オッズ取得（諦めない多段試行）"""
+        import time as _time
+        odds_map = {}
+        # 第1段: APIを3回試行
+        for attempt in range(3):
+            try:
+                self._rotate_ua()
+                resp = self.session.get(
+                    "https://race.netkeiba.com/api/api_get_odds.html",
+                    params={"race_id": race_id, "type": "1", "housiki": "c1"},
+                    timeout=10,
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    for item in data.get("data", {}).get("odds", {}).get("Win", []):
+                        try:
+                            odds_map[int(item[0])] = float(item[1])
+                        except Exception:
+                            pass
+                    if odds_map:
+                        return odds_map
+            except Exception:
+                pass
+            _time.sleep(2 + attempt * 2)
+        # 第2段: HTMLオッズページからスクレイプ
         try:
-            resp = self.session.get(
-                "https://race.netkeiba.com/api/api_get_odds.html",
-                params={"race_id": race_id, "type": "1", "housiki": "c1"},
-                timeout=6,
-            )
-            if resp.status_code == 200:
-                data = resp.json()
-                odds_map = {}
-                for item in data.get("data", {}).get("odds", {}).get("Win", []):
-                    try:
-                        odds_map[int(item[0])] = float(item[1])
-                    except Exception:
-                        pass
-                return odds_map
+            soup = self.get(f"https://race.netkeiba.com/odds/index.html?type=b1&race_id={race_id}")
+            if soup:
+                for tr in soup.select("tr"):
+                    tds = tr.find_all("td")
+                    if len(tds) >= 4:
+                        try:
+                            no = int(tds[1].get_text(strip=True))
+                            o = float(tds[3].get_text(strip=True))
+                            if 1.0 < o < 999:
+                                odds_map[no] = o
+                        except Exception:
+                            pass
+                if odds_map:
+                    return odds_map
         except Exception:
             pass
-        return {}  # 発売前または取得失敗→スコアには影響しない
+        return odds_map  # 発売前/取得不可なら空dictで続行
 
     def get_race_result(self, race_id: str) -> list[dict]:
         """過去レース結果を取得（類似条件分析用）"""

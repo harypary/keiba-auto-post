@@ -58,19 +58,20 @@ class BaseScraper:
         self.session.headers["User-Agent"] = random.choice(UA_POOL)
 
     def get(self, url: str, params: dict = None) -> BeautifulSoup | None:
+        """全URL共通の「諦めない」取得。requests失敗→robust多段(playwright/cache/wayback)へ。"""
         global _NETKEIBA_BLOCKED, _NETKEIBA_403_COUNT, _BLOCKED_DOMAINS
 
         is_db_netkeiba = "db.netkeiba.com" in url
         domain = url.split("/")[2] if "://" in url else ""
 
-        # db.netkeiba.com で requests がブロックされたら 即 playwright で取得
+        # 既知ブロックドメインは最初から robust 経路
         if is_db_netkeiba and _NETKEIBA_BLOCKED:
-            return self._fetch_with_playwright(url)
+            return self._robust_path(url)
         if domain and domain in _BLOCKED_DOMAINS:
-            return self._fetch_with_playwright(url)
+            return self._robust_path(url)
 
-        max_attempts = MAX_RETRIES
-        for attempt in range(max_attempts):
+        # 第1段: requests を 2 UA で試す（高速）
+        for attempt in range(2):
             try:
                 if attempt > 0:
                     self._rotate_ua()
@@ -78,33 +79,44 @@ class BaseScraper:
                 resp = self.session.get(url, params=params, timeout=20)
                 resp.raise_for_status()
                 resp.encoding = resp.apparent_encoding
-                if is_db_netkeiba:
-                    _NETKEIBA_403_COUNT = 0
-                return BeautifulSoup(resp.text, "lxml")
+                if len(resp.text) > 500:
+                    if is_db_netkeiba:
+                        _NETKEIBA_403_COUNT = 0
+                    return BeautifulSoup(resp.text, "lxml")
             except requests.RequestException as e:
                 msg = str(e)
                 if "403" in msg:
-                    print(f"[scraper] {url} 403 (bot block) attempt {attempt+1}")
                     if is_db_netkeiba:
                         _NETKEIBA_403_COUNT += 1
-                        if _NETKEIBA_403_COUNT >= _NETKEIBA_403_THRESHOLD:
-                            if not _NETKEIBA_BLOCKED:
-                                print(f"[scraper] ⚠️ db.netkeiba ブロック検知 → playwright で取得継続")
+                        if _NETKEIBA_403_COUNT >= _NETKEIBA_403_THRESHOLD and not _NETKEIBA_BLOCKED:
+                            print(f"[scraper] ⚠️ db.netkeiba ブロック検知 → robust 経路へ切替")
                             _NETKEIBA_BLOCKED = True
-                            # 残りの取得は playwright に切り替え（このリクエストも playwright で再試行）
-                            return self._fetch_with_playwright(url)
-                    if attempt >= 1:
-                        # 1回目失敗で他のドメインも playwright を試す
-                        return self._fetch_with_playwright(url)
-                    self._rotate_ua()
-                    time.sleep(2)
+                    print(f"[scraper] {url} 403 attempt {attempt+1}")
                 else:
-                    print(f"[scraper] {url} attempt {attempt+1} failed: {e}")
-                    if attempt < max_attempts - 1:
-                        time.sleep(2 * (attempt + 1))
-                if attempt == max_attempts - 1:
-                    return None
-        return None
+                    print(f"[scraper] {url} {msg[:80]} attempt {attempt+1}")
+                if attempt < 1:
+                    self._rotate_ua()
+                    time.sleep(1)
+
+        # 第2段以降: robust 多段（playwright + cache + wayback + backoff）
+        print(f"[scraper] {url} → robust経路発動")
+        soup = self._robust_path(url)
+        if soup is None and domain:
+            _BLOCKED_DOMAINS.add(domain)
+        return soup
+
+    def _robust_path(self, url: str) -> BeautifulSoup | None:
+        """諦めない多段取得（playwright + Google cache + Wayback + リトライ）"""
+        try:
+            from src.scraper.robust_fetcher import robust_fetch
+            return robust_fetch(url, max_total_seconds=120)
+        except Exception as e:
+            print(f"[scraper] robust 例外: {e}")
+            return None
+
+    # 後方互換
+    def _fetch_with_playwright(self, url: str) -> BeautifulSoup | None:
+        return self._robust_path(url)
 
     def _fetch_with_playwright(self, url: str) -> BeautifulSoup | None:
         """諦めない多段取得（playwright + Google cache + Wayback + リトライ）"""
