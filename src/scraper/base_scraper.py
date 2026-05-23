@@ -12,7 +12,7 @@ from config.settings import REQUEST_DELAY, MAX_RETRIES
 # GitHub Actions IP がブロックされる現象に対応
 _NETKEIBA_BLOCKED = False
 _NETKEIBA_403_COUNT = 0
-_NETKEIBA_403_THRESHOLD = 5   # 連続5回 403 でブレーカー作動
+_NETKEIBA_403_THRESHOLD = 1   # 1回目の 403 で即ブレーカー作動（高速化）
 _BLOCKED_DOMAINS = set()
 
 
