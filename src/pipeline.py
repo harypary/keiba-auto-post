@@ -348,22 +348,32 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
             h = _load_cache_any_age()
             if h: return h
 
-    # netkeiba ブロック中でもキャッシュがあれば使うが、無ければ諦めず取得を試す
+    # キャッシュ取得を先に
     cached = _load_cache_any_age()
 
-    # 取得を試行（base_scraper側で playwright/google cache/wayback まで多段試行する）
+    # netkeiba ブロック中で キャッシュも無い場合は即諦めて None 返却
+    # （robust_fetch を全馬ごとに30秒待つと36レース完了不可能になるため）
+    try:
+        from src.scraper.base_scraper import is_netkeiba_blocked
+        if is_netkeiba_blocked() and not cached:
+            # 既に1回キャッシュ無しで取得失敗確定の馬はスキップ
+            return None
+    except Exception:
+        pass
+
+    # 取得を試行（ブロックされていなければ通常通り、ブロック後でもキャッシュあれば1回だけ試す）
     h = None
-    for attempt in range(3):   # 諦めずに最大3回試行
+    max_retries = 1 if (cached or _is_blocked_safe()) else 2
+    for attempt in range(max_retries):
         try:
             h = scraper.get_full_history(horse_id)
             if h and h.records:
                 break
         except Exception as ex:
             print(f"  [retry {attempt+1}] {horse_name} 例外: {ex}")
-        # 試行間で少し待つ
-        if attempt < 2:
+        if attempt < max_retries - 1:
             import time as _t
-            _t.sleep(3 + attempt * 2)
+            _t.sleep(2)
 
     if h:
         try:
@@ -374,12 +384,17 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
             pass
         return h
 
-    # 全試行失敗時に古いキャッシュをフォールバック
     if cached:
-        print(f"  [fallback] {horse_name} 全試行失敗、古いキャッシュ使用 ({len(cached.records)}走)")
         return cached
-    print(f"  [no-data] {horse_name} 取得不可・キャッシュ無し")
     return None
+
+
+def _is_blocked_safe() -> bool:
+    try:
+        from src.scraper.base_scraper import is_netkeiba_blocked
+        return is_netkeiba_blocked()
+    except Exception:
+        return False
 
 
 def invalidate_cache(horse_id: str = None):
