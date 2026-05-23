@@ -77,7 +77,37 @@ jobs:
             data/context_weights.json
           key: keiba-cache-${{ github.run_id }}
           restore-keys: |
+            keiba-horse-cache-
             keiba-cache-
+
+      # macOS prefetch workflow が保存した artifact を最新の prefetch run から取得（あれば）
+      - name: Find latest prefetch artifact
+        id: prefetch_artifact
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+        run: |
+          # 直近24時間以内の prefetch_horse_cache.yml の成功 run を取得
+          RUN_ID=$(gh run list --workflow=prefetch_horse_cache.yml --repo ${{ github.repository }} \
+            --status=success --limit=1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || echo "")
+          if [ -n "$RUN_ID" ] && [ "$RUN_ID" != "null" ]; then
+            echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+            echo "最新prefetch run: $RUN_ID"
+          else
+            echo "run_id=" >> "$GITHUB_OUTPUT"
+            echo "prefetch artifact なし"
+          fi
+      - name: Download pre-fetched horse cache artifact
+        if: steps.prefetch_artifact.outputs.run_id != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: horse-cache-*
+          path: data/cache
+          merge-multiple: true
+          github-token: ${{ secrets.GH_PAT || github.token }}
+          run-id: ${{ steps.prefetch_artifact.outputs.run_id }}
+          repository: ${{ github.repository }}
 
       - name: Restore session from secret
         env:

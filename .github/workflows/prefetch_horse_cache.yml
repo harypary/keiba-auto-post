@@ -1,0 +1,81 @@
+name: 馬データキャッシュ事前構築
+
+# 翌日のレース対象馬の個別ページを macOS runner (別IP帯) で取得しキャッシュ化。
+# Ubuntu runner で本番投稿が走る前にキャッシュが揃っていれば、ブロック中でも高精度予測が可能。
+#
+# スケジュール: 金曜・土曜 17:00 JST （本投稿の3時間前）
+
+on:
+  schedule:
+    - cron: '0 8 * * 5'   # 金曜 17:00 JST → 土曜分
+    - cron: '0 8 * * 6'   # 土曜 17:00 JST → 日曜分
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '対象日'
+        required: true
+        default: 'next_weekend'
+        type: choice
+        options:
+          - tomorrow
+          - saturday
+          - sunday
+
+permissions:
+  contents: read
+
+jobs:
+  prefetch:
+    runs-on: macos-latest   # ★ Ubuntuと異なるIP帯で netkeiba 突破を狙う
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Restore existing cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/cache
+          key: keiba-horse-cache-${{ github.run_id }}
+          restore-keys: |
+            keiba-horse-cache-
+            keiba-cache-
+      - name: Determine target date
+        id: target
+        run: |
+          MODE="${{ inputs.mode || 'next_weekend' }}"
+          DOW=$(date -u +%u)
+          if [ "$MODE" = "saturday" ]; then
+            DELTA=$(( (6 - DOW + 7) % 7 ))
+          elif [ "$MODE" = "sunday" ]; then
+            DELTA=$(( (7 - DOW + 7) % 7 ))
+          else
+            DELTA=1   # 翌日
+          fi
+          TARGET=$(date -u -v+${DELTA}d +%Y-%m-%d 2>/dev/null || date -u -d "+${DELTA} days" +%Y-%m-%d)
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "対象日: $TARGET"
+      - name: Pre-fetch horse cache
+        run: python scripts/prefetch_horse_cache.py ${{ steps.target.outputs.target }}
+      - name: Save cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/cache
+          key: keiba-horse-cache-${{ github.run_id }}
+      - name: Upload cache artifact (本番ジョブが取得用)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: horse-cache-${{ steps.target.outputs.target }}
+          path: data/cache
+          retention-days: 3
+          if-no-files-found: ignore
