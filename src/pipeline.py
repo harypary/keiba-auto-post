@@ -52,9 +52,46 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         return []
     print(f"  -> {len(race_ids)}レース（未勝利〜G1 全対応）")
 
-    # 2. 各レース完全分析
-    print("[2/4] 全レース分析開始...")
+    # 2. 各レース完全分析（解析しながら即時投稿）
+    print("[2/4] 全レース分析開始（解析→即投稿）...")
     race_results = []
+    published = []
+    failed_notes = []
+
+    # === 重複防止: 既存記事スキャン（投稿前に1度だけ）===
+    existing_titles = set()
+    existing_keys = set()
+    from src.publisher.article_log import (
+        load_log as load_article_log, title_to_race_key,
+        record_post as record_article,
+    )
+    log = load_article_log()
+    existing_keys.update(log.get("by_race_key", {}).keys())
+    print(f"  ローカル投稿ログ: {len(existing_keys)}件をロード")
+    if publish:
+        try:
+            import requests as _req
+            for u in [f"https://note.com/_almanddd?status=published", f"https://note.com/_almanddd"]:
+                r = _req.get(u, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+                if r.status_code == 200:
+                    import re as _re
+                    for m in _re.finditer(r'"name":"([^"]{8,120})"', r.text):
+                        existing_titles.add(m.group(1))
+                        existing_keys.add(title_to_race_key(m.group(1)))
+        except Exception as ex:
+            print(f"  [warn] 既存記事スキャン失敗: {ex}")
+        print(f"  既存記事タイトル: {len(existing_titles)}件")
+
+    def _is_dup(t):
+        return title_to_race_key(t) in existing_keys or t in existing_titles
+
+    def _is_main(item):
+        race = item["race"]
+        if race.grade in ("G1", "G2", "G3", "OP"):
+            return True
+        if race.race_no == 11:
+            return True
+        return False
 
     for idx, raw in enumerate(race_ids):
         race_id = raw["race_id"]
@@ -150,7 +187,63 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
             except Exception as ex:
                 print(f"  [warn] 予測保存失敗（続行）: {ex}")
 
-            race_results.append({"race": race, "scores": scores, "plan": plan, "context": ctx})
+            item = {"race": race, "scores": scores, "plan": plan, "context": ctx}
+            race_results.append(item)
+
+            # === 解析直後に即投稿（バッチ投稿だと最後まで何も公開されない問題を解消）===
+            if main_only and not _is_main(item):
+                pass   # main_only モードで非メインはスキップ
+            else:
+                try:
+                    note = format_race_note_v2(
+                        race=race, scores=scores, plan=plan, context=ctx,
+                        target_date=target_date, race_index=idx,
+                    )
+                    note["_race_id"] = race_id
+                    if publish:
+                        if _is_dup(note["title"]):
+                            print(f"  [SKIP重複] {note['title'][:50]}")
+                        else:
+                            try:
+                                result = publisher.create_paid_article(
+                                    title=note["title"], body=note["body"],
+                                    tags=note["tags"], price=note["price"],
+                                )
+                                if isinstance(result, dict) and result.get("draft"):
+                                    failed_notes.append(note)
+                                    existing_keys.add(title_to_race_key(note["title"]))
+                                    print(f"  [DRAFT] {note['title'][:50]}")
+                                elif result:
+                                    published.append(result)
+                                    url = result if isinstance(result, str) else result.get("url", "")
+                                    note_id = ""
+                                    if isinstance(result, dict):
+                                        note_id = result.get("note_id", "")
+                                    else:
+                                        import re as _re
+                                        mm = _re.search(r"/n/(n[a-f0-9]+)", str(result))
+                                        if mm: note_id = mm.group(1)
+                                    try:
+                                        record_article(note["title"], race_id, note_id, url, verified=True)
+                                    except Exception:
+                                        pass
+                                    existing_keys.add(title_to_race_key(note["title"]))
+                                    print(f"  [PUBLISHED] {note['title'][:50]} → {url[:60]}")
+                                else:
+                                    failed_notes.append(note)
+                            except Exception as ex2:
+                                failed_notes.append(note)
+                                print(f"  [EXCEPTION投稿] {ex2}")
+                            time.sleep(2)
+                    else:
+                        if save_files:
+                            try:
+                                publisher.save_to_file(note, OUTPUT_DIR)
+                            except Exception:
+                                pass
+                except Exception as ex:
+                    print(f"  [warn] 記事生成失敗: {ex}")
+
             time.sleep(1)
         except Exception as ex:
             print(f"  [ERROR] レース{race_id} 処理中に例外（次レースへ）: {ex}")
@@ -162,151 +255,12 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         print("[WARN] 有効レースなし")
         return []
 
-    # 3. note記事生成（全レース個別 + 全レースパック）
-    print(f"\n[3/4] note記事生成 ({len(race_results)}レース)...")
-    weekday   = target_date.weekday()
-    venue_day = "日曜" if weekday == 6 else "土曜"
-
-    # main_only モード: 投稿対象は重賞 / OP / メイン(11R)のみ。他はnote生成スキップ。
-    def _is_main(item):
-        race = item["race"]
-        if race.grade in ("G1", "G2", "G3", "OP"):
-            return True
-        if race.race_no == 11:
-            return True
-        return False
-
-    notes = []
-    for i, item in enumerate(race_results):
-        if main_only and not _is_main(item):
-            continue
-        try:
-            note = format_race_note_v2(
-                race=item["race"], scores=item["scores"],
-                plan=item["plan"], context=item["context"],
-                target_date=target_date, race_index=i,
-            )
-            note["_race_id"] = getattr(item["race"], "race_id", "")
-            notes.append(note)
-            print(f"  [OK] {note['title'][:55]}...")
-        except Exception as ex:
-            print(f"  [warn] レース{item['race'].race_id} 記事生成失敗（スキップ）: {ex}")
-            import traceback
-            traceback.print_exc()
-
-    # 競馬場別パックは廃止（個別レース記事のみ投稿）
-
-    # 4. 投稿 / 保存
-    if main_only:
-        skipped = len(race_results) - sum(1 for it in race_results if _is_main(it))
-        print(f"  ※ メインのみモード: 投稿対象{len(notes)}件 / {skipped}レースは予測のみ（学習データ蓄積）")
-    print(f"\n[4/4] {'note.com投稿' if publish else 'ファイル保存のみ'}...")
-    published = []
-    failed_notes = []  # 投稿失敗した記事を別途記録
-
-    # === レース単位の重複防止: 公開済み + 下書き + 永続ログ三重チェック ===
-    existing_titles = set()
-    existing_keys = set()
-    from src.publisher.article_log import (
-        load_log as load_article_log, title_to_race_key,
-        record_post as record_article, is_already_posted,
-    )
-
-    # (1) 永続ローカルログを最優先
-    log = load_article_log()
-    existing_keys.update(log.get("by_race_key", {}).keys())
-    print(f"  ローカル投稿ログ: {len(existing_keys)}件をロード")
-
-    if publish:
-        try:
-            import requests
-            # (2) 公開済み記事
-            r = requests.get(f"https://note.com/_almanddd?status=published",
-                             headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
-            if r.status_code == 200:
-                import re
-                for m in re.finditer(r'"name":"([^"]{8,120})"', r.text):
-                    existing_titles.add(m.group(1))
-                    existing_keys.add(title_to_race_key(m.group(1)))
-            # (3) 下書き含む全記事（管理ページから取得を試みる）
-            #     APIアクセスは認証必要なので公開プロフィールページのみで補完
-            r2 = requests.get(f"https://note.com/_almanddd",
-                              headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
-            if r2.status_code == 200:
-                import re
-                for m in re.finditer(r'"name":"([^"]{8,120})"', r2.text):
-                    existing_titles.add(m.group(1))
-                    existing_keys.add(title_to_race_key(m.group(1)))
-            print(f"  既存記事タイトル: {len(existing_titles)}件 / race_key {len(existing_keys)}件")
-        except Exception as ex:
-            print(f"  [warn] 既存記事スキャン失敗: {ex}（ローカルログで判定）")
-
-    def _is_duplicate(title: str) -> bool:
-        """ローカルログ + リモートタイトル両方で重複判定"""
-        key = title_to_race_key(title)
-        if key in existing_keys:
-            return True
-        # タイトル完全一致もチェック
-        if title in existing_titles:
-            return True
-        return False
-
-    for note in notes:
-        if save_files:
-            try:
-                publisher.save_to_file(note, OUTPUT_DIR)
-            except Exception as ex:
-                print(f"  [warn] ファイル保存失敗: {ex}")
-        if publish:
-            # 重複チェック：同レースの記事が既に存在ならスキップ
-            if _is_duplicate(note["title"]):
-                print(f"  [SKIP重複] {note['title'][:50]}")
-                continue
-            try:
-                result = publisher.create_paid_article(
-                    title=note["title"], body=note["body"],
-                    tags=note["tags"], price=note["price"],
-                )
-                if result:
-                    # draft フラグが付いていれば失敗扱い、それ以外は成功
-                    if isinstance(result, dict) and result.get("draft"):
-                        failed_notes.append(note)
-                        # 下書きも一応キーを覚えておく（次のリトライrunで重複新規生成しない）
-                        try:
-                            existing_keys.add(title_to_race_key(note["title"]))
-                        except Exception:
-                            pass
-                        print(f"  [DRAFT] 公開未達成: {note['title'][:50]}")
-                    else:
-                        published.append(result)
-                        # === 永続ログに記録（race_id ベースで二重投稿を完全防止）===
-                        try:
-                            url = result if isinstance(result, str) else result.get("url", "")
-                            note_id = ""
-                            if isinstance(result, dict):
-                                note_id = result.get("note_id", "")
-                            elif isinstance(result, str):
-                                import re
-                                mm = re.search(r"/n/(n[a-f0-9]+)", result)
-                                if mm: note_id = mm.group(1)
-                            race_id = note.get("_race_id", "")
-                            record_article(note["title"], race_id, note_id, url, verified=True)
-                            existing_keys.add(title_to_race_key(note["title"]))
-                        except Exception as ex:
-                            print(f"  [warn] 永続ログ記録失敗: {ex}")
-                else:
-                    failed_notes.append(note)
-                    print(f"  [FAIL] 投稿結果None: {note['title'][:50]}")
-            except Exception as ex:
-                failed_notes.append(note)
-                print(f"  [EXCEPTION] {note['title'][:50]} - {ex}")
-            time.sleep(3)   # 連続投稿防止
-
     print(f"\n{'='*60}")
-    print(f"[DONE] {len(published)}件公開 / {len(notes)}件生成 / 失敗{len(failed_notes)}件")
+    print(f"[DONE] {len(published)}件公開 / {len(race_results)}件分析 / 失敗{len(failed_notes)}件")
     if published:
         for p in published[:3]:
-            print(f"  URL: {p.get('url', '')}")
+            url = p if isinstance(p, str) else p.get('url', '')
+            print(f"  URL: {url}")
     print(f"{'='*60}\n")
     return published
 
