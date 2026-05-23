@@ -201,6 +201,18 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
                     )
                     note["_race_id"] = race_id
                     if publish:
+                        # 最終重複チェック: 投稿直前に note.com を再スキャン
+                        try:
+                            import requests as _req2
+                            _r = _req2.get(f"https://note.com/_almanddd", headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+                            if _r.status_code == 200:
+                                import re as _re2
+                                for _m in _re2.finditer(r'"name":"([^"]{8,120})"', _r.text):
+                                    existing_titles.add(_m.group(1))
+                                    existing_keys.add(title_to_race_key(_m.group(1)))
+                        except Exception:
+                            pass
+
                         if _is_dup(note["title"]):
                             print(f"  [SKIP重複] {note['title'][:50]}")
                         else:

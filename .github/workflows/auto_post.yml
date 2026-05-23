@@ -42,6 +42,11 @@ permissions:
   contents: read
   actions: write
 
+# 重複投稿の根本原因対策: 同モードの並行実行を絶対禁止
+concurrency:
+  group: auto-post-${{ inputs.mode || 'scheduled' }}
+  cancel-in-progress: false   # 走行中のrun は守る、新規は wait
+
 jobs:
   predict-and-post:
     runs-on: ubuntu-latest
