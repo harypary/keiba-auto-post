@@ -59,18 +59,23 @@ class HorseEntry:
 class JRAScraper(BaseScraper):
     def get_race_list_for_date(self, target_date: date) -> list[dict]:
         """指定日の全レース一覧を取得（諦めない多段試行）"""
-        import time as _time
+        import os as _os, time as _time
+        fast = _os.environ.get("SCRAPE_MODE", "full").lower() == "fast"
         date_str = target_date.strftime("%Y%m%d")
         races = []
         seen = set()
 
         sources = [
             f"https://race.netkeiba.com/top/race_list_sub.html?kaisai_date={date_str}",
-            f"https://race.netkeiba.com/top/race_list.html?kaisai_date={date_str}",
-            f"https://db.netkeiba.com/race/list/{date_str}/",
         ]
+        if not fast:
+            sources += [
+                f"https://race.netkeiba.com/top/race_list.html?kaisai_date={date_str}",
+                f"https://db.netkeiba.com/race/list/{date_str}/",
+            ]
 
-        for attempt in range(3):
+        max_rounds = 1 if fast else 3
+        for attempt in range(max_rounds):
             for url in sources:
                 try:
                     soup = self.get(url)
@@ -97,15 +102,20 @@ class JRAScraper(BaseScraper):
 
     def get_shutuba_table(self, race_id: str) -> Optional[RaceInfo]:
         """出馬表または結果ページからレース情報と出走馬を取得（諦めない多段試行）"""
-        import time as _time
+        import os as _os, time as _time
+        fast = _os.environ.get("SCRAPE_MODE", "full").lower() == "fast"
         sources = [
             f"https://race.netkeiba.com/race/shutuba.html?race_id={race_id}",
-            f"https://race.netkeiba.com/race/result.html?race_id={race_id}",
-            f"https://db.netkeiba.com/race/{race_id}/",
-            f"https://race.sp.netkeiba.com/race/shutuba.html?race_id={race_id}",  # SP版
         ]
+        if not fast:
+            sources += [
+                f"https://race.netkeiba.com/race/result.html?race_id={race_id}",
+                f"https://db.netkeiba.com/race/{race_id}/",
+                f"https://race.sp.netkeiba.com/race/shutuba.html?race_id={race_id}",
+            ]
+        max_rounds = 1 if fast else 3
         soup = None
-        for attempt in range(3):   # 全ソースを3周まで試行
+        for attempt in range(max_rounds):
             for url in sources:
                 try:
                     s = self.get(url)

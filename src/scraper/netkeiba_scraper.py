@@ -87,10 +87,12 @@ class NetkeibaScraper(BaseScraper):
 
     def get_odds(self, race_id: str) -> dict:
         """オッズ取得（諦めない多段試行）"""
-        import time as _time
+        import os as _os, time as _time
+        fast = _os.environ.get("SCRAPE_MODE", "full").lower() == "fast"
         odds_map = {}
-        # 第1段: APIを3回試行
-        for attempt in range(3):
+        # API試行回数: fast=1回 / full=3回
+        api_tries = 1 if fast else 3
+        for attempt in range(api_tries):
             try:
                 self._rotate_ua()
                 resp = self.session.get(
