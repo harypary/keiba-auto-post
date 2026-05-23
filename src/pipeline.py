@@ -316,11 +316,12 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
 # ============================================================
 
 def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
-    """馬の過去成績を取得。CI環境（GitHub Actions）では netkeiba ブロック対策で高速モード。"""
+    """馬の過去成績を取得。SCRAPE_MODE=fast で CI 高速化、未設定/full は本格分析"""
     cache_file = os.path.join(CACHE_DIR, f"{horse_id}_full.json")
     os.makedirs(CACHE_DIR, exist_ok=True)
-    # CI環境では netkeiba がブロックされる前提でキャッシュ優先＋失敗即諦め
-    is_ci = bool(os.environ.get("GITHUB_ACTIONS"))
+    # 既定は本格分析。SCRAPE_MODE=fast の場合のみ高速モード
+    scrape_mode = os.environ.get("SCRAPE_MODE", "full").lower()
+    is_ci = (scrape_mode == "fast")
 
     def _load_cache_any_age():
         """キャッシュがあれば年齢問わずロード（ネット失敗時のフォールバック用）"""
