@@ -316,8 +316,11 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
 # ============================================================
 
 def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
+    """馬の過去成績を取得。CI環境（GitHub Actions）では netkeiba ブロック対策で高速モード。"""
     cache_file = os.path.join(CACHE_DIR, f"{horse_id}_full.json")
     os.makedirs(CACHE_DIR, exist_ok=True)
+    # CI環境では netkeiba がブロックされる前提でキャッシュ優先＋失敗即諦め
+    is_ci = bool(os.environ.get("GITHUB_ACTIONS"))
 
     def _load_cache_any_age():
         """キャッシュがあれば年齢問わずロード（ネット失敗時のフォールバック用）"""
@@ -351,17 +354,17 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
     # キャッシュ取得を先に
     cached = _load_cache_any_age()
 
-    # netkeiba ブロック中で キャッシュも無い場合は即諦めて None 返却
-    # （robust_fetch を全馬ごとに30秒待つと36レース完了不可能になるため）
+    # CI環境 + キャッシュ無し → 1回だけ短時間で試行、ダメなら即 None
+    # （robust_fetch を全馬ごとに数分待つと全レース投稿が不可能になるため）
     try:
         from src.scraper.base_scraper import is_netkeiba_blocked
-        if is_netkeiba_blocked() and not cached:
-            # 既に1回キャッシュ無しで取得失敗確定の馬はスキップ
+        if (is_ci or is_netkeiba_blocked()) and not cached:
+            # CI環境かブロック検知後 + キャッシュ無し → 即 None で投稿スピード優先
             return None
     except Exception:
         pass
 
-    # 取得を試行（ブロックされていなければ通常通り、ブロック後でもキャッシュあれば1回だけ試す）
+    # 取得を試行（キャッシュあれば1回だけ、なければ2回）
     h = None
     max_retries = 1 if (cached or _is_blocked_safe()) else 2
     for attempt in range(max_retries):
