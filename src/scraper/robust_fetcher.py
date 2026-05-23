@@ -54,6 +54,14 @@ def _try_requests(url: str, ua: str, timeout: int = 20) -> Optional[BeautifulSou
 
 
 def _try_playwright(url: str) -> Optional[BeautifulSoup]:
+    """playwright を使った取得。note 投稿の playwright と競合するため fast モードでは無効化"""
+    import os as _os
+    # 投稿用 playwright との衝突を避けるため fast モードでは無効
+    if _os.environ.get("SCRAPE_MODE", "full").lower() == "fast":
+        return None
+    # 投稿が始まっているプロセスでも playwright_fetcher を起動すると衝突するので環境変数チェック
+    if _os.environ.get("DISABLE_PLAYWRIGHT_FETCH"):
+        return None
     try:
         from src.scraper.playwright_fetcher import fetch_soup
         return fetch_soup(url)
