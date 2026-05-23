@@ -66,6 +66,8 @@ jobs:
           echo "target=$TARGET" >> "$GITHUB_OUTPUT"
           echo "対象日: $TARGET"
       - name: Pre-fetch horse cache
+        env:
+          SCRAPE_MODE: full   # 本格モード（playwright/robust 経路フル活用）
         run: python scripts/prefetch_horse_cache.py ${{ steps.target.outputs.target }}
       - name: Save cache
         if: always()

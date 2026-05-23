@@ -309,12 +309,12 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
     # キャッシュ取得を先に
     cached = _load_cache_any_age()
 
-    # CI環境 + キャッシュ無し → 1回だけ短時間で試行、ダメなら即 None
-    # （robust_fetch を全馬ごとに数分待つと全レース投稿が不可能になるため）
+    # 投稿用 playwright と競合する馬データ playwright_fetcher は本処理では使わない
+    # (DISABLE_PLAYWRIGHT_FETCH=1 を base_scraper が読む)
+    # fast モード or ブロック確定 + キャッシュ無し → 即 None で投稿優先
     try:
         from src.scraper.base_scraper import is_netkeiba_blocked
         if (is_ci or is_netkeiba_blocked()) and not cached:
-            # CI環境かブロック検知後 + キャッシュ無し → 即 None で投稿スピード優先
             return None
     except Exception:
         pass

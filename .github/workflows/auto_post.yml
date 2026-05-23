@@ -194,6 +194,8 @@ jobs:
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
           SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
+          # 投稿用 playwright と競合するため馬データ取得用 playwright は完全無効化
+          DISABLE_PLAYWRIGHT_FETCH: "1"
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
@@ -207,6 +209,8 @@ jobs:
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
           SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
+          # 投稿用 playwright と競合するため馬データ取得用 playwright は完全無効化
+          DISABLE_PLAYWRIGHT_FETCH: "1"
         run: python main.py --run-now sunday
 
       - name: Run prediction (sunday main only)
@@ -218,6 +222,8 @@ jobs:
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
           SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
+          # 投稿用 playwright と競合するため馬データ取得用 playwright は完全無効化
+          DISABLE_PLAYWRIGHT_FETCH: "1"
         run: python main.py --run-now sunday --main-only
 
       - name: Run prediction (saturday main only)
@@ -229,6 +235,8 @@ jobs:
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
           SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
+          # 投稿用 playwright と競合するため馬データ取得用 playwright は完全無効化
+          DISABLE_PLAYWRIGHT_FETCH: "1"
         run: python main.py --run-now saturday --main-only
 
       - name: Weekly review & weight optimization
