@@ -160,27 +160,32 @@ def _try_wayback(url: str) -> Optional[BeautifulSoup]:
     return None
 
 
-def robust_fetch(url: str, max_total_seconds: int = 90) -> Optional[BeautifulSoup]:
-    """諦めない多段取得。最大 max_total_seconds 秒まで試行。"""
+def robust_fetch(url: str, max_total_seconds: int = 25) -> Optional[BeautifulSoup]:
+    """多段取得。max_total_seconds で打ち切り（既定25秒）。
+    SCRAPE_MODE=fast の場合は Wayback/Google Cache のような遅い層を省く。
+    """
+    import os as _os
+    fast_mode = _os.environ.get("SCRAPE_MODE", "full").lower() == "fast"
     start = time.time()
-    layers = [
-        # 第1層: requests × 3 UA
-        ("requests-UA1", lambda: _try_requests(url, UA_POOL[0])),
-        ("requests-UA2", lambda: _try_requests(url, UA_POOL[1])),
-        ("requests-UA3-mobile", lambda: _try_requests(url, UA_POOL[6])),
-        # 第2層: playwright
-        ("playwright", lambda: _try_playwright(url)),
-        # 第3層: 3秒 backoff してから requests 再試行
-        ("requests-backoff-3s", lambda: (time.sleep(3), _try_requests(url, random.choice(UA_POOL)))[1]),
-        # 第4層: Google cache
-        ("google-cache", lambda: _try_google_cache(url)),
-        # 第5層: 10秒 backoff してから playwright
-        ("playwright-backoff-10s", lambda: (time.sleep(10), _try_playwright(url))[1]),
-        # 第6層: Wayback
-        ("wayback", lambda: _try_wayback(url)),
-        # 第7層: 最後のあがき、25秒 backoff + requests
-        ("requests-final-25s", lambda: (time.sleep(25), _try_requests(url, random.choice(UA_POOL)))[1]),
-    ]
+    if fast_mode:
+        # 高速モード: 早く諦める。requests 2UA + playwright 1回のみ
+        layers = [
+            ("requests-UA1", lambda: _try_requests(url, UA_POOL[0])),
+            ("requests-UA2-mobile", lambda: _try_requests(url, UA_POOL[6])),
+            ("playwright", lambda: _try_playwright(url)),
+        ]
+    else:
+        layers = [
+            ("requests-UA1", lambda: _try_requests(url, UA_POOL[0])),
+            ("requests-UA2", lambda: _try_requests(url, UA_POOL[1])),
+            ("requests-UA3-mobile", lambda: _try_requests(url, UA_POOL[6])),
+            ("playwright", lambda: _try_playwright(url)),
+            ("requests-backoff-3s", lambda: (time.sleep(3), _try_requests(url, random.choice(UA_POOL)))[1]),
+            ("google-cache", lambda: _try_google_cache(url)),
+            ("playwright-backoff-10s", lambda: (time.sleep(10), _try_playwright(url))[1]),
+            ("wayback", lambda: _try_wayback(url)),
+            ("requests-final-25s", lambda: (time.sleep(25), _try_requests(url, random.choice(UA_POOL)))[1]),
+        ]
 
     for layer_name, fetch_fn in layers:
         if time.time() - start > max_total_seconds:

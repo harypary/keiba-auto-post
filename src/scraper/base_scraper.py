@@ -106,10 +106,12 @@ class BaseScraper:
         return soup
 
     def _robust_path(self, url: str) -> BeautifulSoup | None:
-        """諦めない多段取得（playwright + Google cache + Wayback + リトライ）"""
+        """多段取得。fast モードは短時間で打ち切り。"""
         try:
+            import os as _os
             from src.scraper.robust_fetcher import robust_fetch
-            return robust_fetch(url, max_total_seconds=120)
+            timeout = 15 if _os.environ.get("SCRAPE_MODE","full").lower() == "fast" else 60
+            return robust_fetch(url, max_total_seconds=timeout)
         except Exception as e:
             print(f"[scraper] robust 例外: {e}")
             return None
