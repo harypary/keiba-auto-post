@@ -83,10 +83,33 @@ jobs:
             data/ml_meta_model.json
             data/prob_calibration.json
             data/context_weights.json
+            data/published_articles.json
           key: keiba-cache-${{ github.run_id }}
           restore-keys: |
             keiba-horse-cache-
             keiba-cache-
+
+      # 重複防止: 直近の published_articles_log artifact をダウンロード（過去の投稿履歴）
+      - name: Download published articles log artifact (dedup)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+        run: |
+          # 直近 auto_post run の published-articles-log artifact を取得
+          mkdir -p data
+          gh run list --workflow=auto_post.yml --repo ${{ github.repository }} \
+            --status=success --limit=10 --json databaseId \
+            --jq '.[].databaseId' 2>/dev/null | while read -r rid; do
+            if gh run download "$rid" --repo ${{ github.repository }} -n published-articles-log -D data/ 2>/dev/null; then
+              echo "投稿ログ取得成功: run $rid"
+              break
+            fi
+          done
+          # 取得できなかった場合は空 dict で初期化
+          if [ ! -f data/published_articles.json ]; then
+            echo '{"by_race_key": {}, "by_title": {}}' > data/published_articles.json
+          fi
+          echo "投稿ログサイズ: $(wc -c < data/published_articles.json) bytes"
 
       # macOS prefetch workflow が保存した artifact を最新の prefetch run から取得（あれば）
       - name: Find latest prefetch artifact
@@ -292,6 +315,7 @@ jobs:
             data/ml_meta_model.json
             data/prob_calibration.json
             data/context_weights.json
+            data/published_articles.json
           key: keiba-cache-${{ github.run_id }}
 
       - name: Cleanup session file (security)
@@ -310,3 +334,14 @@ jobs:
             data/output/
           retention-days: 30
           if-no-files-found: ignore
+
+      # 投稿ログを別 artifact として保存（次 run の重複防止用、長期保持）
+      - name: Upload published articles log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-articles-log
+          path: data/published_articles.json
+          retention-days: 90
+          if-no-files-found: ignore
+          overwrite: true
