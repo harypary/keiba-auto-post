@@ -60,65 +60,103 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         race_id = raw["race_id"]
         print(f"\n  [{idx+1}/{len(race_ids)}] {race_id}")
 
-        race = jra.get_shutuba_table(race_id)
-        if not race or not race.horses:
-            print("  [SKIP] 出馬表取得失敗")
+        # 各レースは独立して try でくくる（1レース失敗で全体停止しない）
+        try:
+            race = jra.get_shutuba_table(race_id)
+            if not race or not race.horses:
+                print("  [SKIP] 出馬表取得失敗")
+                continue
+            print(f"  -> {race.venue}{race.race_no}R {race.race_name} ({race.num_horses}頭/{race.grade})")
+
+            # オッズ取得（失敗しても続行）
+            try:
+                odds_map = netkeiba.get_odds(race_id)
+                for entry in race.horses:
+                    entry.odds = odds_map.get(entry.horse_no)
+            except Exception as ex:
+                print(f"  [warn] オッズ取得失敗（続行）: {ex}")
+
+            # 全出走馬の過去レース取得（個別失敗を許容）
+            from src.scraper.base_scraper import is_netkeiba_blocked
+            histories = {}
+            if is_netkeiba_blocked():
+                for e in race.horses:
+                    if not e.horse_id: continue
+                    try:
+                        h = _cached_history(hist_scraper, e.horse_id, e.horse_name)
+                        if h and h.records:
+                            histories[e.horse_id] = h
+                    except Exception as ex:
+                        print(f"  [warn] {e.horse_name} 履歴取得失敗（続行）: {ex}")
+            else:
+                from concurrent.futures import ThreadPoolExecutor, as_completed
+                def _fetch_one(e):
+                    try:
+                        if e.horse_id:
+                            return e.horse_id, _cached_history(hist_scraper, e.horse_id, e.horse_name)
+                    except Exception:
+                        pass
+                    return None, None
+                with ThreadPoolExecutor(max_workers=4) as ex:
+                    futures = [ex.submit(_fetch_one, e) for e in race.horses if e.horse_id]
+                    for f in as_completed(futures):
+                        try:
+                            hid, h = f.result()
+                            if hid and h and h.records:
+                                histories[hid] = h
+                        except Exception:
+                            pass
+
+            # 展開予測（失敗時はデフォルト）
+            try:
+                ctx = analyze_race_context(race.horses, histories, race.distance, race.surface)
+            except Exception as ex:
+                print(f"  [warn] 展開予測失敗（デフォルト使用）: {ex}")
+                from src.analyzer.race_context import RaceContext
+                ctx = RaceContext()
+
+            # 総合スコアリング（失敗時もデフォルトスコアで進める）
+            try:
+                scores = analyzer.analyze_all(
+                    entries=race.horses,
+                    histories=histories,
+                    race=race,
+                    context=ctx,
+                    use_training=False,
+                )
+            except Exception as ex:
+                print(f"  [warn] 総合分析失敗、ベース評価のみで継続: {ex}")
+                scores = analyzer.analyze_all(
+                    entries=race.horses, histories={}, race=race, context=ctx, use_training=False,
+                ) if False else []   # 最低限のフォールバック
+                if not scores:
+                    print(f"  [SKIP] 分析完全失敗")
+                    continue
+
+            try:
+                plan = build_betting_plan_from_comprehensive(
+                    race_id, race.race_name, scores, race.num_horses
+                )
+            except Exception as ex:
+                print(f"  [warn] 買い目生成失敗（空計画で続行）: {ex}")
+                from src.analyzer.recommendation import BettingPlan
+                plan = BettingPlan(race_id=race_id, race_name=race.race_name,
+                                   honmei=[], taikou=[], tanana=[], renka=[], omakase=[],
+                                   win_bets=[], place_bets=[], exacta_bets=[],
+                                   quinella_bets=[], trifecta_bets=[], trio_bets=[])
+
+            try:
+                save_prediction(race_id, race.race_name, scores, plan)
+            except Exception as ex:
+                print(f"  [warn] 予測保存失敗（続行）: {ex}")
+
+            race_results.append({"race": race, "scores": scores, "plan": plan, "context": ctx})
+            time.sleep(1)
+        except Exception as ex:
+            print(f"  [ERROR] レース{race_id} 処理中に例外（次レースへ）: {ex}")
+            import traceback
+            traceback.print_exc()
             continue
-        print(f"  -> {race.venue}{race.race_no}R {race.race_name} ({race.num_horses}頭/{race.grade})")
-
-        # オッズ取得
-        odds_map = netkeiba.get_odds(race_id)
-        for entry in race.horses:
-            entry.odds = odds_map.get(entry.horse_no)
-
-        # 全出走馬の全過去レース取得 + 統計構築
-        # playwright fallback が走るケースを考慮して並列度を制限（過剰なブラウザ起動防止）
-        from src.scraper.base_scraper import is_netkeiba_blocked
-        histories = {}
-        if is_netkeiba_blocked():
-            # playwright モード: 直列処理（ブラウザ過負荷防止）
-            for e in race.horses:
-                if not e.horse_id: continue
-                try:
-                    h = _cached_history(hist_scraper, e.horse_id, e.horse_name)
-                    if h and h.records:
-                        histories[e.horse_id] = h
-                except Exception:
-                    pass
-        else:
-            from concurrent.futures import ThreadPoolExecutor, as_completed
-            def _fetch_one(e):
-                try:
-                    if e.horse_id:
-                        return e.horse_id, _cached_history(hist_scraper, e.horse_id, e.horse_name)
-                except Exception:
-                    pass
-                return None, None
-            with ThreadPoolExecutor(max_workers=4) as ex:
-                futures = [ex.submit(_fetch_one, e) for e in race.horses if e.horse_id]
-                for f in as_completed(futures):
-                    hid, h = f.result()
-                    if hid and h and h.records:
-                        histories[hid] = h
-
-        # 展開予測（脚質×先行馬数）
-        ctx = analyze_race_context(race.horses, histories, race.distance, race.surface)
-
-        # 総合スコアリング（全指標統合）
-        scores = analyzer.analyze_all(
-            entries=race.horses,
-            histories=histories,
-            race=race,
-            context=ctx,
-            use_training=False,
-        )
-
-        plan = build_betting_plan_from_comprehensive(
-            race_id, race.race_name, scores, race.num_horses
-        )
-        save_prediction(race_id, race.race_name, scores, plan)
-        race_results.append({"race": race, "scores": scores, "plan": plan, "context": ctx})
-        time.sleep(1)   # レース間インターバル（CPU冷却）
 
     if not race_results:
         print("[WARN] 有効レースなし")
@@ -142,15 +180,19 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
     for i, item in enumerate(race_results):
         if main_only and not _is_main(item):
             continue
-        note = format_race_note_v2(
-            race=item["race"], scores=item["scores"],
-            plan=item["plan"], context=item["context"],
-            target_date=target_date, race_index=i,
-        )
-        # race_id をnoteに紐付け（後の永続ログ記録に必要）
-        note["_race_id"] = getattr(item["race"], "race_id", "")
-        notes.append(note)
-        print(f"  [OK] {note['title'][:55]}...")
+        try:
+            note = format_race_note_v2(
+                race=item["race"], scores=item["scores"],
+                plan=item["plan"], context=item["context"],
+                target_date=target_date, race_index=i,
+            )
+            note["_race_id"] = getattr(item["race"], "race_id", "")
+            notes.append(note)
+            print(f"  [OK] {note['title'][:55]}...")
+        except Exception as ex:
+            print(f"  [warn] レース{item['race'].race_id} 記事生成失敗（スキップ）: {ex}")
+            import traceback
+            traceback.print_exc()
 
     # 競馬場別パックは廃止（個別レース記事のみ投稿）
 

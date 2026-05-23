@@ -12,19 +12,25 @@ from src.scraper.base_scraper import BaseScraper
 
 class ResultsFetcher(BaseScraper):
     def get_race_result(self, race_id: str) -> dict | None:
-        """指定レースの確定着順＋払戻データを取得"""
-        for url in [
+        """指定レースの確定着順＋払戻データを取得（諦めない多段試行）"""
+        sources = [
             f"https://race.netkeiba.com/race/result.html?race_id={race_id}",
             f"https://db.netkeiba.com/race/{race_id}/",
-        ]:
-            soup = self.get(url)
-            if not soup:
-                continue
-            order = self._parse_order(soup)
-            if not order:
-                continue
-            payouts = self._parse_payouts(soup)
-            return {"race_id": race_id, "order": order, "payouts": payouts}
+            f"https://race.sp.netkeiba.com/race/result.html?race_id={race_id}",
+        ]
+        for attempt in range(3):
+            for url in sources:
+                try:
+                    soup = self.get(url)
+                    if not soup: continue
+                    order = self._parse_order(soup)
+                    if order:
+                        payouts = self._parse_payouts(soup)
+                        return {"race_id": race_id, "order": order, "payouts": payouts}
+                except Exception as ex:
+                    print(f"[result] {url} 例外: {ex}")
+            if attempt < 2:
+                time.sleep(5 + attempt * 5)
         return None
 
     def _parse_payouts(self, soup) -> dict:

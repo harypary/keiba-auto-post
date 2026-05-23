@@ -48,115 +48,123 @@ def run_backtest(target_dates: list[date], max_races: int = None) -> dict:
 
         for raw in race_ids:
             race_id = raw["race_id"]
-            race = jra.get_shutuba_table(race_id)
-            if not race or not race.horses:
-                continue
+            try:
+                race = jra.get_shutuba_table(race_id)
+                if not race or not race.horses:
+                    continue
 
-            # 実際の結果を取得
-            from src.validator.results_fetcher import ResultsFetcher
-            fetcher = ResultsFetcher()
-            result = fetcher.get_race_result(race_id)
-            if not result or not result.get("order"):
-                print(f"  {race_id}: 結果取得失敗（未終了か取得不可）")
-                continue
+                # 実際の結果を取得（諦めない多段は results_fetcher 内で実施）
+                from src.validator.results_fetcher import ResultsFetcher
+                fetcher = ResultsFetcher()
+                result = fetcher.get_race_result(race_id)
+                if not result or not result.get("order"):
+                    print(f"  {race_id}: 結果取得失敗（未終了か取得不可）")
+                    continue
 
-            actual_top3 = [r["horse_no"] for r in result["order"][:3]]
-            winner_no = actual_top3[0] if actual_top3 else None
+                actual_top3 = [r["horse_no"] for r in result["order"][:3]]
+                winner_no = actual_top3[0] if actual_top3 else None
 
-            # スコアリング実行
-            histories = {}
-            for entry in race.horses:
-                if entry.horse_id:
-                    h = _cached_history(hist, entry.horse_id, entry.horse_name)
-                    if h and h.records:
-                        histories[entry.horse_id] = h
+                # スコアリング実行（個別馬の履歴失敗を許容）
+                histories = {}
+                for entry in race.horses:
+                    if not entry.horse_id: continue
+                    try:
+                        h = _cached_history(hist, entry.horse_id, entry.horse_name)
+                        if h and h.records:
+                            histories[entry.horse_id] = h
+                    except Exception:
+                        pass
 
-            ctx = analyze_race_context(race.horses, histories, race.distance, race.surface)
-            scores = analyzer.analyze_all(
-                entries=race.horses, histories=histories,
-                race=race, context=ctx, use_training=False,
-            )
-            plan = build_betting_plan_from_comprehensive(
-                race_id, race.race_name, scores, race.num_horses
-            )
+                ctx = analyze_race_context(race.horses, histories, race.distance, race.surface)
+                scores = analyzer.analyze_all(
+                    entries=race.horses, histories=histories,
+                    race=race, context=ctx, use_training=False,
+                )
+                plan = build_betting_plan_from_comprehensive(
+                    race_id, race.race_name, scores, race.num_horses
+                )
 
-            # 照合
-            honmei_no = plan.honmei[0] if plan.honmei else None
-            winner_rank = next(
-                (s.recommendation_rank for s in scores if s.horse_no == winner_no), 99
-            )
-            honmei_win   = (honmei_no == winner_no)
-            honmei_place = (honmei_no in actual_top3)
-            exacta_hit   = any(set([a, b]) <= set(actual_top3[:2]) for a, b in plan.exacta_bets)
-            tri_hit      = any(set(c) <= set(actual_top3) for c in plan.trifecta_bets)
+                # 照合
+                honmei_no = plan.honmei[0] if plan.honmei else None
+                winner_rank = next(
+                    (s.recommendation_rank for s in scores if s.horse_no == winner_no), 99
+                )
+                honmei_win   = (honmei_no == winner_no)
+                honmei_place = (honmei_no in actual_top3)
+                exacta_hit   = any(set([a, b]) <= set(actual_top3[:2]) for a, b in plan.exacta_bets)
+                tri_hit      = any(set(c) <= set(actual_top3) for c in plan.trifecta_bets)
 
-            # 勝ち馬・本命のスコア内訳を記録（外れ要因分析用）
-            winner_score = next((s for s in scores if s.horse_no == winner_no), None)
-            honmei_score = next((s for s in scores if s.horse_no == honmei_no), None)
+                # 勝ち馬・本命のスコア内訳を記録（外れ要因分析用）
+                winner_score = next((s for s in scores if s.horse_no == winner_no), None)
+                honmei_score = next((s for s in scores if s.horse_no == honmei_no), None)
 
-            def _extract_factors(s):
-                if not s:
-                    return {}
-                rs = getattr(s, 'raw_stat', None)
-                return {
-                    "recent_form":  round(getattr(rs, 'form_score',     50), 1) if rs else 50,
-                    "surface":      round(getattr(rs, 'surface_score',  50), 1) if rs else 50,
-                    "distance":     round(getattr(rs, 'distance_score', 50), 1) if rs else 50,
-                    "speed_index":  round(getattr(s,  'speed_score',    50), 1),
-                    "class_change": round(getattr(rs, 'grade_score',    50), 1) if rs else 50,
-                    "venue":        round(getattr(rs, 'venue_score',    50), 1) if rs else 50,
-                    "condition":    round(getattr(rs, 'condition_score',50), 1) if rs else 50,
-                    "rest":         round(getattr(rs, 'rest_score',     50), 1) if rs else 50,
-                    "pace":         round(getattr(rs, 'pace_score',     50), 1) if rs else 50,
-                    "weight_stab":  round(getattr(rs, 'weight_score',   50), 1) if rs else 50,
-                    "final":        round(getattr(s,  'final_score',    50), 1),
-                }
-
-            # 外れた場合の敗因テキスト生成
-            defeat_reason = ""
-            if not honmei_win and winner_score and honmei_score:
-                wf = _extract_factors(winner_score)
-                pf = _extract_factors(honmei_score)
-                gaps = [(k, wf.get(k,50) - pf.get(k,50)) for k in wf if k != "final"]
-                gaps.sort(key=lambda x: -x[1])
-                top_gap = gaps[0] if gaps and gaps[0][1] > 5 else None
-                if top_gap:
-                    labels = {
-                        "recent_form": "直近フォーム",
-                        "surface": "馬場適性",
-                        "distance": "距離適性",
-                        "speed_index": "スピード指数",
-                        "class_change": "クラス実績",
-                        "venue": "コース適性",
-                        "condition": "馬場状態",
+                def _extract_factors(s):
+                    if not s:
+                        return {}
+                    rs = getattr(s, 'raw_stat', None)
+                    return {
+                        "recent_form":  round(getattr(rs, 'form_score',     50), 1) if rs else 50,
+                        "surface":      round(getattr(rs, 'surface_score',  50), 1) if rs else 50,
+                        "distance":     round(getattr(rs, 'distance_score', 50), 1) if rs else 50,
+                        "speed_index":  round(getattr(s,  'speed_score',    50), 1),
+                        "class_change": round(getattr(rs, 'grade_score',    50), 1) if rs else 50,
+                        "venue":        round(getattr(rs, 'venue_score',    50), 1) if rs else 50,
+                        "condition":    round(getattr(rs, 'condition_score',50), 1) if rs else 50,
+                        "rest":         round(getattr(rs, 'rest_score',     50), 1) if rs else 50,
+                        "pace":         round(getattr(rs, 'pace_score',     50), 1) if rs else 50,
+                        "weight_stab":  round(getattr(rs, 'weight_score',   50), 1) if rs else 50,
+                        "final":        round(getattr(s,  'final_score',    50), 1),
                     }
-                    defeat_reason = f"勝ち馬は{labels.get(top_gap[0], top_gap[0])}で{top_gap[1]:.1f}pt上回っていた"
 
-            record = {
-                "race_id": race_id,
-                "race_name": race.race_name,
-                "date": str(target_date),
-                "venue": race.venue,
-                "grade": race.grade,
-                "surface": race.surface,
-                "distance": race.distance,
-                "num_horses": race.num_horses,
-                "winner_no": winner_no,
-                "winner_pred_rank": winner_rank,
-                "honmei_no": honmei_no,
-                "honmei_win": honmei_win,
-                "honmei_place": honmei_place,
-                "exacta_hit": exacta_hit,
-                "trifecta_hit": tri_hit,
-                "defeat_reason": defeat_reason,
-                "winner_factors": _extract_factors(winner_score),
-                "honmei_factors": _extract_factors(honmei_score),
-                "winner_final": round(winner_score.final_score, 1) if winner_score else 0,
-            }
-            all_records.append(record)
-            status = "◎" if honmei_win else ("△複" if honmei_place else "×")
-            print(f"  {race.venue}{race.race_no}R {race.race_name}: 1着={winner_no}番(予想{winner_rank}位) {status}")
-            time.sleep(1)
+                # 外れた場合の敗因テキスト生成
+                defeat_reason = ""
+                if not honmei_win and winner_score and honmei_score:
+                    wf = _extract_factors(winner_score)
+                    pf = _extract_factors(honmei_score)
+                    gaps = [(k, wf.get(k,50) - pf.get(k,50)) for k in wf if k != "final"]
+                    gaps.sort(key=lambda x: -x[1])
+                    top_gap = gaps[0] if gaps and gaps[0][1] > 5 else None
+                    if top_gap:
+                        labels = {
+                            "recent_form": "直近フォーム",
+                            "surface": "馬場適性",
+                            "distance": "距離適性",
+                            "speed_index": "スピード指数",
+                            "class_change": "クラス実績",
+                            "venue": "コース適性",
+                            "condition": "馬場状態",
+                        }
+                        defeat_reason = f"勝ち馬は{labels.get(top_gap[0], top_gap[0])}で{top_gap[1]:.1f}pt上回っていた"
+
+                record = {
+                    "race_id": race_id,
+                    "race_name": race.race_name,
+                    "date": str(target_date),
+                    "venue": race.venue,
+                    "grade": race.grade,
+                    "surface": race.surface,
+                    "distance": race.distance,
+                    "num_horses": race.num_horses,
+                    "winner_no": winner_no,
+                    "winner_pred_rank": winner_rank,
+                    "honmei_no": honmei_no,
+                    "honmei_win": honmei_win,
+                    "honmei_place": honmei_place,
+                    "exacta_hit": exacta_hit,
+                    "trifecta_hit": tri_hit,
+                    "defeat_reason": defeat_reason,
+                    "winner_factors": _extract_factors(winner_score),
+                    "honmei_factors": _extract_factors(honmei_score),
+                    "winner_final": round(winner_score.final_score, 1) if winner_score else 0,
+                }
+                all_records.append(record)
+                status = "◎" if honmei_win else ("△複" if honmei_place else "×")
+                print(f"  {race.venue}{race.race_no}R {race.race_name}: 1着={winner_no}番(予想{winner_rank}位) {status}")
+                time.sleep(1)
+            except Exception as ex:
+                print(f"  [backtest ERROR] {race_id}: {ex}")
+                import traceback; traceback.print_exc()
+                continue
 
     # 集計
     report = _aggregate(all_records)

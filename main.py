@@ -53,6 +53,18 @@ if __name__ == "__main__":
             target = date.today() + timedelta(days=1)
         publish = not args.dry_run
         print(f"対象日: {target}  投稿: {publish}  メインのみ: {args.main_only}")
-        run_pipeline(target_date=target, publish=publish, save_files=True, main_only=args.main_only)
+        # 致命的エラーでも投稿フェーズに到達できなかった場合は、最低でも下書きリトライを動かす
+        try:
+            run_pipeline(target_date=target, publish=publish, save_files=True, main_only=args.main_only)
+        except Exception as ex:
+            print(f"[FATAL] run_pipeline 例外: {ex}")
+            import traceback; traceback.print_exc()
+            # 残った下書きを公開しに行く（既存の途中投稿があれば救う）
+            try:
+                from scripts.find_and_publish_drafts import main as _publish_drafts
+                print("[recover] 残った下書きの公開を試行...")
+                _publish_drafts()
+            except Exception as ex2:
+                print(f"[recover] 失敗: {ex2}")
     else:
         run_forever()
