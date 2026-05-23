@@ -1,0 +1,49 @@
+name: 重複記事クリーンアップ
+
+# note.com 上の重複記事と公開済みと被る下書きを一括削除
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 土日深夜に自動クリーンアップ
+    - cron: '0 16 * * 6'   # 土曜 01:00 JST翌日
+    - cron: '0 16 * * 0'   # 日曜 01:00 JST翌日
+
+permissions:
+  contents: read
+
+# 他の投稿/リトライと衝突しないように
+concurrency:
+  group: note-cleanup
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: |
+          pip install playwright requests
+          playwright install chromium
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Restore session from secret
+        env:
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: |
+          mkdir -p data
+          if [ -n "$NOTE_SESSION_B64" ]; then
+            echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
+          fi
+      - name: Run cleanup
+        run: python scripts/cleanup_all_duplicates.py
+      - name: Cleanup session
+        if: always()
+        run: rm -f data/note_session.json
