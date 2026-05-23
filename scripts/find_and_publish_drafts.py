@@ -1,10 +1,19 @@
-"""自分の全記事をスキャンして本当の下書き(404)だけ公開する"""
-import sys, os, json, time, requests
+"""自分の全記事をスキャンして本当の下書き(404)だけ公開する。
+重複防止: 公開前に同じ race_key の記事が既に公開済みなら、その下書きは公開せずスキップ"""
+import sys, os, json, time, re, requests
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from playwright.sync_api import sync_playwright
 
 USER = "_almanddd"
 state = json.load(open("data/note_session.json", encoding="utf-8"))
+
+
+def title_to_race_key(title: str) -> str:
+    """重複判定キー"""
+    m = re.search(r"【(\d+/\d+)[^】]*】[^｜]*?([東京京都新潟中山阪神中京福島小倉札幌函館]+)\s*(\d+)R", title or "")
+    if m:
+        return f"{m.group(1)}_{m.group(2)}_{m.group(3)}R"
+    return (title or "").strip()[:80]
 
 
 def get_all_article_ids(page):
@@ -90,11 +99,47 @@ def main():
         all_ids = get_all_article_ids(page)
         print(f"記事ID取得: {len(all_ids)}件")
 
-        drafts = []
+        # 既に公開済みの race_key を収集（重複公開防止）
+        published_keys = set()
         for nid in all_ids:
-            if not is_published(nid):
+            if is_published(nid):
+                try:
+                    rr = requests.get(f"https://note.com/{USER}/n/{nid}",
+                                      headers={"User-Agent": "Mozilla/5.0"}, timeout=8)
+                    tm = re.search(r'<meta property="og:title" content="([^"]+)"', rr.text or "")
+                    if tm:
+                        published_keys.add(title_to_race_key(tm.group(1)))
+                except Exception:
+                    pass
+        print(f"公開済み race_key: {len(published_keys)}件")
+
+        drafts = []
+        skipped_dup = 0
+        for nid in all_ids:
+            if is_published(nid):
+                continue
+            # 下書きの場合、タイトルを取得して既存公開済みと重複チェック
+            try:
+                page.goto(f"https://editor.note.com/notes/{nid}/edit/",
+                          wait_until="domcontentloaded", timeout=15000)
+                time.sleep(2)
+                title = page.evaluate("""
+                    () => {
+                        const t = document.querySelector('[data-testid="title"], input[name="title"], .title input, h1, [class*="title" i]');
+                        return t ? (t.value || t.innerText || '').trim() : '';
+                    }
+                """) or ""
+                if title:
+                    key = title_to_race_key(title)
+                    if key in published_keys:
+                        skipped_dup += 1
+                        print(f"  [SKIP重複] {nid}: '{title[:50]}' (key={key} は既に公開済み)")
+                        continue
                 drafts.append(nid)
-        print(f"うち下書き(404): {len(drafts)}件")
+            except Exception as e:
+                print(f"  タイトル取得失敗 {nid}: {e}")
+                drafts.append(nid)   # 取れなくても下書きは公開試行
+        print(f"うち真の下書き: {len(drafts)}件 / 重複スキップ: {skipped_dup}件")
 
         success = 0
         for round_idx in range(6):   # 3→6 ラウンドに増やして公開達成率向上
