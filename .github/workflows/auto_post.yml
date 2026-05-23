@@ -28,6 +28,14 @@ on:
           - saturday_main_only
           - sunday_main_only
           - review
+      scrape_mode:
+        description: 'スクレイピングモード (full=本格分析 / fast=高速で全レース確実投稿)'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - fast
 
 # セキュリティ: 最小権限（Actions API への書き込みのみ必要）
 permissions:
@@ -185,6 +193,7 @@ jobs:
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+          SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
         run: python main.py --run-now saturday
 
       - name: Run prediction (sunday)
@@ -197,6 +206,7 @@ jobs:
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+          SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
         run: python main.py --run-now sunday
 
       - name: Run prediction (sunday main only)
@@ -207,6 +217,7 @@ jobs:
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+          SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
         run: python main.py --run-now sunday --main-only
 
       - name: Run prediction (saturday main only)
@@ -217,6 +228,7 @@ jobs:
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
           NOTE_SESSION_COOKIE: ${{ secrets.NOTE_SESSION_COOKIE }}
           NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+          SCRAPE_MODE: ${{ inputs.scrape_mode || 'full' }}
         run: python main.py --run-now saturday --main-only
 
       - name: Weekly review & weight optimization
