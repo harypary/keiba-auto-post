@@ -62,20 +62,83 @@ def _try_playwright(url: str) -> Optional[BeautifulSoup]:
         return None
 
 
+def _strip_google_cache_wrapper(soup: BeautifulSoup) -> BeautifulSoup:
+    """Google Cacheの外部フレームを除去し、オリジナルHTMLのみを抽出"""
+    try:
+        # Google が付与する cache header / footer div を削除
+        for tag_id in ("bN015htcoyT__google-cache-hdr", "ghead"):
+            el = soup.find(id=tag_id)
+            if el: el.decompose()
+        # Google が cache header の後に挿入する <div> も除去
+        for div in soup.find_all("div", style=lambda x: x and "background" in (x or "")):
+            try: div.decompose()
+            except Exception: pass
+        # iframe / google-related script 削除
+        for tag in soup.find_all(["iframe", "script"]):
+            try:
+                src = tag.get("src", "") or tag.get("href", "")
+                if "google" in src.lower():
+                    tag.decompose()
+            except Exception: pass
+    except Exception:
+        pass
+    return soup
+
+
+def _strip_wayback_wrapper(soup: BeautifulSoup) -> BeautifulSoup:
+    """Wayback Machine のツールバーや wm-* class を除去"""
+    try:
+        for div_id in ("wm-ipp", "wm-ipp-base", "wm-ipp-print", "donato"):
+            el = soup.find(id=div_id)
+            if el: el.decompose()
+        for cls in ("wb_iframe_wrap", "wm-ipp"):
+            for el in soup.find_all(class_=cls):
+                try: el.decompose()
+                except Exception: pass
+        # script で wayback の埋め込み JS を除去
+        for s in soup.find_all("script"):
+            try:
+                src = s.get("src", "") or ""
+                if "archive.org" in src or "wayback" in src.lower():
+                    s.decompose()
+            except Exception: pass
+    except Exception:
+        pass
+    return soup
+
+
+def _is_valid_netkeiba_horse_page(soup: BeautifulSoup) -> bool:
+    """馬個別ページとして有効な構造を持つか判定"""
+    if not soup: return False
+    # 馬名タイトル / 成績表 / プロフィールテーブルのいずれかが必要
+    if soup.select_one(".horse_title h1"): return True
+    if soup.select_one("table.db_h_race_results, table.db_prof_table"): return True
+    # 馬名と思しき h1 がある場合も許可
+    h1 = soup.find("h1")
+    if h1 and len(h1.get_text(strip=True)) > 0 and len(h1.get_text(strip=True)) < 30:
+        return True
+    return False
+
+
 def _try_google_cache(url: str) -> Optional[BeautifulSoup]:
-    """Google ウェブキャッシュからの取得（Google が同URLをキャッシュしている場合）"""
+    """Google ウェブキャッシュからの取得＋フレーム除去"""
     cache_url = f"https://webcache.googleusercontent.com/search?q=cache:{urllib.parse.quote(url, safe='')}"
     soup = _try_requests(cache_url, random.choice(UA_POOL))
     if soup:
-        # Google ヘッダ部を除去（ターゲットHTMLの一部のみ取れる場合あり）
+        soup = _strip_google_cache_wrapper(soup)
         title = soup.find("title")
-        if title and "404" not in title.text and "Not Found" not in title.text:
-            return soup
+        if title and "404" in title.text:
+            return None
+        # netkeiba 馬ページの構造を持っているか確認
+        if "netkeiba" in url and "horse" in url:
+            if not _is_valid_netkeiba_horse_page(soup):
+                return None
+        return soup
     return None
 
 
 def _try_wayback(url: str) -> Optional[BeautifulSoup]:
-    """Wayback Machine から最新スナップショット取得"""
+    """Wayback Machine から最新スナップショット取得＋ツールバー除去"""
     api_url = f"http://archive.org/wayback/available?url={urllib.parse.quote(url, safe='')}"
     try:
         r = requests.get(api_url, timeout=15)
@@ -85,6 +148,11 @@ def _try_wayback(url: str) -> Optional[BeautifulSoup]:
             snap_url = snap.get("url")
             if snap_url:
                 soup = _try_requests(snap_url, random.choice(UA_POOL), timeout=25)
+                if soup:
+                    soup = _strip_wayback_wrapper(soup)
+                    if "netkeiba" in url and "horse" in url:
+                        if not _is_valid_netkeiba_horse_page(soup):
+                            return None
                 if soup:
                     return soup
     except Exception as e:
