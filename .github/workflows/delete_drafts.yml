@@ -1,0 +1,44 @@
+name: 全下書き削除
+
+# note.com の全下書きを一括削除（公開済みは触らない）
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: note-cleanup
+  cancel-in-progress: false
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: |
+          pip install playwright requests
+          playwright install chromium
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Restore session
+        env:
+          NOTE_SESSION_B64: ${{ secrets.NOTE_SESSION_B64 }}
+        run: |
+          mkdir -p data
+          if [ -n "$NOTE_SESSION_B64" ]; then
+            echo "$NOTE_SESSION_B64" | base64 -d > data/note_session.json
+          fi
+      - name: Delete all drafts
+        run: python scripts/delete_all_drafts.py
+      - name: Cleanup session
+        if: always()
+        run: rm -f data/note_session.json

@@ -1,0 +1,61 @@
+name: 平日データ収集
+
+# 平日深夜に過去レース結果と未取得馬データを取得してキャッシュ拡充。
+# 土日の予測時に「未取得馬で予測できない」事象を最小化する。
+
+on:
+  schedule:
+    # 火・水・木・金 03:00 JST (= 月火水木 18:00 UTC)
+    - cron: '0 18 * * 1-4'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-harvest
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: macos-latest   # 別IP帯で netkeiba 突破
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: keiba-horse-cache-${{ github.run_id }}
+          restore-keys: |
+            keiba-horse-cache-
+            keiba-cache-
+      - name: Harvest recent race results (直近1週分)
+        env:
+          SCRAPE_MODE: full
+        run: python scripts/harvest_recent_results.py
+      - name: Save cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/cache
+          key: keiba-horse-cache-${{ github.run_id }}
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: horse-cache-harvest-${{ github.run_id }}
+          path: data/cache
+          retention-days: 7
+          if-no-files-found: ignore
