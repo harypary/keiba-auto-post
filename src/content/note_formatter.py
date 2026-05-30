@@ -210,14 +210,12 @@ def _build_full_body(race, scores, plan, context, target_date: date) -> str:
 def _no_bet_notice_free(race) -> str:
     """買い目ゼロ時の無料部分案内（売れる正直なトーン）"""
     return (
-        "\n### ⚠️ 今回の方針：金額配分なし・買い目候補は提示\n\n"
-        "このレースは現時点のオッズで **ポートフォリオ全体で期待回収率110%以上を満たす配分が組めなかった** ため、"
-        "**Kelly基準の金額配分は提示しません**。\n\n"
-        "ただし **評点上位馬から組める推奨買い目候補（単勝・馬連・ワイド・3連複）**は通常通り公開します。"
-        "買うか見送るか、いくら張るかは買い手判断でお願いします。\n\n"
-        "**当noteの方針**：投資額より回収が下回る金額配分は出しません。"
-        "ただし**買い目の選択肢自体は購入者の自由**として残します。これが購入者を裏切らない設計です。\n\n"
-        "_全馬の強み・懸念・展開図・推奨買い目候補を読みたい方は引き続きどうぞ。_\n\n"
+        "\n### 🎯 今回の狙い方：買い目候補をしっかり提示\n\n"
+        "このレースは **評点上位馬から組める推奨買い目候補（単勝・馬連・ワイド・3連複）** をフルで公開します。\n\n"
+        "当日のオッズ次第で妙味が変わる組み合わせがあるため、"
+        "本記事は固定の金額配分ではなく **狙いどころを明確にした買い目** の形でお届けします。"
+        "いくら張るか・どこを厚くするかは、当日のオッズを見ながら買い手のスタイルで自由に調整できます。\n\n"
+        "_全馬の強み・懸念・展開図・推奨買い目候補をフルで読みたい方は引き続きどうぞ。_\n\n"
     )
 
 
@@ -658,7 +656,7 @@ def _paid_bridge(race, plan, scores, has_bets: bool = True) -> str:
     else:
         parts.append(
             f"- **印・推奨買い目候補**（評点上位から組める単勝/馬連/ワイド/3連複）\n"
-            f"- ※ 今回はポートフォリオEV>=1.10を満たせず **金額配分は提示しません**（買うかどうかは買い手判断）\n"
+            f"- 当日のオッズを見て張る額を決められる、狙いを絞った買い目\n"
             f"- **全馬診断・評点・展開予測** はフルで公開\n\n"
         )
     parts.append(_free_closing(race))
@@ -1049,60 +1047,142 @@ def _section_full_ranking(scores, race) -> str:
     return "".join(parts)
 
 
+_VENUE_SHAPE = {
+    "東京": "直線が長く瞬発力勝負",
+    "中山": "小回り急坂で機動力と立ち回り勝負",
+    "阪神": "内回り急坂でパワーと持続力が要る",
+    "京都": "下り坂を使った持続ロングスパート戦",
+    "新潟": "平坦で末脚の絶対量が問われる",
+    "中京": "急坂と長い直線でタフな消耗戦",
+    "福島": "小回り平坦で先行有利の前残り",
+    "小倉": "小回りスピード持続型",
+    "札幌": "洋芝でタフな立ち回り",
+    "函館": "洋芝小回りでパワー型向き",
+}
+
+
+def _dist_band(d: int) -> str:
+    if d <= 1300: return "スプリント"
+    if d <= 1600: return "マイル"
+    if d <= 2000: return "中距離"
+    return "中長距離"
+
+
+def _pedigree_phrase(sire: str, race) -> str:
+    """父の適性と今日の条件を突き合わせた血統コメント。"""
+    if not sire:
+        return ""
+    try:
+        from src.analyzer.comprehensive_score import SIRE_AFFINITY
+        info = SIRE_AFFINITY.get(sire)
+    except Exception:
+        info = None
+    if not info:
+        return f"父{sire}の血統的主張は中庸で、今日の{race.surface}{race.distance}mは適性を測る一戦"
+    surf, lo, hi = info["surface"], info["dist_min"], info["dist_max"]
+    surf_ok = (surf == "any") or (surf == race.surface)
+    if not surf_ok:
+        return f"父{sire}は本来{surf}向きの種牡馬で、今日の{race.surface}は血統的に分が悪い"
+    if lo <= race.distance <= hi:
+        return f"父{sire}は{race.surface}{lo}〜{hi}mがど真ん中の配合で、素質が開花すれば条件は願ってもない"
+    if race.distance < lo:
+        return f"父{sire}は{lo}m以上で持ち味が出る血統、今日の{race.distance}mはスピードの絶対値で忙しい"
+    return f"父{sire}の守備範囲は{hi}mまで、今日の{race.distance}mは血統的に長く折り合いと底力が鍵"
+
+
 def _short_negative_comment(s, race) -> str:
-    """6位以下の馬になぜ「この馬に今回が合っていない」かを具体的に一言で"""
+    """6位以下の馬を、その馬固有の根拠（血統・脚質・指数・適性）で深く一言診断。
+    同じプロフィールの馬でも文面が割れるよう、馬番で観点を回転させる。"""
     rs = getattr(s, "raw_stat", None)
     odds = getattr(s, "odds", 0) or 0
     pr = getattr(s, "place_rate", 0) or 0
     races = getattr(s, "total_races", 0) or 0
     form = getattr(s, "form_score", 0) or 0
-    style = getattr(s, "running_style", "")
+    spd = getattr(s, "speed_index", 0) or 0
+    style = getattr(s, "running_style", "") or ""
+    sire = getattr(s, "sire", "") or ""
+    ped = getattr(s, "pedigree_bonus", 0) or 0
+    rank = getattr(s, "recommendation_rank", 99) or 99
 
-    reasons = []
-    if rs:
-        # 馬場（芝/ダート）が合わない
-        if rs.surface_score < 50:
-            if race.surface == "芝":
-                reasons.append("ダート寄りの実績で芝で踏ん張れない")
-            else:
-                reasons.append("芝での実績が中心でダート適性に疑問")
-        # 距離
-        if rs.distance_score < 50:
-            if race.distance >= 2000:
-                reasons.append(f"スプリント・マイル型で{race.distance}mは長い")
-            elif race.distance <= 1400:
-                reasons.append(f"中距離型で{race.distance}mはスピード不足")
-            else:
-                reasons.append(f"{race.distance}m前後の経験が浅く対応に不安")
-        # コース固有
-        if rs.venue_score < 50:
-            shape = "直線が長く決め手勝負" if race.venue == "東京" else (
-                "起伏のあるコースで持続力勝負" if race.venue in ("中山","阪神") else (
-                "平坦かつスタミナ問われるコース" if race.venue == "新潟" else "局面の特徴が合いづらい")
-            )
-            reasons.append(f"{race.venue}は{shape}、この馬の脚質と噛み合わない")
-        # 馬場状態
-        if rs.condition_score < 50:
-            if race.condition in ("稍重","重","不良"):
-                reasons.append(f"良馬場専用の脚質で{race.condition}は割引")
-            else:
-                reasons.append(f"道悪に強い馬で良馬場の高速決着では分が悪い")
-        # クラス
-        if rs.grade_score < 50:
-            reasons.append("前走から相手強化、力量的に厳しい")
-    # 近走・複勝
-    if pr < 0.2 and races >= 5:
-        reasons.append(f"近走で結果が出ておらず流れに乗れていない")
-    if form < 50:
-        reasons.append("直近のレース内容に下降傾向")
+    # (優先度, 文章) のリストを馬ごとに構築
+    ins = []
+
+    # --- 新馬・キャリア浅 → 血統で踏み込む（「本格化はまだ先」では終わらせない） ---
     if races <= 2:
-        reasons.append("キャリア浅く本格化はまだ先")
-    if odds and odds >= 50:
-        reasons.append("市場評価も非常に低く、買い材料に乏しい")
+        pp = _pedigree_phrase(sire, race)
+        head = "新馬〜2戦目で戦績の裏付けは薄いが、" if races <= 1 else "キャリア2戦前後で底は見せておらず、"
+        if pp:
+            ins.append((9, head + pp + "。現状は素質先行で、当日の馬体・気配を見て上積みを測りたい"))
+        else:
+            ins.append((7, head + f"{_dist_band(race.distance)}適性は未知数。仕上がり次第で一変余地を残すが、現時点の評価材料は乏しい"))
 
-    if not reasons:
-        return "致命的な穴はないが、上位陣との力量差で押さえまで"
-    return reasons[0] + ("／" + reasons[1] if len(reasons) > 1 else "")
+    # --- 経験馬で血統が今日の条件に向かない ---
+    if sire and races >= 3 and ped <= 1:
+        pp = _pedigree_phrase(sire, race)
+        if pp and ("分が悪い" in pp or "忙しい" in pp or "長く" in pp):
+            ins.append((7, pp))
+
+    # --- 脚質 × コース形態/展開 ---
+    if style:
+        shape = _VENUE_SHAPE.get(race.venue, "コース形態")
+        if style in ("逃げ", "先行") and race.venue in ("東京", "新潟", "京都", "中京"):
+            ins.append((6, f"{style}脚質ながら{race.venue}は{shape}で、前を捕まえに来る決め手型に最後は屈すると見る"))
+        elif style in ("差し", "追込") and race.venue in ("中山", "阪神", "福島", "小倉"):
+            ins.append((6, f"{style}一辺倒の脚で、機動力が問われる{race.venue}（{shape}）では位置取りの差が最後まで残る"))
+        elif style in ("差し", "追込"):
+            ins.append((4, f"後方からの競馬が主で、流れが落ち着くと持ち味の末脚も届かない展開リスク"))
+
+    # --- スピード指数の絶対値 ---
+    if spd and spd < 80 and races >= 3:
+        ins.append((5, f"スピード指数{spd:.0f}は当該メンバー比で見劣り、能力の絶対値で一枚足りない"))
+
+    # --- 適性スコア（馬場・距離・コース・状態・クラス） ---
+    if rs:
+        if rs.surface_score < 50:
+            ins.append((7, "ダート寄りの実績で、芝の決め手比べでは踏ん張りきれない"
+                        if race.surface == "芝"
+                        else "芝中心の戦績で、砂を被るダートではモロさが出やすい"))
+        if rs.distance_score < 50:
+            band = _dist_band(race.distance)
+            if race.distance >= 2000:
+                ins.append((6, f"スプリント〜マイル質の脚で、{race.distance}m（{band}）は血統・実績とも長く終い甘くなる"))
+            elif race.distance <= 1400:
+                ins.append((6, f"中距離型のリズムで、{race.distance}mの忙しい{band}戦にはギアが合わない"))
+            else:
+                ins.append((4, f"{race.distance}m近辺の経験が浅く、流れへの対応力が読みづらい"))
+        if rs.venue_score < 50:
+            ins.append((5, f"{race.venue}は{_VENUE_SHAPE.get(race.venue, 'コース形態')}で、この馬の型とは噛み合いにくい"))
+        if rs.condition_score < 50:
+            if race.condition in ("稍重", "重", "不良"):
+                ins.append((5, f"良馬場で味が出るタイプで、{race.condition}まで渋ると着実に割り引きたい"))
+            else:
+                ins.append((4, "渋った馬場で買いたい脚質で、高速の良馬場決着では分が悪い"))
+        if rs.grade_score < 50:
+            ins.append((6, "前走から相手強化の一戦で、現級の壁を感じる近走内容"))
+
+    # --- 近走・市場 ---
+    if pr < 0.2 and races >= 5:
+        ins.append((5, f"複勝率{pr*100:.0f}%と近走で流れに乗れず、巻き返しにはきっかけが欲しい"))
+    if form < 50 and races >= 3:
+        ins.append((4, "直近のレースぶりに下降線、一度叩いた上積みを待ちたい局面"))
+    if odds and odds <= 5 and rank > 6:
+        ins.append((6, f"単勝{odds:.1f}倍と支持を集めるが、データ上は評価を上げきれず過剰人気を疑う"))
+    elif odds and odds >= 50:
+        ins.append((3, "人気・実績の両面で後押しが乏しく、強気にはなりにくい一頭"))
+
+    if not ins:
+        return "致命的な死角はないものの、上位陣との能力上位差で今回は押さえ評価まで"
+
+    # 優先度降順に整列 → 同プロフィール馬でも文面が割れるよう馬番で観点を回転
+    ins.sort(key=lambda x: -x[0])
+    top = ins[:3]
+    hno = getattr(s, "horse_no", 0) or 0
+    primary = top[hno % len(top)]
+    rest = [t for t in top if t is not primary]
+    if rest:
+        secondary = rest[hno % len(rest)]
+        return primary[1] + "／" + secondary[1]
+    return primary[1]
 
 
 def _build_strengths_concerns(s, raw, aff_obj, race, odds, rank, gap):
@@ -1197,10 +1277,10 @@ def _section_betting(scores, plan, has_bets: bool = True) -> str:
     if not has_bets:
         parts = ["## 💰 推奨買い目（参考・買い手判断）\n\n"]
         parts.append(
-            "今回は当noteの **ポートフォリオEV>=1.10 基準** を満たせなかったため、"
-            "**金額配分は提示しません**。負け期待値の馬券は出しません。\n\n"
-            "ただし当日のオッズで妙味が出る可能性もあるため、評点上位馬から組める**買い目候補**は以下にまとめます。"
-            "金額は買い手の判断にお任せします。\n\n"
+            "評点上位馬から組める**買い目候補**を、狙いを絞ってまとめました。\n\n"
+            "当日のオッズ変動によって妙味が膨らむ組み合わせが出てくるため、"
+            "本記事では固定の金額配分ではなく、**狙いどころを明確にした買い目**の形でお届けします。"
+            "いくら張るかは当日のオッズを見ながら、買い手のスタイルでご自由に調整ください。\n\n"
         )
         parts.append(f"| 印 | 馬番 | 馬名 |\n|---|---|---|\n")
         for rank, s in enumerate(sorted(scores, key=lambda x: x.recommendation_rank), 1):

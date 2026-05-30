@@ -119,6 +119,7 @@ class ComprehensiveScore:
     odds: Optional[float] = None
     comment: str = ""
     recommendation_rank: int = 0
+    sire: str = ""             # 父（血統コメント用）
 
 
 class ComprehensiveAnalyzer:
@@ -269,6 +270,7 @@ class ComprehensiveAnalyzer:
             running_style=stat.running_style,
             affinity=affinity, raw_stat=stat,
             odds=entry.odds,
+            sire=sire or "",
         )
 
 
