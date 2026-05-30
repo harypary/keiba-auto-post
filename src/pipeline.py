@@ -72,6 +72,46 @@ def _interleave_races(race_ids: list) -> list:
     return ordered
 
 
+def _fetch_live_published_keys(target_date: date) -> set:
+    """note.com の公開済み記事を全ページ走査し、本日(target_date)分の race_key 集合を返す。
+    HTML の先頭だけを見る簡易スキャンと違い、API をページングして「実際に公開されている」
+    レースを漏れなく把握する。これを“真実の情報源”として重複判定する。
+    """
+    import requests as _req
+    from src.publisher.article_log import title_to_race_key
+    md_variants = {
+        f"{target_date.month:02d}/{target_date.day:02d}",  # 05/30
+        f"{target_date.month}/{target_date.day}",          # 5/30
+    }
+    live_all = set()
+    live_today = set()
+    try:
+        for page in range(1, 25):  # 最大24ページ（=最大480記事）まで
+            url = (f"https://note.com/api/v2/creators/_almanddd/contents"
+                   f"?kind=note&page={page}")
+            r = _req.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=12)
+            if r.status_code != 200:
+                break
+            data = r.json()
+            contents = (data.get("data", {}) or {}).get("contents", []) or []
+            if not contents:
+                break
+            for c in contents:
+                if c.get("status") != "published":
+                    continue
+                name = c.get("name", "")
+                key = title_to_race_key(name)
+                live_all.add(key)
+                if any(name.find(f"【{v}") >= 0 or key.startswith(f"{v}_") for v in md_variants):
+                    live_today.add(key)
+            if (data.get("data", {}) or {}).get("isLastPage", False):
+                break
+    except Exception as ex:
+        print(f"  [warn] note.com 公開記事の全走査に失敗（簡易スキャンにフォールバック）: {ex}")
+        return None  # None = 走査失敗。呼び出し側でローカルログを信頼する
+    return {"all": live_all, "today": live_today}
+
+
 def run_pipeline(target_date: date, publish: bool = True, save_files: bool = True, main_only: bool = False):
     """
     中央競馬全レースの完全分析 → note.com自動投稿
@@ -112,21 +152,48 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
         record_post as record_article,
     )
     log = load_article_log()
-    existing_keys.update(log.get("by_race_key", {}).keys())
-    print(f"  ローカル投稿ログ: {len(existing_keys)}件をロード")
-    if publish:
-        try:
-            import requests as _req
-            for u in [f"https://note.com/_almanddd?status=published", f"https://note.com/_almanddd"]:
-                r = _req.get(u, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
-                if r.status_code == 200:
-                    import re as _re
-                    for m in _re.finditer(r'"name":"([^"]{8,120})"', r.text):
-                        existing_titles.add(m.group(1))
-                        existing_keys.add(title_to_race_key(m.group(1)))
-        except Exception as ex:
-            print(f"  [warn] 既存記事スキャン失敗: {ex}")
-        print(f"  既存記事タイトル: {len(existing_titles)}件")
+
+    # 本日分の race_key を算出（ローカルログの今日のエントリを切り分けるため）
+    _md_variants = {
+        f"{target_date.month:02d}/{target_date.day:02d}",
+        f"{target_date.month}/{target_date.day}",
+    }
+    def _is_today_key(k: str) -> bool:
+        return any(k.startswith(f"{v}_") for v in _md_variants)
+
+    # まず note.com の“実際に公開済み”を全ページ走査（真実の情報源）
+    live = _fetch_live_published_keys(target_date) if publish else None
+
+    if live is not None:
+        # === ライブ走査成功: 公開済み実体を最優先で信頼する ===
+        # ・本日分: note.com に「公開済み」で存在するものだけを重複扱い
+        #   → ログに残っているが実際は未公開のレース（例: 前runが記録だけして失敗）は
+        #     重複とみなさず“再投稿”できる。これがユーザー要望「全部投稿される」の肝。
+        # ・過去日分: 深掘り走査しないのでローカルログ（verified）で保護
+        existing_keys.update(live["all"])
+        for k, v in log.get("by_race_key", {}).items():
+            if _is_today_key(k):
+                continue  # 本日分はライブ状態のみを信頼（ログは無視）
+            existing_keys.add(k)  # 過去日分はログで二重投稿防止
+        print(f"  note.com公開済み(全走査): 全{len(live['all'])}件 / 本日{len(live['today'])}件")
+        print(f"  重複判定キー: {len(existing_keys)}件（本日はライブ状態が真実）")
+    else:
+        # === ライブ走査失敗: 安全側に倒してローカルログ＋簡易スキャンを信頼 ===
+        existing_keys.update(log.get("by_race_key", {}).keys())
+        print(f"  [fallback] ローカル投稿ログ: {len(existing_keys)}件をロード")
+        if publish:
+            try:
+                import requests as _req
+                for u in [f"https://note.com/_almanddd?status=published", f"https://note.com/_almanddd"]:
+                    r = _req.get(u, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+                    if r.status_code == 200:
+                        import re as _re
+                        for m in _re.finditer(r'"name":"([^"]{8,120})"', r.text):
+                            existing_titles.add(m.group(1))
+                            existing_keys.add(title_to_race_key(m.group(1)))
+            except Exception as ex:
+                print(f"  [warn] 既存記事スキャン失敗: {ex}")
+            print(f"  既存記事タイトル: {len(existing_titles)}件")
 
     def _is_dup(t):
         return title_to_race_key(t) in existing_keys or t in existing_titles
