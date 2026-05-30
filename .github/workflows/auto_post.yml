@@ -36,6 +36,11 @@ on:
         options:
           - full
           - fast
+      chain_depth:
+        description: '自動継続の深さ（内部用・手動では 0 のまま）'
+        required: false
+        default: '0'
+        type: string
 
 # セキュリティ: 最小権限（Actions API への書き込みのみ必要）
 permissions:
@@ -50,7 +55,7 @@ concurrency:
 jobs:
   predict-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 180   # 6時間→3時間に短縮（netkeiba無限ブロック対策）
+    timeout-minutes: 200   # 1パス分（予想150分+後処理）。残レースは self-chain が継続投稿
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -213,7 +218,7 @@ jobs:
 
       - name: Run prediction (saturday)
         id: pred_sat
-        timeout-minutes: 90
+        timeout-minutes: 150
         if: steps.mode.outputs.mode == 'saturday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
@@ -228,7 +233,7 @@ jobs:
 
       - name: Run prediction (sunday)
         id: pred_sun
-        timeout-minutes: 90
+        timeout-minutes: 150
         if: steps.mode.outputs.mode == 'sunday' && steps.dedupe.outputs.skip != 'true'
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
@@ -306,6 +311,25 @@ jobs:
         run: |
           echo "::warning::投稿未達と判定、publish_retry を即トリガ"
           gh workflow run "下書き自動公開リトライ" --repo ${{ github.repository }} || true
+
+      # 予想が時間切れ/失敗で途中終了した場合、残りレースを自動で投稿する継続run を起動。
+      # dedup により投稿済みは自動スキップされるため、各 run は未投稿レースだけを処理し、
+      # 全レースが出揃うまで連鎖する（root cause: 90分timeoutで11R以降が未投稿だった事象の恒久対策）。
+      - name: Self-chain to post remaining races if cut off
+        if: always() && steps.dedupe.outputs.skip != 'true' && (steps.pred_sat.outcome == 'failure' || steps.pred_sun.outcome == 'failure')
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+        run: |
+          DEPTH="${{ inputs.chain_depth || '0' }}"
+          NEXT=$((DEPTH + 1))
+          if [ "$NEXT" -gt 6 ]; then
+            echo "::warning::self-chain 上限(6)到達。これ以上の自動継続は停止（手動確認推奨）"
+            exit 0
+          fi
+          MODE="${{ steps.mode.outputs.mode }}"
+          echo "::notice::予想が途中終了（未投稿レース残存）。fast モードで継続run を起動 (depth=$NEXT)"
+          gh workflow run "競馬予想 note自動投稿" --repo ${{ github.repository }} \
+            -f mode="$MODE" -f scrape_mode=fast -f chain_depth="$NEXT" || true
 
       - name: Save non-secret cache
         if: always()

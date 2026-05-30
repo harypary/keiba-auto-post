@@ -29,6 +29,49 @@ from src.validator.performance_tracker import save_prediction, get_track_record_
 from config.settings import OUTPUT_DIR, CACHE_DIR
 
 
+def _interleave_races(race_ids: list) -> list:
+    """会場順に並んだレース一覧を「メイン優先＋会場ラウンドロビン」に並べ替える。
+    途中終了しても各会場が満遍なく投稿されるようにするための処置。
+    race_id 形式: YYYY + 会場(2) + 開催(2) + 日(2) + R番号(2)
+    """
+    from collections import OrderedDict
+    by_venue = OrderedDict()
+    for r in race_ids:
+        rid = r.get("race_id", "")
+        venue = rid[4:6] if len(rid) >= 6 else "00"
+        try:
+            rno = int(rid[-2:])
+        except Exception:
+            rno = 0
+        r["_rno"] = rno
+        by_venue.setdefault(venue, []).append(r)
+    for lst in by_venue.values():
+        lst.sort(key=lambda x: x.get("_rno", 0))
+
+    # 1) 各会場のメイン（11R）を先頭に（看板の有料記事を確実に出す）
+    mains, rest_by_venue = [], OrderedDict()
+    for venue, lst in by_venue.items():
+        for r in lst:
+            if r.get("_rno") == 11:
+                mains.append(r)
+            else:
+                rest_by_venue.setdefault(venue, []).append(r)
+
+    # 2) 残りを会場ラウンドロビン（1R→各会場、2R→各会場…の順で交互に）
+    ordered = list(mains)
+    queues = [iter(lst) for lst in rest_by_venue.values()]
+    while queues:
+        nxt = []
+        for q in queues:
+            try:
+                ordered.append(next(q))
+                nxt.append(q)
+            except StopIteration:
+                pass
+        queues = nxt
+    return ordered
+
+
 def run_pipeline(target_date: date, publish: bool = True, save_files: bool = True, main_only: bool = False):
     """
     中央競馬全レースの完全分析 → note.com自動投稿
@@ -50,7 +93,10 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
     if not race_ids:
         print(f"[WARN] {target_date} レース情報なし（開催なし or 取得失敗）")
         return []
-    print(f"  -> {len(race_ids)}レース（未勝利〜G1 全対応）")
+    # 途中で時間切れになっても全会場が満遍なく投稿されるよう、会場を交互に並べ替える。
+    # （会場順のままだと cutoff 時に後ろの会場が丸ごと未投稿になる事象を防ぐ）
+    race_ids = _interleave_races(race_ids)
+    print(f"  -> {len(race_ids)}レース（未勝利〜G1 全対応・会場交互 / メイン優先）")
 
     # 2. 各レース完全分析（解析しながら即時投稿）
     print("[2/4] 全レース分析開始（解析→即投稿）...")
