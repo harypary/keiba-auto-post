@@ -769,8 +769,29 @@ def _section_pace(context, race) -> str:
     pace = getattr(context, "pace_prediction", "ミドルペース")
     level = getattr(context, "field_level_label", "条件戦")
 
+    scenario = getattr(context, "pace_scenario", "標準")
+    n_nige = getattr(context, "num_nige", 0)
+    n_senko = getattr(context, "num_senko", 0)
+    reasons = getattr(context, "pace_reasons", []) or []
+    lone_no = getattr(context, "lone_front_no", 0)
+    styles = getattr(context, "styles", {}) or {}
+
     parts = [f"## 展開予測：{pace}\n"]
-    parts.append(f"先行想定 {front}頭 / メンバーレベル {level} / {race.num_horses}頭立て\n\n")
+    parts.append(f"逃げ{n_nige}頭・先行{n_senko}頭（前付け計{front}頭）/ メンバーレベル {level} / {race.num_horses}頭立て\n\n")
+
+    # === 隊列シナリオ（深掘り）===
+    scen_label = {
+        "単騎逃げ": "🏇 隊列シナリオ：単騎逃げ濃厚",
+        "ハナ争い": "⚔️ 隊列シナリオ：ハナ争い〜ペース崩壊警戒",
+        "逃げ不在": "🐌 隊列シナリオ：逃げ不在のスロー必至",
+        "標準":     "🏁 隊列シナリオ：標準的な隊列",
+    }.get(scenario, "🏁 隊列シナリオ：標準的な隊列")
+    parts.append(f"**{scen_label}**\n\n")
+    if scenario == "単騎逃げ" and lone_no:
+        parts.append(f"- 単騎で行ける可能性が高いのは **{lone_no}番**。マイペースなら粘り込み濃厚。\n")
+    for r in reasons:
+        parts.append(f"- {r}\n")
+    parts.append("\n")
 
     parts.append("**想定ラップ**\n")
     parts.append(_pace_lap_image(pace, race.distance, race.surface) + "\n")

@@ -20,6 +20,13 @@ class RaceContext:
     field_level_label: str     # "G1級" / "OP級" / "条件戦"
     pace_advantage: dict       # {horse_no: float}  脚質×展開の恩恵スコア
     rival_pressure: dict       # {horse_no: float}  ライバルからのプレッシャー
+    # === 隊列シナリオ（深掘り） ===
+    num_nige: int = 0          # 純粋な逃げ馬の頭数
+    num_senko: int = 0         # 先行馬の頭数
+    pace_scenario: str = "標準" # "単騎逃げ" / "ハナ争い" / "逃げ不在" / "標準"
+    pace_reasons: list = field(default_factory=list)  # シナリオの根拠（記事用）
+    lone_front_no: int = 0     # 単騎逃げ濃厚な馬番（0=該当なし）
+    styles: dict = field(default_factory=dict)        # {horse_no: 脚質}
 
 
 def analyze_race_context(
@@ -47,14 +54,26 @@ def analyze_race_context(
             else:            styles[entry.horse_no] = "追込"
             speed_indices[entry.horse_no] = 45.0
 
-    # 2. 展開予測
-    front_count = sum(1 for s in styles.values() if s in ("逃げ", "先行"))
-    pace = _predict_pace(front_count, race_distance, race_surface, total=len(horses))
+    # 2. 隊列シナリオの精緻化（逃げ・先行を分けて数える）
+    nige_nos = [hn for hn, s in styles.items() if s == "逃げ"]
+    senko_nos = [hn for hn, s in styles.items() if s == "先行"]
+    nige_count = len(nige_nos)
+    senko_count = len(senko_nos)
+    front_count = nige_count + senko_count
 
-    # 3. 展開恩恵スコア
+    scenario, reasons, lone_no = _classify_pace_scenario(
+        nige_nos, senko_nos, speed_indices, race_distance, race_surface
+    )
+
+    pace = _predict_pace(front_count, race_distance, race_surface,
+                         total=len(horses), nige_count=nige_count, scenario=scenario)
+
+    # 3. 展開恩恵スコア（隊列シナリオを加味）
     pace_advantage = {}
     for horse_no, style in styles.items():
-        pace_advantage[horse_no] = _pace_advantage(style, pace, race_distance)
+        adv = _pace_advantage(style, pace, race_distance)
+        adv += _scenario_adjust(horse_no, style, scenario, lone_no)
+        pace_advantage[horse_no] = adv
 
     # 4. フィールドレベル
     si_values = list(speed_indices.values())
@@ -76,18 +95,98 @@ def analyze_race_context(
         field_level_label=field_label,
         pace_advantage=pace_advantage,
         rival_pressure=rival_pressure,
+        num_nige=nige_count,
+        num_senko=senko_count,
+        pace_scenario=scenario,
+        pace_reasons=reasons,
+        lone_front_no=lone_no,
+        styles=styles,
     )
 
 
-def _predict_pace(front_count: int, distance: int, surface: str, total: int = 0) -> str:
+def _classify_pace_scenario(nige_nos, senko_nos, speed_indices, distance, surface):
+    """逃げ・先行の頭数と質から隊列シナリオを判定。
+    戻り値: (scenario, reasons[list], lone_front_no)
+    - 単騎逃げ: 逃げ1頭で番手も手薄 → その馬がペースを支配（強い味方）
+    - ハナ争い: 逃げ3頭以上 or 逃げ2頭+先行多数 → 前傾ラップで先行勢総崩れ
+    - 逃げ不在: 逃げ0頭 → 誰かが出ざるを得ずスロー必至、位置取り勝負
+    - 標準: 上記以外
+    """
+    nige_count = len(nige_nos)
+    senko_count = len(senko_nos)
+    reasons = []
+    lone_no = 0
+
+    if nige_count == 0:
+        reasons.append("明確な逃げ馬が不在。誰かが渋々ハナに立つ形で、前半は緩む公算が大きい。")
+        reasons.append("位置を取れる先行・好位差しが恵まれ、後方一気は届きにくい隊列になりやすい。")
+        return "逃げ不在", reasons, lone_no
+
+    if nige_count >= 3 or (nige_count >= 2 and senko_count >= 4):
+        reasons.append(f"逃げ脚質が{nige_count}頭おり、ハナ争いから前半が速くなる可能性が高い。")
+        reasons.append("前が競り合って共倒れ→差し・追込が台頭する『ペース崩壊』シナリオを警戒。")
+        return "ハナ争い", reasons, lone_no
+
+    if nige_count == 1 and senko_count <= 2:
+        lone_no = nige_nos[0]
+        si = speed_indices.get(lone_no, 50.0)
+        qual = "能力上位で" if si >= 60 else ""
+        reasons.append(f"逃げ馬は{lone_no}番の1頭のみ。番手も手薄で{qual}単騎逃げが濃厚。")
+        reasons.append("マイペースに持ち込めれば前残り。この馬を負かすのは差し勢の決め手次第。")
+        return "単騎逃げ", reasons, lone_no
+
+    reasons.append(f"逃げ{nige_count}頭・先行{senko_count}頭でハナの主張は標準的。隊列は素直に決まりやすい。")
+    return "標準", reasons, lone_no
+
+
+def _scenario_adjust(horse_no, style, scenario, lone_no) -> float:
+    """隊列シナリオに応じた脚質別の追加補正（pace_advantage に加算）。"""
+    if scenario == "単騎逃げ":
+        if horse_no == lone_no:
+            return +8.0   # マイペースの恩恵は絶大
+        if style == "先行":
+            return +2.0   # 番手も比較的恵まれる
+        if style in ("差し", "追込"):
+            return -3.0   # 前が止まらず届きにくい
+    elif scenario == "ハナ争い":
+        if style == "逃げ":
+            return -8.0   # 競り合いで消耗、総崩れ濃厚
+        if style == "先行":
+            return -4.0
+        if style in ("差し", "追込"):
+            return +6.0   # ペース崩壊の最大受益者
+    elif scenario == "逃げ不在":
+        if style in ("逃げ", "先行"):
+            return +4.0   # スローで前残り
+        if style == "追込":
+            return -4.0   # 後方一気は届かない
+        if style == "差し":
+            return -1.0
+    return 0.0
+
+
+def _predict_pace(front_count: int, distance: int, surface: str, total: int = 0,
+                  nige_count: int = -1, scenario: str = "") -> str:
     """
     展開予測（実際の JRA 分布に近づける）:
-      - 先行馬の比率と距離を主指標に
+      - 先行馬の比率と距離を主指標に、逃げ馬の頭数・隊列シナリオで上書き
       - JRA実分布: ハイ ~28% / ミドル ~50% / スロー ~22%
     """
+    # 隊列シナリオが明確ならそれを優先（逃げ馬の数がペースの最大決定要因）
+    if scenario == "ハナ争い":
+        return "ハイペース"
+    if scenario == "逃げ不在":
+        return "スローペース"
+
     # 先行馬の比率（頭数比） 0〜1
     ratio = front_count / max(total, 1) if total > 0 else front_count / 14.0
     base = ratio * 100  # 0〜100スケール
+
+    # 逃げ馬の頭数を直接加味（先行比率だけより精度が上がる）
+    if nige_count >= 0:
+        base += max(0, nige_count - 1) * 12   # 2頭目以降の逃げはペースを押し上げる
+        if nige_count == 0:
+            base -= 12
 
     # 距離補正
     if distance <= 1200:
@@ -99,6 +198,10 @@ def _predict_pace(front_count: int, distance: int, surface: str, total: int = 0)
 
     if surface == "ダート":
         base += 8
+
+    # 単騎逃げはマイペースに落とせるためペースは上がりにくい
+    if scenario == "単騎逃げ":
+        base -= 10
 
     # JRA実分布: ハイ ~25% / ミドル ~55% / スロー ~20%
     if base >= 65:
