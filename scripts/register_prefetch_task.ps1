@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   自宅PCのWindowsタスクスケジューラに「馬データ事前取得→Release配信」を登録する。
 
