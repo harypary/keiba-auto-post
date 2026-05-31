@@ -18,7 +18,7 @@ from src.validator.results_fetcher import ResultsFetcher
 from src.validator.performance_tracker import record_result, generate_weekly_report
 from src.validator.weight_optimizer import analyze_misses, adjust_weights, print_weight_history
 from src.validator.backtest import run_backtest
-from src.pipeline import invalidate_cache
+from src.pipeline import prune_cache
 
 PRED_DIR = os.path.join(os.path.dirname(__file__), "data", "predictions")
 PERF_DIR = os.path.join(os.path.dirname(__file__), "data", "performance")
@@ -323,9 +323,10 @@ def run_weekly_review():
     else:
         print("  バックテストデータ不足（5レース未満）→ 重み調整スキップ")
 
-    # キャッシュクリア（翌週の新データ取得のため）
-    print("\n[キャッシュクリア] 古い馬データを削除中...")
-    invalidate_cache()
+    # キャッシュは全削除せず蓄積を維持（長期未更新の馬のみ整理）。
+    # 既存より記録が減る上書きは _cached_history 側のマージ保存で防止済み。
+    print("\n[キャッシュ整理] 過去成績は蓄積保持。長期未更新分のみ削除...")
+    prune_cache()
     print("[完了]\n")
 
 

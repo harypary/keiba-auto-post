@@ -459,6 +459,19 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
             _t.sleep(2)
 
     if h:
+        # 蓄積保護: 既存キャッシュにあって今回取得に無いレースがあれば統合し、
+        # 記録数が減る上書きを防ぐ（部分失敗・netkeiba一時欠落でも過去成績を失わない）
+        try:
+            if cached and (cached.records or []):
+                def _rk(r):
+                    return (getattr(r, "date", ""), getattr(r, "venue", ""),
+                            getattr(r, "race_name", ""))
+                new_keys = {_rk(r) for r in (h.records or [])}
+                old_keys = {_rk(r) for r in cached.records}
+                if not old_keys.issubset(new_keys):
+                    h = _merge_histories(cached, h)
+        except Exception:
+            pass
         try:
             from dataclasses import asdict
             with open(cache_file, "w", encoding="utf-8") as f:
@@ -472,6 +485,40 @@ def _cached_history(scraper: HistoryScraper, horse_id: str, horse_name: str):
     return None
 
 
+def _merge_histories(old, new):
+    """既存(old)と新規取得(new)のレースを統合。記録を絶対に失わない。
+    キー=(date, venue, race_name)。同一レースは新しい取得結果を優先採用。"""
+    from src.scraper.history_scraper import FullHorseHistory
+
+    def _key(r):
+        return (getattr(r, "date", ""), getattr(r, "venue", ""),
+                getattr(r, "race_name", ""))
+
+    merged = {}
+    for r in (old.records or []):
+        merged[_key(r)] = r
+    for r in (new.records or []):
+        merged[_key(r)] = r  # 同一レースは最新取得で上書き
+    recs = list(merged.values())
+    recs.sort(key=lambda r: getattr(r, "date", "") or "", reverse=True)
+
+    # プロフィールは情報が欠けていない方を優先
+    base = new if (getattr(new, "horse_name", "") and new.horse_name != "不明") else old
+    h = FullHorseHistory(
+        horse_id=base.horse_id or old.horse_id,
+        horse_name=base.horse_name or old.horse_name,
+        sire=base.sire or old.sire,
+        dam=base.dam or old.dam,
+        sex=base.sex or old.sex,
+        records=recs,
+    )
+    try:
+        h.stats = build_stats(h)
+    except Exception:
+        pass
+    return h
+
+
 def _is_blocked_safe() -> bool:
     try:
         from src.scraper.base_scraper import is_netkeiba_blocked
@@ -481,15 +528,37 @@ def _is_blocked_safe() -> bool:
 
 
 def invalidate_cache(horse_id: str = None):
-    """キャッシュクリア（毎週月曜朝に自動実行）"""
+    """キャッシュクリア（手動・特定馬のみ用）。
+    引数なしの全削除は蓄積方針に反するため prune_cache へ委譲する。"""
     if horse_id:
         cf = os.path.join(CACHE_DIR, f"{horse_id}_full.json")
         if os.path.exists(cf):
             os.remove(cf)
     else:
-        count = 0
+        # 全削除はしない（過去成績を蓄積し続ける方針）。長期未更新分のみ整理。
+        prune_cache()
+
+
+def prune_cache(max_age_days: int = 365):
+    """長期間(既定1年)更新されていない＝引退等で出走しなくなった馬のみ削除する。
+    過去成績の蓄積は保持しつつ、無制限な肥大化だけ防ぐ。全削除は行わない。"""
+    import time as _t
+    cutoff = _t.time() - 86400 * max_age_days
+    removed = kept = 0
+    try:
         for f in os.listdir(CACHE_DIR):
-            if f.endswith("_full.json"):
-                os.remove(os.path.join(CACHE_DIR, f))
-                count += 1
-        print(f"[cache] {count}件クリア完了")
+            if not f.endswith("_full.json"):
+                continue
+            p = os.path.join(CACHE_DIR, f)
+            try:
+                if os.path.getmtime(p) < cutoff:
+                    os.remove(p)
+                    removed += 1
+                else:
+                    kept += 1
+            except Exception:
+                kept += 1
+    except FileNotFoundError:
+        pass
+    print(f"[cache] 整理: 長期未更新 {removed}件のみ削除 / {kept}件は蓄積保持")
+    return removed
