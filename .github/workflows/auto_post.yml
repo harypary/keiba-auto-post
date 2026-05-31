@@ -193,6 +193,47 @@ jobs:
             fi
           fi
 
+      # 自宅PCがローカル取得して Release 配信した馬データキャッシュを取得。
+      # netkeiba は GitHub の全IPを403ブロックするため、これが唯一の高精度データ源。
+      # actions/cache や（ブロック済みの）prefetch artifact より後に展開して上書きする。
+      - name: Download local-prefetched horse cache from Release
+        if: steps.mode.outputs.mode == 'saturday' || steps.mode.outputs.mode == 'sunday'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+        run: |
+          MODE="${{ steps.mode.outputs.mode }}"
+          # 予測(main.py)と完全に同じロジックで対象日を算出（タグ一致を保証）
+          TARGET=$(python -c "
+          from datetime import date,timedelta
+          m='$MODE'
+          t=date.today()
+          d=(5-t.weekday())%7 if m=='saturday' else (6-t.weekday())%7 if m=='sunday' else 0
+          print((t+timedelta(days=d)).strftime('%Y%m%d'))
+          ")
+          echo "対象日: $TARGET"
+          mkdir -p data/cache
+          DL_OK=""
+          for TAG in "horse-cache-$TARGET" \
+                     "horse-cache-$(date -u -d "$TARGET +1 day" +%Y%m%d 2>/dev/null || echo x)" \
+                     "horse-cache-$(date -u -d "$TARGET -1 day" +%Y%m%d 2>/dev/null || echo x)"; do
+            if gh release download "$TAG" --repo ${{ github.repository }} -p 'horse_cache_*.zip' -D /tmp/hc 2>/dev/null \
+               || gh release download "$TAG" --repo ${{ github.repository }} --pattern '*.zip' -D /tmp/hc 2>/dev/null; then
+              echo "Release取得成功: $TAG"
+              DL_OK=1
+              break
+            fi
+          done
+          if [ -z "$DL_OK" ]; then
+            echo "::warning::対象日近辺の horse-cache Release が見つかりません（自宅PCの事前取得が未実行の可能性）"
+          else
+            for z in /tmp/hc/*.zip; do
+              [ -f "$z" ] || continue
+              python -c "import zipfile,sys; zipfile.ZipFile('$z').extractall('data/cache')"
+            done
+            echo "馬キャッシュ展開後の総ファイル数: $(ls data/cache | wc -l)"
+          fi
+
       - name: Dedupe check (skip if recently posted)
         id: dedupe
         run: |
