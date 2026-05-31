@@ -128,6 +128,44 @@ def build_zip(horse_ids, target: date) -> str:
     return tmp
 
 
+def build_full_cache_zip():
+    """ローカルに蓄積された全馬キャッシュをzip化（現役馬の累積ベース）。
+    週次取得を逃しても、この累積でCIが分析できるようにするための土台。"""
+    tmp = os.path.join(tempfile.gettempdir(), "horse_cache_base.zip")
+    n = 0
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zf:
+        if os.path.isdir(CACHE_DIR):
+            for fn in os.listdir(CACHE_DIR):
+                if fn.endswith("_full.json"):
+                    zf.write(os.path.join(CACHE_DIR, fn), arcname=fn)
+                    n += 1
+    size_kb = os.path.getsize(tmp) // 1024 if os.path.exists(tmp) else 0
+    _log(f"累積zip作成: {tmp}（{n}ファイル / {size_kb}KB）")
+    return tmp, n
+
+
+def upload_base_release(zip_path: str, n: int):
+    """累積キャッシュを安定タグ horse-cache-base へ常時上書き配信。
+    PCが開けず週次取得を逃した週でも、auto_post はこのベースで分析できる。"""
+    tag = "horse-cache-base"
+    title = "馬データキャッシュ（現役馬の累積ベース）"
+    notes = (f"自宅IPで蓄積した現役馬の過去成績キャッシュ（累積 {n}頭）。"
+             f"週次取得を逃した週でも auto_post がフォールバック利用。"
+             f"更新: {datetime.now():%Y-%m-%d %H:%M}")
+    exists = subprocess.run(["gh", "release", "view", tag, "--repo", REPO],
+                            capture_output=True, text=True).returncode == 0
+    if exists:
+        cmd = ["gh", "release", "upload", tag, zip_path, "--repo", REPO, "--clobber"]
+    else:
+        cmd = ["gh", "release", "create", tag, zip_path, "--repo", REPO,
+               "--title", title, "--notes", notes]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        _log(f"[WARN] 累積ベース配信失敗（当日分は配信済み）: {r.stderr.strip()}")
+        return
+    _log(f"累積ベース更新: {tag}（{n}頭）")
+
+
 def upload_release(zip_path: str, target: date):
     tag = f"horse-cache-{target:%Y%m%d}"
     title = f"馬データキャッシュ {target:%Y-%m-%d}"
@@ -168,6 +206,11 @@ def main():
 
     zip_path = build_zip(horse_ids, target)
     upload_release(zip_path, target)
+
+    # 累積ベースも更新（現役馬を蓄積し、PCが開けない週でもCIが使える土台に）
+    base_zip, n = build_full_cache_zip()
+    upload_base_release(base_zip, n)
+
     _log(f"=== 完了: target={target} 総経過 {int(time.time()-t0)}秒 ===")
 
 

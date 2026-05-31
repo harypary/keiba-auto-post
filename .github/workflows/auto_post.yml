@@ -213,6 +213,18 @@ jobs:
           ")
           echo "対象日: $TARGET"
           mkdir -p data/cache
+          # まず累積ベース(現役馬の蓄積)を土台として展開。
+          # PCが開けず当日Releaseが無い週でも、これで分析できる。
+          if gh release download "horse-cache-base" --repo ${{ github.repository }} --pattern '*.zip' -D /tmp/hcbase 2>/dev/null; then
+            for z in /tmp/hcbase/*.zip; do
+              [ -f "$z" ] || continue
+              python -c "import zipfile; zipfile.ZipFile('$z').extractall('data/cache')"
+            done
+            echo "累積ベース展開後のファイル数: $(ls data/cache | wc -l)"
+          else
+            echo "::warning::horse-cache-base が見つかりません（初回 or 未生成）"
+          fi
+          # 次に当日分を上書きで重ねる（今週の最新を優先）。
           DL_OK=""
           for TAG in "horse-cache-$TARGET" \
                      "horse-cache-$(date -u -d "$TARGET +1 day" +%Y%m%d 2>/dev/null || echo x)" \
