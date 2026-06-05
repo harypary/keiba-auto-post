@@ -153,13 +153,15 @@ def upload_base_release(zip_path: str, n: int):
              f"週次取得を逃した週でも auto_post がフォールバック利用。"
              f"更新: {datetime.now():%Y-%m-%d %H:%M}")
     exists = subprocess.run(["gh", "release", "view", tag, "--repo", REPO],
-                            capture_output=True, text=True).returncode == 0
+                            capture_output=True, text=True,
+                            encoding="utf-8", errors="replace").returncode == 0
     if exists:
         cmd = ["gh", "release", "upload", tag, zip_path, "--repo", REPO, "--clobber"]
     else:
         cmd = ["gh", "release", "create", tag, zip_path, "--repo", REPO,
                "--title", title, "--notes", notes]
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, text=True,
+                            encoding="utf-8", errors="replace")
     if r.returncode != 0:
         _log(f"[WARN] 累積ベース配信失敗（当日分は配信済み）: {r.stderr.strip()}")
         return
@@ -173,7 +175,8 @@ def upload_release(zip_path: str, target: date):
              f"auto_post ジョブが download して使用。生成: {datetime.now():%Y-%m-%d %H:%M}")
     # 既存リリースがあれば資産を上書き、なければ新規作成
     exists = subprocess.run(["gh", "release", "view", tag, "--repo", REPO],
-                            capture_output=True, text=True).returncode == 0
+                            capture_output=True, text=True,
+                            encoding="utf-8", errors="replace").returncode == 0
     if exists:
         _log(f"既存リリース {tag} に資産を上書きアップロード")
         cmd = ["gh", "release", "upload", tag, zip_path, "--repo", REPO, "--clobber"]
@@ -181,7 +184,8 @@ def upload_release(zip_path: str, target: date):
         _log(f"新規リリース {tag} を作成しアップロード")
         cmd = ["gh", "release", "create", tag, zip_path, "--repo", REPO,
                "--title", title, "--notes", notes]
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, text=True,
+                            encoding="utf-8", errors="replace")
     if r.returncode != 0:
         _log(f"[ERROR] gh release 失敗: {r.stderr.strip()}")
         raise SystemExit(1)
