@@ -192,9 +192,54 @@ def upload_release(zip_path: str, target: date):
     _log(f"アップロード完了: {tag}")
 
 
+def _days_guard_ok() -> bool:
+    """PREFETCH_DAYS（例 "3,4,5"=木金土, Python weekday Mon=0..Sun=6）が
+    指定されていれば、その曜日以外はスキップ。未指定なら常に実行（手動用）。"""
+    spec = os.environ.get("PREFETCH_DAYS", "").strip()
+    if not spec:
+        return True
+    try:
+        allowed = {int(x) for x in spec.split(",") if x.strip()}
+    except ValueError:
+        return True
+    return date.today().weekday() in allowed
+
+
+def _throttle_skip(target: date) -> bool:
+    """PREFETCH_THROTTLE_HOURS 以内に同じ対象日を取得済みならスキップ。
+    ログオン/ロック解除で一日に何度も発火しても無駄取得を防ぐ。"""
+    try:
+        hrs = float(os.environ.get("PREFETCH_THROTTLE_HOURS", "0") or 0)
+    except ValueError:
+        hrs = 0
+    if hrs <= 0:
+        return False
+    marker = os.path.join(ROOT, "data", f".prefetch_{target:%Y%m%d}.done")
+    if os.path.exists(marker) and (time.time() - os.path.getmtime(marker)) < hrs * 3600:
+        _log(f"直近{hrs:g}h以内に {target} を取得済み → スキップ（再取得不要）")
+        return True
+    return False
+
+
+def _mark_done(target: date):
+    try:
+        marker = os.path.join(ROOT, "data", f".prefetch_{target:%Y%m%d}.done")
+        with open(marker, "w", encoding="utf-8") as f:
+            f.write(datetime.now().isoformat())
+    except Exception:
+        pass
+
+
 def main():
     arg = sys.argv[1] if len(sys.argv) > 1 else "tomorrow"
     target = _resolve_target(arg)
+
+    if not _days_guard_ok():
+        _log(f"対象曜日外（PREFETCH_DAYS={os.environ.get('PREFETCH_DAYS')}）→ スキップ")
+        return
+    if _throttle_skip(target):
+        return
+
     _log(f"=== ローカル事前取得 開始: target={target} (arg={arg}) ===")
     t0 = time.time()
 
@@ -215,6 +260,7 @@ def main():
     base_zip, n = build_full_cache_zip()
     upload_base_release(base_zip, n)
 
+    _mark_done(target)
     _log(f"=== 完了: target={target} 総経過 {int(time.time()-t0)}秒 ===")
 
 

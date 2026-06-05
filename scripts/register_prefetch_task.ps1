@@ -66,14 +66,17 @@ foreach ($t in (@($TaskName) + $OldTasks)) {
 }
 
 # --- 実行内容: saturday分→sunday分を順に取得（片方が空振り/失敗でも両方走るよう & で連結）---
+#   PREFETCH_DAYS=3,4,5  … 木金土のみ実行（ログオン/解除トリガが平日に発火しても空振りさせない）
+#   PREFETCH_THROTTLE_HOURS=5 … 同じ対象日を直近5h以内に取得済みならスキップ（開く度の無駄取得を防ぐ）
 $logSat = Join-Path $RepoRoot "data\prefetch_saturday.log"
 $logSun = Join-Path $RepoRoot "data\prefetch_sunday.log"
-$inner  = "`"$Python`" `"$Script`" saturday >> `"$logSat`" 2>&1 & " +
+$inner  = "set `"PREFETCH_DAYS=3,4,5`" & set `"PREFETCH_THROTTLE_HOURS=5`" & " +
+          "`"$Python`" `"$Script`" saturday >> `"$logSat`" 2>&1 & " +
           "`"$Python`" `"$Script`" sunday   >> `"$logSun`" 2>&1"
 $action = New-ScheduledTaskAction -Execute "cmd.exe" `
               -Argument "/c $inner" -WorkingDirectory $RepoRoot
 
-# --- トリガ: 木・金・土の StartTime に開始し、WindowHours ぶん RepeatHours おきに繰り返す ---
+# --- トリガ1: 木・金・土の StartTime に開始し、WindowHours ぶん RepeatHours おきに繰り返す ---
 $trigger = New-ScheduledTaskTrigger -Weekly `
                -DaysOfWeek Thursday, Friday, Saturday -At $StartTime
 # 日中の繰り返しを付与（-Once トリガから Repetition だけ拝借する定番手法）
@@ -81,6 +84,26 @@ $rep = (New-ScheduledTaskTrigger -Once -At $StartTime `
             -RepetitionInterval (New-TimeSpan -Hours $RepeatHours) `
             -RepetitionDuration (New-TimeSpan -Hours $WindowHours)).Repetition
 $trigger.Repetition = $rep
+
+# --- トリガ2: ログオン時（PC起動→ログイン＝「開いた」）。曜日はスクリプト側ガードで木金土に限定 ---
+$logonTrigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+
+# --- トリガ3: ワークステーションのロック解除時（つけっぱなしPCを開いた瞬間）---
+#   New-ScheduledTaskTrigger に解除トリガが無いため CIM で直接生成
+$unlockTrigger = $null
+try {
+    $cls = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler `
+                        -ClassName MSFT_TaskSessionStateChangeTrigger
+    $unlockTrigger = New-CimInstance -CimClass $cls -ClientOnly
+    $unlockTrigger.Enabled     = $true
+    $unlockTrigger.StateChange = 8          # 8 = TASK_SESSION_UNLOCK
+    $unlockTrigger.UserId      = $env:USERNAME
+} catch {
+    Write-Host "  [warn] ロック解除トリガを作成できませんでした: $($_.Exception.Message)"
+}
+
+$triggers = @($trigger, $logonTrigger)
+if ($unlockTrigger) { $triggers += $unlockTrigger }
 
 $settings = New-ScheduledTaskSettingsSet `
                 -WakeToRun `
@@ -94,16 +117,18 @@ $settings = New-ScheduledTaskSettingsSet `
 # ログオン中のユーザーで実行（gh のキーリング資格情報を使うため）
 $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Limited
 
-Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger `
+Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $triggers `
     -Settings $settings -Principal $principal `
-    -Description "競馬: 木〜土の日中PCが開いた時に週末全頭データを自宅IPで取得しGitHub Releaseへ配信" | Out-Null
+    -Description "競馬: 木〜土にPCを開いた瞬間(起動/ログオン/ロック解除)＋日中定期で週末全頭データを自宅IPで取得しGitHub Releaseへ配信" | Out-Null
 
 $endTime = ([datetime]$StartTime).AddHours($WindowHours).ToString("HH:mm")
 Write-Host ""
 Write-Host "登録: $TaskName"
-Write-Host "  曜日   : 木・金・土"
-Write-Host "  時間帯 : $StartTime 〜 $endTime（$RepeatHours 時間おきに拾う）"
-Write-Host "  取りこぼし: PC起動時に自動で追いつく（StartWhenAvailable）"
+Write-Host "  曜日       : 木・金・土（スクリプト側ガードで限定）"
+Write-Host "  開いた瞬間 : ログオン時＋ロック解除時に強制実行"
+Write-Host "  日中定期   : $StartTime 〜 $endTime（$RepeatHours 時間おき）"
+Write-Host "  取りこぼし : PC起動時に自動で追いつく（StartWhenAvailable）"
+Write-Host "  無駄防止   : 同じ対象日は直近5h以内なら再取得スキップ"
 Write-Host ""
 Get-ScheduledTask -TaskName $TaskName | Format-Table TaskName, State -AutoSize
 Write-Host "手動テスト: Start-ScheduledTask -TaskName $TaskName"
