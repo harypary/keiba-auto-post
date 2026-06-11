@@ -18,6 +18,9 @@ env/
 
 # データキャッシュ（大きいので除外）
 data/cache/
+data/cache_multi/
+data/.prefetch_*.done
+data/.prefetch.lock
 data/output/
 data/predictions/
 data/performance/*.json

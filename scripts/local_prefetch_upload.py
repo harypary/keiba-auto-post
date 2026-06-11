@@ -111,6 +111,7 @@ def fetch_all(horse_ids):
                 ng += 1
             if done % 25 == 0 or done == total:
                 _log(f"  進捗 {done}/{total}  成功{ok} / 失敗{ng}")
+                heartbeat()  # ロックの鮮度を維持（スリープ中は止まり、乗っ取り可能になる）
     return ok, ng
 
 
@@ -160,11 +161,21 @@ def upload_base_release(zip_path: str, n: int):
     else:
         cmd = ["gh", "release", "create", tag, zip_path, "--repo", REPO,
                "--title", title, "--notes", notes]
-    r = subprocess.run(cmd, capture_output=True, text=True,
-                            encoding="utf-8", errors="replace")
+    for attempt in (1, 2):
+        r = subprocess.run(cmd, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+        if r.returncode == 0:
+            break
+        if attempt == 1:
+            _log(f"[retry] 累積ベース配信失敗 → 10秒後に再試行: {r.stderr.strip()[:200]}")
+            time.sleep(10)
     if r.returncode != 0:
         _log(f"[WARN] 累積ベース配信失敗（当日分は配信済み）: {r.stderr.strip()}")
         return
+    if exists:
+        # --clobber は説明文を更新しないため、更新日時だけ書き換えておく
+        subprocess.run(["gh", "release", "edit", tag, "--repo", REPO, "--notes", notes],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
     _log(f"累積ベース更新: {tag}（{n}頭）")
 
 
@@ -190,6 +201,59 @@ def upload_release(zip_path: str, target: date):
         _log(f"[ERROR] gh release 失敗: {r.stderr.strip()}")
         raise SystemExit(1)
     _log(f"アップロード完了: {tag}")
+
+
+# --- 排他ロック ---
+# ログオン/ロック解除/定期トリガが重なる、またはスリープ復帰した旧プロセスが
+# 生き残ると同時実行になり、base Release への --clobber が衝突して 404 になる
+# （2026-06-12 実発生）。ファイルロック＋ハートビートで防ぐ。
+LOCK_PATH = os.path.join(ROOT, "data", ".prefetch.lock")
+LOCK_STALE_SEC = 45 * 60   # ハートビートがこれ以上止まったロックは死んだとみなす
+_lock_token = f"{os.getpid()}-{int(time.time())}"
+
+
+def acquire_lock() -> bool:
+    os.makedirs(os.path.dirname(LOCK_PATH), exist_ok=True)
+    for _ in range(2):
+        try:
+            fd = os.open(LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            with os.fdopen(fd, "w") as f:
+                f.write(_lock_token)
+            return True
+        except FileExistsError:
+            try:
+                age = time.time() - os.path.getmtime(LOCK_PATH)
+            except OSError:
+                continue  # 直前に消えた → 再試行
+            if age < LOCK_STALE_SEC:
+                return False  # 生きている別インスタンスが実行中
+            try:
+                os.remove(LOCK_PATH)  # 死んだロックを掃除して取得し直す
+            except OSError:
+                return False
+    return False
+
+
+def heartbeat() -> bool:
+    """ロックの鮮度を更新。スリープ等で乗っ取られていたら False。"""
+    try:
+        with open(LOCK_PATH, "r", encoding="utf-8") as f:
+            if f.read().strip() != _lock_token:
+                return False
+        os.utime(LOCK_PATH, None)
+        return True
+    except OSError:
+        return False
+
+
+def release_lock():
+    try:
+        with open(LOCK_PATH, "r", encoding="utf-8") as f:
+            mine = f.read().strip() == _lock_token
+        if mine:
+            os.remove(LOCK_PATH)
+    except OSError:
+        pass
 
 
 def _days_guard_ok() -> bool:
@@ -230,6 +294,20 @@ def _mark_done(target: date):
         pass
 
 
+def _cleanup_old_markers(max_age_days: int = 14):
+    """過去開催分の .done マーカーが溜まり続けないよう古い物を削除。"""
+    data_dir = os.path.join(ROOT, "data")
+    cutoff = time.time() - 86400 * max_age_days
+    try:
+        for fn in os.listdir(data_dir):
+            if fn.startswith(".prefetch_") and fn.endswith(".done"):
+                p = os.path.join(data_dir, fn)
+                if os.path.getmtime(p) < cutoff:
+                    os.remove(p)
+    except OSError:
+        pass
+
+
 def main():
     arg = sys.argv[1] if len(sys.argv) > 1 else "tomorrow"
     target = _resolve_target(arg)
@@ -239,29 +317,43 @@ def main():
         return
     if _throttle_skip(target):
         return
-
-    _log(f"=== ローカル事前取得 開始: target={target} (arg={arg}) ===")
-    t0 = time.time()
-
-    horse_ids = collect_horse_ids(target)
-    if not horse_ids:
-        _log("対象馬なし。終了。")
+    if not acquire_lock():
+        _log("別インスタンスが実行中（.prefetch.lock 保持中）→ スキップ")
         return
-    ok, ng = fetch_all(horse_ids)
-    _log(f"取得完了: 成功 {ok}頭 / 失敗 {ng}頭 / 経過 {int(time.time()-t0)}秒")
-    if ok == 0:
-        _log("[ERROR] 1頭も取得できませんでした。自宅IPもブロックされた可能性。中止。")
-        raise SystemExit(1)
 
-    zip_path = build_zip(horse_ids, target)
-    upload_release(zip_path, target)
+    try:
+        _cleanup_old_markers()
+        _log(f"=== ローカル事前取得 開始: target={target} (arg={arg}) ===")
+        t0 = time.time()
 
-    # 累積ベースも更新（現役馬を蓄積し、PCが開けない週でもCIが使える土台に）
-    base_zip, n = build_full_cache_zip()
-    upload_base_release(base_zip, n)
+        horse_ids = collect_horse_ids(target)
+        if not horse_ids:
+            _log("対象馬なし。終了。")
+            return
+        ok, ng = fetch_all(horse_ids)
+        _log(f"取得完了: 成功 {ok}頭 / 失敗 {ng}頭 / 経過 {int(time.time()-t0)}秒")
+        if ok == 0:
+            _log("[ERROR] 1頭も取得できませんでした。自宅IPもブロックされた可能性。中止。")
+            raise SystemExit(1)
 
-    _mark_done(target)
-    _log(f"=== 完了: target={target} 総経過 {int(time.time()-t0)}秒 ===")
+        # スリープ復帰などでロックを失っていたら、後続インスタンスに任せて退く
+        # （二重アップロードによる --clobber 衝突を防ぐ）
+        if not heartbeat():
+            _log("[WARN] ロックを喪失（別インスタンスに交代済み）→ アップロードせず終了")
+            return
+
+        zip_path = build_zip(horse_ids, target)
+        upload_release(zip_path, target)
+
+        # 累積ベースも更新（現役馬を蓄積し、PCが開けない週でもCIが使える土台に）
+        if heartbeat():
+            base_zip, n = build_full_cache_zip()
+            upload_base_release(base_zip, n)
+
+        _mark_done(target)
+        _log(f"=== 完了: target={target} 総経過 {int(time.time()-t0)}秒 ===")
+    finally:
+        release_lock()
 
 
 if __name__ == "__main__":
