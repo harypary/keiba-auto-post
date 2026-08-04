@@ -12,7 +12,10 @@ import io
 from datetime import date, timedelta
 
 sys.path.insert(0, os.path.dirname(__file__))
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+# line_buffering=True が無いと出力が終了まで溜まり、CI ログで進捗が追えず
+# 例外だけが先に見える（原因調査を妨げる）ため行バッファリングを明示する。
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8',
+                              errors='replace', line_buffering=True)
 
 from src.validator.results_fetcher import ResultsFetcher
 from src.validator.performance_tracker import record_result, generate_weekly_report
@@ -22,6 +25,36 @@ from src.pipeline import prune_cache
 
 PRED_DIR = os.path.join(os.path.dirname(__file__), "data", "predictions")
 PERF_DIR = os.path.join(os.path.dirname(__file__), "data", "performance")
+
+
+def resolve_race_date(pred_path: str, race_id: str):
+    """予想ファイルから実際の開催日を求める。
+
+    netkeiba の race_id は「年+場コード+開催回+日目+R」であって日付ではない
+    （例 202608030812 は 2026-08-03 ではない）。race_id[:8] を日付として読むと
+    照合対象を取り違え、週次学習が何も処理できなくなる。
+    新形式は race_date を持つのでそれを使い、旧ファイルは saved_at（前夜に投稿）
+    の翌日を開催日とみなす。
+    """
+    try:
+        with open(pred_path, encoding="utf-8") as f:
+            d = json.load(f)
+    except Exception:
+        return None
+    rd = d.get("race_date")
+    if rd:
+        try:
+            return date.fromisoformat(rd[:10])
+        except Exception:
+            pass
+    saved = d.get("saved_at")
+    if saved:
+        try:
+            # 土曜レースは金曜夜、日曜レースは土曜夜に保存される
+            return date.fromisoformat(saved[:10]) + timedelta(days=1)
+        except Exception:
+            pass
+    return None
 
 
 def run_weekly_review():
@@ -38,20 +71,20 @@ def run_weekly_review():
     last_saturday = last_sunday - timedelta(days=1)
     target_dates = [last_saturday, last_sunday]
 
+    # CI は data/predictions を持たない状態から始まることがある。
+    # 未作成のまま listdir すると FileNotFoundError で週次学習が丸ごと止まるため保証する。
+    os.makedirs(PRED_DIR, exist_ok=True)
+    os.makedirs(PERF_DIR, exist_ok=True)
+
     processed = 0
     for pred_file in os.listdir(PRED_DIR):
         if not pred_file.endswith(".json"):
             continue
         race_id = pred_file.replace(".json", "")
-        race_date_str = race_id[:8]
 
         # 先週土日のレースのみ対象
-        try:
-            race_date = date(int(race_date_str[:4]), int(race_date_str[4:6]), int(race_date_str[6:8]))
-        except Exception:
-            continue
-
-        if race_date not in target_dates:
+        race_date = resolve_race_date(os.path.join(PRED_DIR, pred_file), race_id)
+        if race_date is None or race_date not in target_dates:
             continue
 
         # すでに照合済みならスキップ
@@ -289,12 +322,8 @@ def run_weekly_review():
             for pred_file in os.listdir(PRED_DIR):
                 if not pred_file.endswith(".json"): continue
                 race_id = pred_file.replace(".json", "")
-                race_date_str = race_id[:8]
-                try:
-                    race_date = date(int(race_date_str[:4]), int(race_date_str[4:6]), int(race_date_str[6:8]))
-                except Exception:
-                    continue
-                if race_date not in target_dates: continue
+                race_date = resolve_race_date(os.path.join(PRED_DIR, pred_file), race_id)
+                if race_date is None or race_date not in target_dates: continue
                 res = fetcher.get_race_result(race_id)
                 if not res or not res.get("payouts"): continue
                 payouts = res["payouts"]

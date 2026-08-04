@@ -18,8 +18,12 @@ HIGHLIGHT_FILE = os.path.join(PERF_DIR, "last_week_highlights.json")
 # 予想保存（投稿前）
 # ============================================================
 
-def save_prediction(race_id: str, race_name: str, scores, plan):
-    """投稿時に予想内容をJSONで保存（オッズ・モデル確率・エッジも記録してキャリブレーション/ROI計算）"""
+def save_prediction(race_id: str, race_name: str, scores, plan, race_date=None):
+    """投稿時に予想内容をJSONで保存（オッズ・モデル確率・エッジも記録してキャリブレーション/ROI計算）
+
+    race_date: 実際の開催日。netkeiba の race_id は「年+場コード+開催回+日目+R」で
+    日付ではないため、週次照合が対象レースを取り違えないよう明示的に記録する。
+    """
     os.makedirs(PRED_DIR, exist_ok=True)
 
     # === 予測時点のアンサンブル確率・エッジを計算して保存 ===
@@ -35,6 +39,8 @@ def save_prediction(race_id: str, race_name: str, scores, plan):
     data = {
         "race_id": race_id,
         "race_name": race_name,
+        "race_date": (race_date.isoformat() if hasattr(race_date, "isoformat")
+                      else (race_date or "")),
         "saved_at": datetime.now().isoformat(),
         "honmei": plan.honmei,
         "taikou": plan.taikou,

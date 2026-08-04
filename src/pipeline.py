@@ -296,7 +296,8 @@ def run_pipeline(target_date: date, publish: bool = True, save_files: bool = Tru
                                    quinella_bets=[], trifecta_bets=[], trio_bets=[])
 
             try:
-                save_prediction(race_id, race.race_name, scores, plan)
+                save_prediction(race_id, race.race_name, scores, plan,
+                                race_date=target_date)
             except Exception as ex:
                 print(f"  [warn] 予測保存失敗（続行）: {ex}")
 

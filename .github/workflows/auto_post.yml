@@ -86,6 +86,8 @@ jobs:
         with:
           path: |
             data/cache
+            data/predictions
+            data/performance
             data/model_weights.json
             data/learnings.json
             data/weekly_trend.json
@@ -390,6 +392,8 @@ jobs:
         with:
           path: |
             data/cache
+            data/predictions
+            data/performance
             data/model_weights.json
             data/learnings.json
             data/weekly_trend.json
